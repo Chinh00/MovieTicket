@@ -8,8 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__", "__", "{3BFD15F0-ED25-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{F1E1ED85-CDD0-4AB6-A787-55FC0988386C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{C60230B0-A108-4026-9391-6F8F56B5987E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicket.Api", "src\server\MovieTicket.Api\MovieTicket.Api.csproj", "{D5C4105E-3D39-4864-A416-6DC900510F1C}"
 EndProject
 Global
