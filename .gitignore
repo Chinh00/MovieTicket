@@ -5,7 +5,6 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
-./.idea/*
 
 
 ./src/client/mobile/*.iml
@@ -24,3 +23,4 @@ riderModule.iml
 ./src/client/mobile/.cxx
 
 #./src/client/mobile/local.properties
+/.idea/
