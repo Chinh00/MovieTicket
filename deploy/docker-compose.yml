@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  db: 
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: db_movie
+    environment:
+      MSSQL_PID: "Standard"
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "@P@ssw0rd02"
+    ports:
+      - 1433:1433
+    volumes:
+      - data:/var/opt/mssql
+volumes:
+  data:

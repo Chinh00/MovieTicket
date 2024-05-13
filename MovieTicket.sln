@@ -10,6 +10,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{F1E1ED
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicket.Api", "src\server\MovieTicket.Api\MovieTicket.Api.csproj", "{D5C4105E-3D39-4864-A416-6DC900510F1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicket.Domain", "src\server\MovieTicket.Domain\MovieTicket.Domain.csproj", "{B81ED7F6-676A-4B46-9A6F-3A0E7FD64885}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicket.Infrastructure", "src\server\MovieTicket.Infrastructure\MovieTicket.Infrastructure.csproj", "{6B19F5B6-8D4B-4BD3-B83C-93C97870B279}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicket.Core", "src\server\MovieTicket.Core\MovieTicket.Core.csproj", "{2989D1B2-0084-4F61-B777-6D615B7A41E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicket.Infrastructure.EfCore", "src\server\MovieTicket.Infrastructure.EfCore\MovieTicket.Infrastructure.EfCore.csproj", "{ED0124A5-7364-4BD0-B9AE-A8590EFC54B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,11 +25,31 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D5C4105E-3D39-4864-A416-6DC900510F1C} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
+		{B81ED7F6-676A-4B46-9A6F-3A0E7FD64885} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
+		{6B19F5B6-8D4B-4BD3-B83C-93C97870B279} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
+		{2989D1B2-0084-4F61-B777-6D615B7A41E2} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
+		{ED0124A5-7364-4BD0-B9AE-A8590EFC54B3} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D5C4105E-3D39-4864-A416-6DC900510F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D5C4105E-3D39-4864-A416-6DC900510F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5C4105E-3D39-4864-A416-6DC900510F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5C4105E-3D39-4864-A416-6DC900510F1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B81ED7F6-676A-4B46-9A6F-3A0E7FD64885}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B81ED7F6-676A-4B46-9A6F-3A0E7FD64885}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B81ED7F6-676A-4B46-9A6F-3A0E7FD64885}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B81ED7F6-676A-4B46-9A6F-3A0E7FD64885}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B19F5B6-8D4B-4BD3-B83C-93C97870B279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B19F5B6-8D4B-4BD3-B83C-93C97870B279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B19F5B6-8D4B-4BD3-B83C-93C97870B279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B19F5B6-8D4B-4BD3-B83C-93C97870B279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2989D1B2-0084-4F61-B777-6D615B7A41E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2989D1B2-0084-4F61-B777-6D615B7A41E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2989D1B2-0084-4F61-B777-6D615B7A41E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2989D1B2-0084-4F61-B777-6D615B7A41E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED0124A5-7364-4BD0-B9AE-A8590EFC54B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED0124A5-7364-4BD0-B9AE-A8590EFC54B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED0124A5-7364-4BD0-B9AE-A8590EFC54B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED0124A5-7364-4BD0-B9AE-A8590EFC54B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
