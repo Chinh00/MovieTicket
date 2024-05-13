@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__", "__", "{3BFD15F0-ED25-4F17-A053-CDD596E0B335}"
+	ProjectSection(SolutionItems) = preProject
+		MovieTicket.sln = MovieTicket.sln
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{F1E1ED85-CDD0-4AB6-A787-55FC0988386C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{C60230B0-A108-4026-9391-6F8F56B5987E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicket.Api", "src\server\MovieTicket.Api\MovieTicket.Api.csproj", "{D5C4105E-3D39-4864-A416-6DC900510F1C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D5C4105E-3D39-4864-A416-6DC900510F1C} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5C4105E-3D39-4864-A416-6DC900510F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5C4105E-3D39-4864-A416-6DC900510F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5C4105E-3D39-4864-A416-6DC900510F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5C4105E-3D39-4864-A416-6DC900510F1C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
