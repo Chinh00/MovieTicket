@@ -75,6 +75,9 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getDate()");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -95,6 +98,179 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.ToTable("Movies", "MovieTicket");
                 });
 
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Reservation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("(newsequentialid())");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getDate()");
+
+                    b.Property<Guid>("ScreeningId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("ScreeningId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reservations", "MovieTicket");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Room", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("(newsequentialid())");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getDate()");
+
+                    b.Property<int>("RoomNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("Rooms", "MovieTicket");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Screening", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("Screening");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Seat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("(newsequentialid())");
+
+                    b.Property<int>("ColNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getDate()");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("RowNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("Seats", "MovieTicket");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.SeatReservation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("(newsequentialid())");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getDate()");
+
+                    b.Property<Guid?>("ReservationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SeatId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("ReservationId");
+
+                    b.HasIndex("SeatId");
+
+                    b.ToTable("SeatReservations", "MovieTicket");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
+                });
+
             modelBuilder.Entity("CategoryMovie", b =>
                 {
                     b.HasOne("MovieTicket.Domain.Entities.Category", null)
@@ -108,6 +284,104 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                         .HasForeignKey("MoviesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Reservation", b =>
+                {
+                    b.HasOne("MovieTicket.Domain.Entities.Screening", "Screening")
+                        .WithMany("Reservations")
+                        .HasForeignKey("ScreeningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieTicket.Domain.Entities.User", "User")
+                        .WithMany("Reservations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Screening");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Screening", b =>
+                {
+                    b.HasOne("MovieTicket.Domain.Entities.Movie", "Movie")
+                        .WithMany("Screenings")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieTicket.Domain.Entities.Room", "Room")
+                        .WithMany("Screenings")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Seat", b =>
+                {
+                    b.HasOne("MovieTicket.Domain.Entities.Room", "Room")
+                        .WithMany("Seats")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.SeatReservation", b =>
+                {
+                    b.HasOne("MovieTicket.Domain.Entities.Reservation", "Reservation")
+                        .WithMany("SeatReservations")
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("MovieTicket.Domain.Entities.Seat", "Seat")
+                        .WithMany("SeatReservations")
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Reservation");
+
+                    b.Navigation("Seat");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Movie", b =>
+                {
+                    b.Navigation("Screenings");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Reservation", b =>
+                {
+                    b.Navigation("SeatReservations");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Room", b =>
+                {
+                    b.Navigation("Screenings");
+
+                    b.Navigation("Seats");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Screening", b =>
+                {
+                    b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.Seat", b =>
+                {
+                    b.Navigation("SeatReservations");
+                });
+
+            modelBuilder.Entity("MovieTicket.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }

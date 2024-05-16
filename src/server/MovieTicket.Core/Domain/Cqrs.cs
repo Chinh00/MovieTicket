@@ -12,7 +12,26 @@ public interface IItemQuery<TId, TResponse> : IQuery<TResponse>
 {
     public TId Id { get; init; }
 }
+public interface ICreateCommand<TRequest, TResponse> : ICommand<TResponse>
+    where TRequest : notnull
+    where TResponse : notnull
+{
+    public TRequest CreateModel { get; init; }
+}
 
+public interface IUpdateCommand<TRequest, TResponse> : ICommand<TResponse>
+    where TRequest : notnull
+    where TResponse : notnull
+{
+    public TRequest CreateModel { get; init; }
+}
+
+public interface IDeleteCommand<TId, TResponse> : ICommand<TResponse>
+    where TId : struct
+    where TResponse : notnull
+{
+    public TId Id { get; init; }
+}
 public interface IListQuery<TResponse> : IQuery<TResponse>
     where TResponse : notnull
 {
@@ -20,7 +39,6 @@ public interface IListQuery<TResponse> : IQuery<TResponse>
     public List<FilterModel> Filters { get; init; }
     public List<string> Includes { get; init; }
     public List<string> SortBy { get; init; }
-    public List<string> SortByDescending { get; init; }
     public int Page { get; init; }
     public int PageSize { get; init; }
     

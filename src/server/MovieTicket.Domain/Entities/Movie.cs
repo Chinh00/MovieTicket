@@ -7,6 +7,9 @@ public class Movie : EntityBase
     public string Name { get; init; }
     public DateTime ReleaseDate { get; init; }
     public long TotalTime { get; init; }
+    public string Description { get; init; }
     public virtual ICollection<Category> Categories { get; init; }
+    
+    public virtual ICollection<Screening> Screenings { get; init; }
     
 }

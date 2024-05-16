@@ -9,12 +9,11 @@
     android:background="@android:color/transparent"
     android:orientation="vertical"
     tools:context=".ui.shared.activity.MainActivity">
-
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
+
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -47,5 +46,7 @@
         app:indicatorRadius="10dp"
         app:itemPadding="10dp"
         app:menu="@menu/menu"/>
+
+
 </LinearLayout>
 

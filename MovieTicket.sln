@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicket.Core", "src\ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicket.Infrastructure.EfCore", "src\server\MovieTicket.Infrastructure.EfCore\MovieTicket.Infrastructure.EfCore.csproj", "{ED0124A5-7364-4BD0-B9AE-A8590EFC54B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicket.Application", "src\server\MovieTicket.Application\MovieTicket.Application.csproj", "{72B272E6-75D0-4ECB-9DEB-F1A6D82BD034}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,7 @@ Global
 		{6B19F5B6-8D4B-4BD3-B83C-93C97870B279} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
 		{2989D1B2-0084-4F61-B777-6D615B7A41E2} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
 		{ED0124A5-7364-4BD0-B9AE-A8590EFC54B3} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
+		{72B272E6-75D0-4ECB-9DEB-F1A6D82BD034} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D5C4105E-3D39-4864-A416-6DC900510F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -51,5 +54,9 @@ Global
 		{ED0124A5-7364-4BD0-B9AE-A8590EFC54B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED0124A5-7364-4BD0-B9AE-A8590EFC54B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED0124A5-7364-4BD0-B9AE-A8590EFC54B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72B272E6-75D0-4ECB-9DEB-F1A6D82BD034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72B272E6-75D0-4ECB-9DEB-F1A6D82BD034}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72B272E6-75D0-4ECB-9DEB-F1A6D82BD034}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72B272E6-75D0-4ECB-9DEB-F1A6D82BD034}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
