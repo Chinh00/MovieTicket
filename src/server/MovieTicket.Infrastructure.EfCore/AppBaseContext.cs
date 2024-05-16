@@ -11,7 +11,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
     public DbSet<Reservation> Reservations { get; init; }
     public DbSet<SeatReservation> SeatReservations { get; init; }
     public DbSet<Seat> Seats { get; init; }
-    
+    public DbSet<Screening> Screenings { get; init; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -48,6 +48,13 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
 
         modelBuilder.Entity<Seat>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
         
+        /*Screening*/
+        modelBuilder.Entity<Screening>().ToTable("Screenings", Schema).HasKey(e => e.Id);
+        modelBuilder.Entity<Screening>().Property(e => e.Id)
+            .HasDefaultValueSql("(newsequentialid())");
+        modelBuilder.Entity<Screening>().HasIndex(e => e.Id).IsUnique();
+
+        modelBuilder.Entity<Screening>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
         
         
         /*Reservation*/
@@ -90,6 +97,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
         modelBuilder.Entity<SeatReservation>().HasOne(e => e.Seat).WithMany(e => e.SeatReservations)
             .HasForeignKey(e => e.SeatId).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<SeatReservation>().HasOne(e => e.Reservation).WithMany(e => e.SeatReservations).HasForeignKey(e => e.ReservationId).OnDelete(DeleteBehavior.NoAction);
-
+        
+        
     }
 }
