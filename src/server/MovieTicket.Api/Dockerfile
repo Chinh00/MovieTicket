@@ -19,7 +19,6 @@ WORKDIR "/src/src/server/MovieTicket.Api"
 RUN dotnet build "MovieTicket.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 
-RUN "ls -l"
 
 
 FROM build AS publish
