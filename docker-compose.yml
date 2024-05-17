@@ -13,12 +13,13 @@ services:
     volumes:
       - data:/var/opt/mssql
   movieticket:
-    image: movieticket.api
     build:
       context: .
       dockerfile: src/server/MovieTicket.Api/Dockerfile
     environment:
       ConnectionStrings__db: Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
+    ports:
+      - "8080:80"
     depends_on:
       - db
 volumes:

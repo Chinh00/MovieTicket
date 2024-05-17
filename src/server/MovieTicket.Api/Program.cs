@@ -33,6 +33,7 @@ app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.MapFallbackToController("Index", "Fallback");
 
 app.Run();
 

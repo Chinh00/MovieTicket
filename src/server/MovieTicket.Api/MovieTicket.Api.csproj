@@ -14,10 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\MovieTicket.Application\MovieTicket.Application.csproj" />
       <ProjectReference Include="..\MovieTicket.Infrastructure.EfCore\MovieTicket.Infrastructure.EfCore.csproj" />
       <ProjectReference Include="..\MovieTicket.Infrastructure\MovieTicket.Infrastructure.csproj" />

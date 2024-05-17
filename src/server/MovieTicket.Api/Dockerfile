@@ -2,14 +2,14 @@
 WORKDIR /app
 COPY ["src/client/admin/", "./"]
 RUN yarn install
+RUN ls -l /app
 RUN yarn run build
 
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+ENV ASPNETCORE_HTTP_PORTS=80
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
@@ -22,21 +22,21 @@ COPY ["src/server/MovieTicket.Infrastructure/MovieTicket.Infrastructure.csproj",
 COPY ["src/server/MovieTicket.Application/MovieTicket.Application.csproj", "src/server/MovieTicket.Application/"]
 RUN dotnet restore "src/server/MovieTicket.Api/MovieTicket.Api.csproj"
 COPY . .
-WORKDIR "/src/src/server/MovieTicket.Api"
-RUN dotnet build "MovieTicket.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "src/server/MovieTicket.Api/MovieTicket.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-
-COPY --from=node-build /app/dist /src/server/MovieTicket.Api/wwwroot
-
+COPY --from=node-build /app/dist src/server/MovieTicket.Api/wwwroot
+RUN ls -l src/server/MovieTicket.Api/wwwroot
 
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "MovieTicket.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "src/server/MovieTicket.Api/MovieTicket.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 
 
 FROM base AS final
 WORKDIR /app
+ENV ASPNETCORE_HTTP_PORTS=80
+EXPOSE 80
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "MovieTicket.Api.dll"]
