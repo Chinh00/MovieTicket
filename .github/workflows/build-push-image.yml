@@ -15,4 +15,4 @@ jobs:
         uses: actions/checkout@v4
       - name: Build app Docker image
         shell: bash
-        run: docker build . -t -f /src/server/MovieTicket.Api/Dockerfile
+        run: docker build . -t myapp -f /src/server/MovieTicket.Api/Dockerfile
