@@ -1,6 +1,25 @@
-﻿services:
-  movieticket.api:
+﻿version: "3.7"
+
+services:
+  
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1433:1433
+    environment:
+      SA_PASSWORD: "@P@ssw0rd02"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Express
+    volumes:
+      - data:/var/opt/mssql
+  movieticket:
     image: movieticket.api
     build:
       context: .
       dockerfile: src/server/MovieTicket.Api/Dockerfile
+    environment:
+      ConnectionStrings__db: Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
+    depends_on:
+      - db
+volumes:
+  data:

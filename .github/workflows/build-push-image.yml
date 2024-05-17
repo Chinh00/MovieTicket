@@ -17,6 +17,3 @@ jobs:
       - name: Build app Docker image
         shell: bash
         run: docker build . -t myapp -f ./src/server/MovieTicket.Api/Dockerfile
-      - name: Resource
-        shell: bash
-        run: ls -l
