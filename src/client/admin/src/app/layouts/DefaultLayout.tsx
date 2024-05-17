@@ -7,7 +7,7 @@ const DefaultLayout = () => {
     return <Box>
         <AppBarCustom />
         <Outlet />
-        <Footer />
+        {/*<Footer />*/}
     </Box>
 }
 

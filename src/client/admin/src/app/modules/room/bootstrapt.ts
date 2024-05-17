@@ -9,7 +9,12 @@ const moduleConfig: ModuleConfig = {
             page: "RoomPage",
             path: "",
             authenticate: "any"
-
+        },
+        {
+            name: "Screening view",
+            page: "RoomScreenings",
+            path: ":id/screenings",
+            authenticate: "any"
         }
     ],
     authenticate: "any"

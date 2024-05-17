@@ -1,0 +1,6 @@
+﻿services:
+  movieticket.api:
+    image: movieticket.api
+    build:
+      context: .
+      dockerfile: src/server/MovieTicket.Api/Dockerfile

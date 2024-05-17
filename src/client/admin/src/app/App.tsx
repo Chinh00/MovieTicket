@@ -5,7 +5,13 @@ import {BrowserRouter} from "react-router-dom";
 import RouterProvider from "@/app/provider/RouterProvider.tsx";
 import {CssBaseline} from "@mui/material";
 import ReactQueryProvider from "@/app/provider/ReactQueryProvider.tsx";
-
+import 'nprogress/nprogress.css';
+import * as nProgress from "nprogress";
+import {LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+nProgress.configure({
+    showSpinner: true,
+})
 const App = () => {
     const [init, setInit] = useState(defaultResource)
     useEffect(() => {
@@ -15,10 +21,12 @@ const App = () => {
         })
     }, []);
     return !init.init ? <div>Loading ...</div>  : <BrowserRouter>
-        <CssBaseline />
-        <ReactQueryProvider>
-            <RouterProvider routes={init.routes} />
-        </ReactQueryProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <CssBaseline />
+            <ReactQueryProvider>
+                <RouterProvider routes={init.routes} />
+            </ReactQueryProvider>
+        </LocalizationProvider>
     </BrowserRouter>
 }
 

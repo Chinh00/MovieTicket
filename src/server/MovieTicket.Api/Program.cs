@@ -6,6 +6,14 @@ using MovieTicket.Infrastructure.Logger;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Cors", policyBuilder =>
+    {
+        policyBuilder.AllowAnyHeader().AllowAnyOrigin();
+    });
+});
+
 builder.Services.AddCustomLogger();
 
 builder.Services.AddControllers();
@@ -19,9 +27,9 @@ builder.Services.AddMediatR(e => e.RegisterServicesFromAssemblies(typeof(Anchor)
 
 
 var app = builder.Build();
-
+app.UseCors("Cors");
 app.MapControllers();
-
+app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
 

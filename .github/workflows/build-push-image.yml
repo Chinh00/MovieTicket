@@ -1,0 +1,18 @@
+name: Build and Push Docker Image
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  main:
+    name: Build with Docker
+
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Context
+        uses: actions/checkout@v4
+      - name: Build app Docker image
+        shell: bash
+        run: docker build . -t -f /src/server/MovieTicket.Api/Dockerfile

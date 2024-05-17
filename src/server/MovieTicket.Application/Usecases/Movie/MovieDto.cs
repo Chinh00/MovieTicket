@@ -7,5 +7,7 @@ public class MovieDto
     public DateTime ReleaseDate { get; init; }
     public long TotalTime { get; init; }
     public string Description { get; init; }
+    public string Avatar { get; init; }
+    public string Trailer { get; init; }
     public ICollection<Guid> CategoryId { get; } = [];
 }

@@ -20,7 +20,9 @@ const appbarRouteConfig: AppbarRouteConfig[] = [
     {
         title: "Quản lý rạp phim",
         path: "/room"
-    }
+    },
+    
+    
 ]
 
 const AppBarCustom = () => {
@@ -37,7 +39,7 @@ const AppBarCustom = () => {
     const nav = useNavigate()
     
     return <>
-        <AppBar>
+        <AppBar color={"transparent"} position={"sticky"} >
             <Toolbar>
                 <IconButton
                     color="inherit"
