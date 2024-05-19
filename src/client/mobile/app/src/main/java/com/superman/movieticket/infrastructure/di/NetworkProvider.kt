@@ -1,6 +1,7 @@
 package com.superman.movieticket.infrastructure.di
 
-import com.superman.movieticket.domain.services.TestService
+import com.superman.movieticket.core.config.AppOptions
+import com.superman.movieticket.domain.services.ScreeningService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,10 +16,8 @@ import javax.inject.Singleton
 object NetworkProvider {
     @Provides
     @Singleton
-    public fun RetrofitProvider() = Retrofit.Builder().baseUrl("https://jsonplaceholder.typicode.com").addConverterFactory(ScalarsConverterFactory.create()).build()
+    public fun RetrofitProvider() = Retrofit.Builder().baseUrl(AppOptions.BASE_URL).addConverterFactory(ScalarsConverterFactory.create()).build()
 
 
-    @Provides
-    @Singleton
-    public fun AddTestService(retrofit: Retrofit) = retrofit.create(TestService::class.java)
+
 }
