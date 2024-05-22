@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+
 import com.superman.movieticket.core.view.FragmentBase
 import com.superman.movieticket.core.view.FragmentWithComposeBase
 import com.superman.movieticket.databinding.FragmentNewsBinding
@@ -42,7 +43,7 @@ class NewsFragment : FragmentWithComposeBase<NewsFragmentImpl>() {
     }
 
 }
-@Preview
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun AppWidgetCustom() {
     return ConstraintLayout(modifier = Modifier.apply {
