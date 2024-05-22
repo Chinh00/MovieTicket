@@ -9,6 +9,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.superman.movieticket.core.view.FragmentBase
@@ -26,9 +27,6 @@ class NewsFragment : FragmentBase<FragmentNewsBinding, NewsFragmentImpl>() {
     }
 
     override fun setupActions() {
-
-
-
     }
 
     override fun onCreateView(
@@ -38,9 +36,7 @@ class NewsFragment : FragmentBase<FragmentNewsBinding, NewsFragmentImpl>() {
     ): View? {
         return ComposeView(requireContext()).apply {
             setContent {
-                AppBarCustom(onClick = {
-                    Toast.makeText(requireContext(), "Ching dep trai", Toast.LENGTH_LONG).show()
-                })
+                AppBarCustom()
             }
         }
     }
@@ -49,11 +45,9 @@ class NewsFragment : FragmentBase<FragmentNewsBinding, NewsFragmentImpl>() {
 }
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun AppBarCustom(onClick: () -> Unit) {
-    return Button(
-        onClick = onClick,
-
-        ) {
-        Text(text = "An vao day")
+fun AppBarCustom() {
+    val context = LocalContext.current
+    Button(onClick = {Toast.makeText(context,"Click",Toast.LENGTH_SHORT).show()}){
+        Text(text = "Click")
     }
 }
