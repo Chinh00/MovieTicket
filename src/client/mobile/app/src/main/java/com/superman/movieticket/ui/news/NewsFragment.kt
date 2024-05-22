@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.superman.movieticket.core.view.FragmentBase
 import com.superman.movieticket.databinding.FragmentNewsBinding
 import com.superman.movieticket.ui.news.control.NewsFragmentImpl
@@ -46,13 +47,13 @@ class NewsFragment : FragmentBase<FragmentNewsBinding, NewsFragmentImpl>() {
 
 
 }
-@Preview
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun AppBarCustom(onClick: () -> Unit) {
     return Button(
-            onClick = onClick,
-           
+        onClick = onClick,
+
         ) {
-            Text(text = "An vao day")
-        }
+        Text(text = "An vao day")
+    }
 }
