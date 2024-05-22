@@ -5,6 +5,4 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeFragmentModelImpl @Inject constructor() : HomeFragmentModel, ViewModel(){
-
-}
+class HomeFragmentModelImpl @Inject constructor() : HomeFragmentModel, ViewModel()

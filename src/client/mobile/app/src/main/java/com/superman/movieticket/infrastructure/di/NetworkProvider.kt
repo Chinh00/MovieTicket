@@ -15,10 +15,10 @@ import javax.inject.Singleton
 object NetworkProvider {
     @Provides
     @Singleton
-    public fun RetrofitProvider() = Retrofit.Builder().baseUrl("https://jsonplaceholder.typicode.com").addConverterFactory(ScalarsConverterFactory.create()).build()
+    fun RetrofitProvider() = Retrofit.Builder().baseUrl("https://jsonplaceholder.typicode.com").addConverterFactory(ScalarsConverterFactory.create()).build()
 
 
     @Provides
     @Singleton
-    public fun AddTestService(retrofit: Retrofit) = retrofit.create(TestService::class.java)
+    fun AddTestService(retrofit: Retrofit) = retrofit.create(TestService::class.java)
 }

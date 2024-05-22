@@ -26,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextFieldDefaults.textFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -141,6 +142,7 @@ class SignUpActivity : ComponentActivity() {
         var textField by remember {
             mutableStateOf("")
         }
+        val containerColor = Color(0x8FDFD0D0)
         TextField(
             value = "$value",
             label = { Text(text = "$textHolder") },
@@ -165,13 +167,15 @@ class SignUpActivity : ComponentActivity() {
 
                 }
             },
-            colors = textFieldColors(
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor,
                 cursorColor = Color.Black,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                containerColor = Color(0x8FDFD0D0),
                 unfocusedLeadingIconColor = Color.White,
-                unfocusedTrailingIconColor = Color.White
+                unfocusedTrailingIconColor = Color.White,
             ),
             placeholder = { Text(text = "Enter Username", color = Color.LightGray) },
             onValueChange = { textField = it },

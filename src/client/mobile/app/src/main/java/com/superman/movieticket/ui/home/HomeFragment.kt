@@ -87,18 +87,12 @@ class HomeFragment : FragmentBase<FragmentHomeBinding, HomeFragmentModelImpl>() 
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return ComposeView(requireContext()).apply {
             setContent {
                 HomeContent()
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-
     }
 
     override fun setupActions() {
@@ -246,6 +240,7 @@ fun HeaderContentPre() {
 @Composable
 //@Preview(showBackground = true)
 fun SearchField() {
+    val containerColor = Color(0x86424242)
     TextField(value = "", onValueChange = {}, modifier = Modifier
         .fillMaxWidth()
         .clip(
@@ -263,9 +258,11 @@ fun SearchField() {
                 Modifier.size(24.dp)
             )
         }
-    }, colors = TextFieldDefaults.textFieldColors(
-        containerColor = Color(0x86424242), unfocusedIndicatorColor = Color.Transparent
-
+    }, colors = TextFieldDefaults.colors(
+        focusedContainerColor = containerColor,
+        unfocusedContainerColor = containerColor,
+        disabledContainerColor = containerColor,
+        unfocusedIndicatorColor = Color.Transparent,
     )
     )
 }

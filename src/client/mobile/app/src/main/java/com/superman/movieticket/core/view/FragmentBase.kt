@@ -33,8 +33,8 @@ abstract class FragmentBase<Binding: ViewBinding, ViewModel: androidx.lifecycle.
         return _binding.root
     }
 
-    abstract fun setupViews();
-    abstract fun setupActions();
+    abstract fun setupViews()
+    abstract fun setupActions()
 
 
 }

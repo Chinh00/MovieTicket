@@ -44,7 +44,7 @@ class MainActivity : ActivityBase<ActivityMainBinding, MainActivityModel>() {
         val transaction = supportFragmentManager.beginTransaction().setCustomAnimations( com.google.android.material.R.anim.abc_slide_in_bottom,
             com.google.android.material.R.anim.abc_fade_out, // exit
             com.google.android.material.R.anim.abc_fade_in, // popEnter
-            com.google.android.material.R.anim.abc_slide_out_top );
+            com.google.android.material.R.anim.abc_slide_out_top )
         transaction.replace(R.id.nav_host_fragment, fragment)
         transaction.commit()
     }

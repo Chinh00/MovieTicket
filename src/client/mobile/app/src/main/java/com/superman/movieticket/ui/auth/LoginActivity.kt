@@ -171,6 +171,7 @@ horizontalAlignment = Alignment.CenterHorizontally,
         var textField by remember {
             mutableStateOf("")
         }
+        val containerColor = Color(0x8FDFD0D0)
         TextField(
             value = textField,
             label = { Text(text = "$textHolder") },
@@ -195,13 +196,15 @@ horizontalAlignment = Alignment.CenterHorizontally,
 
                 }
             },
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor,
                 cursorColor = Color.Black,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                containerColor = Color(0x8FDFD0D0),
                 unfocusedLeadingIconColor = Color.White,
-                unfocusedTrailingIconColor = Color.White
+                unfocusedTrailingIconColor = Color.White,
             ),
             placeholder = { Text(text = "Enter Username", color = Color.LightGray) },
             onValueChange = { textField = it },

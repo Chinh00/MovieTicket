@@ -31,7 +31,7 @@ abstract class ActivityBase<Binding: ViewBinding, ViewModel: androidx.lifecycle.
         setupActions()
 
     }
-    abstract fun setupViews();
-    abstract fun setupActions();
+    abstract fun setupViews()
+    abstract fun setupActions()
 
 }
