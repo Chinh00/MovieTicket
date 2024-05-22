@@ -282,8 +282,8 @@ fun HomeContentPre() {
 fun Banners() {
     val list_banner = listOf(
         BannerItem(R.drawable.kungfu, "Kung FU PanDa"),
-        BannerItem(R.drawable.three, "THành phố ngủ gật"),
-        BannerItem(R.drawable.keanhon, "Kẻ Ăn Hồn"),
+        BannerItem(R.drawable.poster, "THành phố ngủ gật"),
+        BannerItem(R.drawable.poster1, "Kẻ Ăn Hồn"),
 
         )
 
