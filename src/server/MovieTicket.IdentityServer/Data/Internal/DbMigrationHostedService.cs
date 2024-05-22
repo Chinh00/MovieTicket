@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace MovieTicket.IdentityServer.Data.Internal;
 
 public class DbMigrationHostedService : IHostedService
@@ -13,8 +15,8 @@ public class DbMigrationHostedService : IHostedService
     {
         using var scope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
-
-
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await dbContext.Database.MigrateAsync(cancellationToken: cancellationToken);
         await userManager.CreateAsync(new User()
         {
             UserName = "admin",

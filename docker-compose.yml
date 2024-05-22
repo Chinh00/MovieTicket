@@ -18,9 +18,22 @@ services:
       dockerfile: src/server/MovieTicket.Api/Dockerfile
     environment:
       ConnectionStrings__db: Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
+      Identity__Url: identityserver:8081
     ports:
       - "8080:80"
     depends_on:
       - db
+  identityserver:
+    build:
+      context: .
+      dockerfile: src/server/MovieTicket.IdentityServer/Dockerfile
+    environment:
+        ConnectionStrings__db: Server=db;Database=movie_user;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+
+
 volumes:
   data:

@@ -9,7 +9,7 @@ public static class Extensions
 
         services.AddAuthentication().AddJwtBearer(options =>
         {
-            options.Authority = "http://localhost:5001";
+            options.Authority = config.GetSection("Identity:Url").Value;
             options.RequireHttpsMetadata = false;
             
             options.TokenValidationParameters = new TokenValidationParameters()

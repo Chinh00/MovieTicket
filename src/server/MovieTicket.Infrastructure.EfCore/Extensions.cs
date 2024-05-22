@@ -21,7 +21,7 @@ public static class Extensions
         });
         services.AddTransient<IFacadeResolver>(e => e.GetService<TDbContext>());
         services.AddHostedService<DbMigrateHostService>();
-        services.AddHostedService<DbMigrationDataHostService>();
+        //services.AddHostedService<DbMigrationDataHostService>();
 
         action?.Invoke(services);
         return services;

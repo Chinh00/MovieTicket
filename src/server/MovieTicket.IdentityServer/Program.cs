@@ -8,7 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>((provider, optionsBuilder) =>
 {
-    optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("db"));
+    optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("db"), contextOptionsBuilder =>
+    {
+        contextOptionsBuilder.EnableRetryOnFailure();
+    });
 });
 
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(opt =>
