@@ -19,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.superman.movieticket.core.view.FragmentBase
 import com.superman.movieticket.core.view.FragmentWithComposeBase
 import com.superman.movieticket.databinding.FragmentNewsBinding
+import com.superman.movieticket.infrastructure.utils.DatetimeHelper
 import com.superman.movieticket.ui.news.control.NewsFragmentImpl
 import com.superman.movieticket.ui.news.control.NewsFragmentModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,9 +38,6 @@ class NewsFragment : FragmentWithComposeBase<NewsFragmentImpl>() {
             setContent {
                 AppWidgetCustom()
             }
-
-
-
         }
     }
 

@@ -38,6 +38,10 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalTime = table.Column<long>(type: "bigint", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Trailer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<float>(type: "real", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getDate()"),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -59,19 +63,6 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Rooms", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -102,28 +93,29 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Screening",
+                name: "Screenings",
+                schema: "MovieTicket",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newsequentialid())"),
                     MovieId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getDate()"),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Screening", x => x.Id);
+                    table.PrimaryKey("PK_Screenings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Screening_Movies_MovieId",
+                        name: "FK_Screenings_Movies_MovieId",
                         column: x => x.MovieId,
                         principalSchema: "MovieTicket",
                         principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Screening_Rooms_RoomId",
+                        name: "FK_Screenings_Rooms_RoomId",
                         column: x => x.RoomId,
                         principalSchema: "MovieTicket",
                         principalTable: "Rooms",
@@ -163,6 +155,8 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newsequentialid())"),
                     ScreeningId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TotalPrice = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ItemPrice = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getDate()"),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -170,15 +164,10 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                 {
                     table.PrimaryKey("PK_Reservations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reservations_Screening_ScreeningId",
+                        name: "FK_Reservations_Screenings_ScreeningId",
                         column: x => x.ScreeningId,
-                        principalTable: "Screening",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reservations_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
+                        principalSchema: "MovieTicket",
+                        principalTable: "Screenings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -245,12 +234,6 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                 column: "ScreeningId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_UserId",
-                schema: "MovieTicket",
-                table: "Reservations",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Rooms_Id",
                 schema: "MovieTicket",
                 table: "Rooms",
@@ -258,13 +241,22 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Screening_MovieId",
-                table: "Screening",
+                name: "IX_Screenings_Id",
+                schema: "MovieTicket",
+                table: "Screenings",
+                column: "Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Screenings_MovieId",
+                schema: "MovieTicket",
+                table: "Screenings",
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Screening_RoomId",
-                table: "Screening",
+                name: "IX_Screenings_RoomId",
+                schema: "MovieTicket",
+                table: "Screenings",
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
@@ -324,10 +316,8 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                 schema: "MovieTicket");
 
             migrationBuilder.DropTable(
-                name: "Screening");
-
-            migrationBuilder.DropTable(
-                name: "User");
+                name: "Screenings",
+                schema: "MovieTicket");
 
             migrationBuilder.DropTable(
                 name: "Movies",

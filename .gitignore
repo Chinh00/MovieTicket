@@ -24,3 +24,5 @@ riderModule.iml
 
 ./src/client/mobile/local.properties
 /.idea/
+
+./tools

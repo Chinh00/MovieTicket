@@ -3,7 +3,7 @@ using MovieTicket.Infrastructure.Controller;
 
 namespace MovieTicket.Api.Controller.Client;
 
-[Route("client/api/{controller}")]
+[Route("client/api/[controller]")]
 public class ClientControllerBase : BaseController
 {
     
