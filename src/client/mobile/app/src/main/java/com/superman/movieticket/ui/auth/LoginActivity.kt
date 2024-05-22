@@ -3,9 +3,7 @@ package com.superman.movieticket.ui.auth
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.DrawableRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,11 +47,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.superman.movieticket.R
 
-class RegisterActivity :ComponentActivity() {
+class LoginActivity :ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent{
@@ -176,7 +172,7 @@ horizontalAlignment = Alignment.CenterHorizontally,
             mutableStateOf("")
         }
         TextField(
-            value = "$value",
+            value = textField,
             label = { Text(text = "$textHolder") },
             leadingIcon = {
                 Icon(
