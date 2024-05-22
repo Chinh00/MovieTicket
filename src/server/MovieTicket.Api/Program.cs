@@ -1,5 +1,6 @@
 using MovieTicket.Application;
 using MovieTicket.Core.Repository;
+using MovieTicket.Infrastructure.Auth;
 using MovieTicket.Infrastructure.EfCore;
 using MovieTicket.Infrastructure.EfCore.Internal;
 using MovieTicket.Infrastructure.Logger;
@@ -13,6 +14,10 @@ builder.Services.AddCors(options =>
         policyBuilder.AllowAnyHeader().AllowAnyOrigin();
     });
 });
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<ISecurityContextAccessor, SecurityContextAccessor>();
+builder.Services.AddAuthCustom(builder.Configuration);
+
 
 builder.Services.AddCustomLogger();
 
@@ -22,12 +27,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddMssqlDbContext<AppBaseContext>(builder.Configuration.GetConnectionString("db")!).AddRepository(typeof(Repository<>));
 builder.Services.AddAutoMapper(typeof(Anchor).Assembly);
-builder.Services.AddHostedService<DbMigrateHostService>();
+
 builder.Services.AddMediatR(e => e.RegisterServicesFromAssemblies(typeof(Anchor).Assembly));
 
 
 var app = builder.Build();
 app.UseCors("Cors");
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.UseStaticFiles();
 app.UseSwagger();

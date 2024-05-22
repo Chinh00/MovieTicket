@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieTicket.Core.Repository;
+using MovieTicket.Domain.Entities;
+using MovieTicket.Infrastructure.EfCore.Internal;
 
 namespace MovieTicket.Infrastructure.EfCore;
 
@@ -18,7 +20,9 @@ public static class Extensions
             });
         });
         services.AddTransient<IFacadeResolver>(e => e.GetService<TDbContext>());
-        
+        services.AddHostedService<DbMigrateHostService>();
+        services.AddHostedService<DbMigrationDataHostService>();
+
         action?.Invoke(services);
         return services;
     }
@@ -34,4 +38,6 @@ public static class Extensions
         );
         return services;
     }
+
+  
 }

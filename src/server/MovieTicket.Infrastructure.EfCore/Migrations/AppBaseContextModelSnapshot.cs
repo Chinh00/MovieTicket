@@ -84,6 +84,9 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
 
@@ -116,7 +119,13 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getDate()");
 
+                    b.Property<Guid>("ItemPrice")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("ScreeningId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TotalPrice")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -131,8 +140,6 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                         .IsUnique();
 
                     b.HasIndex("ScreeningId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Reservations", "MovieTicket");
                 });
@@ -266,23 +273,6 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.ToTable("SeatReservations", "MovieTicket");
                 });
 
-            modelBuilder.Entity("MovieTicket.Domain.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
-                });
-
             modelBuilder.Entity("CategoryMovie", b =>
                 {
                     b.HasOne("MovieTicket.Domain.Entities.Category", null)
@@ -306,15 +296,7 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieTicket.Domain.Entities.User", "User")
-                        .WithMany("Reservations")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Screening");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MovieTicket.Domain.Entities.Screening", b =>
@@ -389,11 +371,6 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
             modelBuilder.Entity("MovieTicket.Domain.Entities.Seat", b =>
                 {
                     b.Navigation("SeatReservations");
-                });
-
-            modelBuilder.Entity("MovieTicket.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }

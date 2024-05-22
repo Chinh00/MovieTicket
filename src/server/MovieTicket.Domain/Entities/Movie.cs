@@ -11,6 +11,7 @@ public class Movie : EntityBase
     
     public string Avatar { get; init; }
     public string Trailer { get; init; }
+    public float Price { get; init; }
     
     public virtual ICollection<Category> Categories { get; init; }
     

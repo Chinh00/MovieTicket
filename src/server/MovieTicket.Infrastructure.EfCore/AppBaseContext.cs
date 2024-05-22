@@ -12,6 +12,8 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
     public DbSet<SeatReservation> SeatReservations { get; init; }
     public DbSet<Seat> Seats { get; init; }
     public DbSet<Screening> Screenings { get; init; }
+    public DbSet<Room> Rooms { get; init; } 
+     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -85,8 +87,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
         modelBuilder.Entity<Reservation>().HasMany(e => e.SeatReservations);
         modelBuilder.Entity<Reservation>().HasOne(e => e.Screening).WithMany(e => e.Reservations)
             .HasForeignKey(e => e.ScreeningId);
-        modelBuilder.Entity<Reservation>().HasOne(e => e.User).WithMany(e => e.Reservations)
-            .HasForeignKey(e => e.UserId);
+        
 
         modelBuilder.Entity<Room>().HasMany(e => e.Screenings);
         modelBuilder.Entity<Room>().HasMany(e => e.Seats);
