@@ -78,7 +78,7 @@ class HomeFragment : FragmentBase<FragmentHomeBinding, HomeFragmentModelImpl>() 
     override fun getViewBinding() = FragmentHomeBinding.inflate(layoutInflater)
 
     override fun getViewModel() = HomeFragmentModelImpl::class.java
-
+  
     override fun setupViews() {
 
     }
