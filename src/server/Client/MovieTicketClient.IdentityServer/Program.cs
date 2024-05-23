@@ -13,7 +13,6 @@ builder.Services.AddDbContext<AppDbContext>((provider, optionsBuilder) =>
         contextOptionsBuilder.EnableRetryOnFailure();
     });
 });
-
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(opt =>
     {
         opt.Password.RequireNonAlphanumeric = false;
@@ -36,6 +35,10 @@ builder.Services.AddIdentityServer(options =>
     .AddInMemoryApiScopes(Config.ApiScopes)
     .AddAspNetIdentity<User>()
     .AddDeveloperSigningCredential();
+
+builder.Services.AddScoped<IFacadeResolver>(provider => provider.GetService<AppDbContext>());
+
+
 
 builder.Services.AddHostedService<DbMigrationHostedService>();
 

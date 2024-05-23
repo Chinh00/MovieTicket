@@ -8,7 +8,7 @@ using MovieTicketClient.IdentityServer.Data;
 
 #nullable disable
 
-namespace MovieTicket.IdentityServer.Migrations
+namespace MovieTicketClient.IdentityServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -153,7 +153,7 @@ namespace MovieTicket.IdentityServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MovieTicket.IdentityServer.Data.User", b =>
+            modelBuilder.Entity("MovieTicketClient.IdentityServer.Data.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -230,7 +230,7 @@ namespace MovieTicket.IdentityServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("MovieTicket.IdentityServer.Data.User", null)
+                    b.HasOne("MovieTicketClient.IdentityServer.Data.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -239,7 +239,7 @@ namespace MovieTicket.IdentityServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("MovieTicket.IdentityServer.Data.User", null)
+                    b.HasOne("MovieTicketClient.IdentityServer.Data.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -254,7 +254,7 @@ namespace MovieTicket.IdentityServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieTicket.IdentityServer.Data.User", null)
+                    b.HasOne("MovieTicketClient.IdentityServer.Data.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -263,7 +263,7 @@ namespace MovieTicket.IdentityServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("MovieTicket.IdentityServer.Data.User", null)
+                    b.HasOne("MovieTicketClient.IdentityServer.Data.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

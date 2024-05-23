@@ -5,7 +5,7 @@ import {Room} from "@/domain/entities/room.model.ts";
 
 
 const GetRooms = async () => {
-    return await http.get<SuccessResponse<ListResponse<Room>>>("/admin/api/Room")
+    return await http.get<SuccessResponse<ListResponse<Room>>>("/api/Room")
 }
 
 const useGetRooms = () => {

@@ -13,9 +13,10 @@ public class DbMigrationHostedService : IHostedService
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        using var scope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+        using var scope = _serviceProvider.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<IFacadeResolver>();
+        await dbContext.Database.EnsureDeletedAsync(cancellationToken);
         await dbContext.Database.MigrateAsync(cancellationToken: cancellationToken);
         await userManager.CreateAsync(new User()
         {

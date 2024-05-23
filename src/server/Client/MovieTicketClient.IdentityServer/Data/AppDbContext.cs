@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MovieTicketClient.IdentityServer.Data;
 
-public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IFacadeResolver
 {
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)

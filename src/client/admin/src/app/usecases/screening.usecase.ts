@@ -10,13 +10,13 @@ export type CreateScreeningModel = {
 }
 
 
-const GetScreenings = async (query: IListQuery) => await http.get<SuccessResponse<ListResponse<Screening>>>("/admin/api/Screening", {
+const GetScreenings = async (query: IListQuery) => await http.get<SuccessResponse<ListResponse<Screening>>>("/api/Screening", {
     headers: {
         "x-query": JSON.stringify(query)
     }
 })
 
-const CreateScreening = async (model: CreateScreeningModel) => await http.post<SuccessResponse<string>>("/admin/api/Screening", model)
+const CreateScreening = async (model: CreateScreeningModel) => await http.post<SuccessResponse<string>>("/api/Screening", model)
 
 
 const useCreateScreening = () => {
