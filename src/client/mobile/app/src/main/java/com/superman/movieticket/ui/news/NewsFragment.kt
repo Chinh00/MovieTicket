@@ -30,14 +30,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class NewsFragment : FragmentWithComposeBase<NewsFragmentImpl>() {
     override fun getViewModel() = NewsFragmentImpl::class.java
 
-<<<<<<< HEAD
-    override fun setupViews() {
-    }
-
-    override fun setupActions() {
-    }
-=======
->>>>>>> 644d0811f51bf486f7675193a353940b88ac2a2c
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,32 +38,9 @@ class NewsFragment : FragmentWithComposeBase<NewsFragmentImpl>() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-<<<<<<< HEAD
-                AppBarCustom()
-=======
-                AppWidgetCustom()
->>>>>>> 644d0811f51bf486f7675193a353940b88ac2a2c
+                Text(text = "")
             }
         }
     }
 
-}
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-<<<<<<< HEAD
-fun AppBarCustom() {
-    val context = LocalContext.current
-    Button(onClick = {Toast.makeText(context,"Click",Toast.LENGTH_SHORT).show()}){
-        Text(text = "Click")
-=======
-fun AppWidgetCustom() {
-    return ConstraintLayout(modifier = Modifier.apply {
-        padding(50.dp)
-    }) {
-
-        Button(onClick = { /*TODO*/ }) {
-            Text(text = "Click ...")
-        }
->>>>>>> 644d0811f51bf486f7675193a353940b88ac2a2c
-    }
 }

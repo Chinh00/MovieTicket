@@ -43,44 +43,47 @@ public class DbMigrationDataHostService : IHostedService
             
 
         }
-        
-        for (int i = 1; i <= 20; ++i)
+
+        if (!dbContext.Rooms.Any())
         {
-            for (int j = 1; j <= 30; j++)
+            for (int i = 1; i <= 20; ++i)
             {
-                await dbContext.Seats.AddAsync(new Seat()
+                for (int j = 1; j <= 30; j++)
                 {
-                    RowNumber = i,
-                    ColNumber = j,
-                    RoomId = rooms[0].Id
-                }, cancellationToken);
+                    await dbContext.Seats.AddAsync(new Seat()
+                    {
+                        RowNumber = i,
+                        ColNumber = j,
+                        RoomId = rooms[0].Id
+                    }, cancellationToken);
+                }
             }
-        }
-        for (int i = 1; i <= 20; ++i)
-        {
-            for (int j = 1; j <= 30; j++)
+            for (int i = 1; i <= 20; ++i)
             {
-                await dbContext.Seats.AddAsync(new Seat()
+                for (int j = 1; j <= 30; j++)
                 {
-                    RowNumber = i,
-                    ColNumber = j,
-                    RoomId = rooms[1].Id
-                }, cancellationToken);
+                    await dbContext.Seats.AddAsync(new Seat()
+                    {
+                        RowNumber = i,
+                        ColNumber = j,
+                        RoomId = rooms[1].Id
+                    }, cancellationToken);
+                }
             }
-        }
-        for (int i = 1; i <= 20; ++i)
-        {
-            for (int j = 1; j <= 30; j++)
+            for (int i = 1; i <= 20; ++i)
             {
-                await dbContext.Seats.AddAsync(new Seat()
+                for (int j = 1; j <= 30; j++)
                 {
-                    RowNumber = i,
-                    ColNumber = j,
-                    RoomId = rooms[2].Id
-                }, cancellationToken);
+                    await dbContext.Seats.AddAsync(new Seat()
+                    {
+                        RowNumber = i,
+                        ColNumber = j,
+                        RoomId = rooms[2].Id
+                    }, cancellationToken);
+                }
             }
+
         }
-        
         await dbContext.SaveChangesAsync(cancellationToken);
         
     }

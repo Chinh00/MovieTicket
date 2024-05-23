@@ -1,5 +1,6 @@
 package com.superman.movieticket.infrastructure.di
 
+import com.superman.movieticket.domain.services.RoomService
 import com.superman.movieticket.domain.services.ScreeningService
 import dagger.Module
 import dagger.Provides
@@ -10,13 +11,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-<<<<<<< HEAD
-object ServiceProvider
-=======
+
 object ServiceProvider {
     @Provides
     @Singleton
     fun AddScreeningService(retrofit: Retrofit) = retrofit.create(ScreeningService::class.java)
 
+    @Provides
+    @Singleton
+    fun AddRoomService(retrofit: Retrofit) = retrofit.create(RoomService::class.java)
+
+
+
 }
->>>>>>> 644d0811f51bf486f7675193a353940b88ac2a2c

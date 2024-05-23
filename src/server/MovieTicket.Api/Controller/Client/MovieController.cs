@@ -12,9 +12,8 @@ public class MovieController : ClientControllerBase
     [HttpGet]
     public async Task<IActionResult> HandleGetMoviesAsync([FromHeader(Name = "x-query")] string query, CancellationToken cancellationToken = new ())
     {
-
         var model = HttpContext.SafeGetListQuery<GetMovies.Query, ListResultModel<MovieDto>>(query);
-        return Ok(await Mediator.Send(query, cancellationToken ));
+        return Ok(await Mediator.Send(model, cancellationToken ));
     }
     
 }
