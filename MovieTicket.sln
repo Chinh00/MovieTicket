@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicketClient.Applicati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicketClient.IdentityServer", "src\server\Client\MovieTicketClient.IdentityServer\MovieTicketClient.IdentityServer.csproj", "{200B6CF3-A020-454C-9127-C0D96AFBD22F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicketManagement.Application", "src\server\Management\MovieTicketManagement.Application\MovieTicketManagement.Application.csproj", "{DF85C67A-C247-4CE3-96BF-18826E39104D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicketManagement.IndentityServer", "src\server\Management\MovieTicketManagement.IndentityServer\MovieTicketManagement.IndentityServer.csproj", "{7BBD4B00-2877-4ECD-B25D-473374E3895A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +56,8 @@ Global
 		{8CDD80BC-48DB-4214-B047-AA2AB9AB9A6D} = {8F79BBC4-34C7-4CC6-AA88-4CF7FE27A6DA}
 		{02C66579-A7CB-41DF-BC9D-C22CE4AD1AB6} = {95DF2A6E-AEFE-41C6-BB01-A3891FB9FD52}
 		{200B6CF3-A020-454C-9127-C0D96AFBD22F} = {95DF2A6E-AEFE-41C6-BB01-A3891FB9FD52}
+		{DF85C67A-C247-4CE3-96BF-18826E39104D} = {084BCD21-30AD-403E-A7E3-DE42A62549C3}
+		{7BBD4B00-2877-4ECD-B25D-473374E3895A} = {084BCD21-30AD-403E-A7E3-DE42A62549C3}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F3A4CDDC-7F67-459D-8DB6-15EA435C1BAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -86,5 +92,13 @@ Global
 		{200B6CF3-A020-454C-9127-C0D96AFBD22F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{200B6CF3-A020-454C-9127-C0D96AFBD22F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{200B6CF3-A020-454C-9127-C0D96AFBD22F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF85C67A-C247-4CE3-96BF-18826E39104D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF85C67A-C247-4CE3-96BF-18826E39104D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF85C67A-C247-4CE3-96BF-18826E39104D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF85C67A-C247-4CE3-96BF-18826E39104D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BBD4B00-2877-4ECD-B25D-473374E3895A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BBD4B00-2877-4ECD-B25D-473374E3895A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BBD4B00-2877-4ECD-B25D-473374E3895A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BBD4B00-2877-4ECD-B25D-473374E3895A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
