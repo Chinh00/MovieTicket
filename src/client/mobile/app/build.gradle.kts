@@ -110,4 +110,12 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
 
 
+    implementation ("com.google.accompanist:accompanist-pager:0.24.10-beta")
+
+    // If using indicators, also depend on
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.24.10-beta")
+
+    implementation("io.coil-kt:coil-compose:2.1.0")
+    implementation ("androidx.navigation:navigation-compose:2.6.1")
+    implementation ("com.github.a914-gowtham:compose-ratingbar:1.3.12")
 }
