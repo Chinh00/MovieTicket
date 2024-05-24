@@ -15,7 +15,7 @@ services:
   movieticket:
     build:
       context: .
-      dockerfile: src/server/MovieTicket.Api/Dockerfile
+      dockerfile: src/server/Client/MovieTicketClient.Api/Dockerfile
     environment:
       ConnectionStrings__db: Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
       Identity__Url: identityserver:8081
@@ -26,7 +26,7 @@ services:
   identityserver:
     build:
       context: .
-      dockerfile: src/server/MovieTicket.IdentityServer/Dockerfile
+      dockerfile: src/server/Client/MovieTicketClient.IdentityServer/Dockerfile
     environment:
         ConnectionStrings__db: Server=db;Database=movie_user;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
     ports:

@@ -4,7 +4,7 @@ import {Movie} from "@/domain/entities/movie.model.ts";
 import {useQuery} from "react-query";
 
 
-const GetMovies = async () => await http.get<SuccessResponse<ListResponse<Movie>>>("/admin/api/Movie")
+const GetMovies = async () => await http.get<SuccessResponse<ListResponse<Movie>>>("/api/Movie")
 
 const useGetMovies = () => {
     return useQuery({

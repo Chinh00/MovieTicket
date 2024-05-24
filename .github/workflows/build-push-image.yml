@@ -30,14 +30,14 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: src/server/MovieTicket.Api/Dockerfile
+          file: src/server/Client/MovieTicketClient.Api/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_API_SERVER_NAME}}:latest
       - name: Build and push Docker image for identity server
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: src/server/MovieTicket.IdentityServer/Dockerfile
+          file: src/server/Client/MovieTicketClient.IdentityServer/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_IDENTITY_SERVER_NAME}}:latest
      
