@@ -10,7 +10,15 @@ const moduleConfig: ModuleConfig = {
             path: "/",
             authenticate: "any"
             
-        }
+        },
+        {
+            name: "Screening View",
+            page: "RoomScreenings",
+            path: ":id/add-movie",
+            authenticate: "any"
+            
+        },
+        
     ],
     authenticate: "any"
 }

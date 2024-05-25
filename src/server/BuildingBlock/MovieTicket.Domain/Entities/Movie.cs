@@ -9,9 +9,8 @@ public class Movie : EntityBase
     public long TotalTime { get; init; }
     public string Description { get; init; }
     
-    public string Avatar { get; init; }
-    public string Trailer { get; init; }
-    public float Price { get; init; }
+    public string Avatar { get; set; }
+    public string Trailer { get; set; }
     
     public virtual ICollection<Category> Categories { get; init; }
     

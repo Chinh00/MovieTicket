@@ -10,8 +10,8 @@ import {
     TimelineSeparator
 } from "@mui/lab";
 import {useGetScreenings} from "@/app/usecases/screening.usecase.ts";
-import AddScreeningModel from "@/app/modules/room/components/AddScreeningModel.tsx";
 import {Box} from "@mui/material";
+import AddScreeningModel from "@/app/modules/screening/components/AddScreeningModel.tsx";
 
 export type TabCustomProps = {
     _date: dayjs.Dayjs,

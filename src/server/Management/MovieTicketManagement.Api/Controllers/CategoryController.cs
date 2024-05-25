@@ -1,0 +1,24 @@
+using Microsoft.AspNetCore.Mvc;
+using MovieTicket.Core.Domain;
+using MovieTicket.Infrastructure;
+using MovieTicket.Infrastructure.Controller;
+using MovieTicketManagement.Application.Usecases.CategoryCRUD;
+
+namespace MovieTicketManagement.Api.Controllers;
+
+/// <inheritdoc />
+public class CategoryController : BaseController
+{
+    /// <summary>
+    /// Get Movies
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> HandleGetCategoriesAsync([FromHeader(Name = "x-query")] string query, CancellationToken cancellationToken = new ())
+    {
+        var model = HttpContext.SafeGetListQuery<GetCategories.Query, ListResultModel<CategoryDto>>(query);
+        return Ok(await Mediator.Send(model, cancellationToken ));
+    }
+}

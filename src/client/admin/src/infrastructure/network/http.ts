@@ -13,7 +13,7 @@ class Http {
     constructor() {
         this.instance = axios.create({
             baseURL: AppConfig.BASE_URL,
-            timeout: 2 * 60
+            timeout: 2 * 60 * 60
         })
         this.instance.interceptors.request.use(value => {
             nProgress.start()

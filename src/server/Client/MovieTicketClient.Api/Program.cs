@@ -2,7 +2,10 @@
 
 using MovieTicket.Infrastructure.Auth;
 using MovieTicket.Infrastructure.EfCore;
+using MovieTicket.Infrastructure.Files;
 using MovieTicket.Infrastructure.Logger;
+using MovieTicket.Infrastructure.Security;
+using MovieTicket.Infrastructure.Swagger;
 using MovieTicketClient.Application;
 
 
@@ -24,7 +27,7 @@ builder.Services.AddCustomLogger();
 
 builder.Services.AddControllers();
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddCustomSwagger(typeof(MovieTicketClient.Api.Controller.Anchor));
 
 builder.Services.AddMssqlDbContext<AppBaseContext>(builder.Configuration.GetConnectionString("db")!).AddRepository(typeof(Repository<>));
 builder.Services.AddAutoMapper(typeof(Anchor).Assembly);

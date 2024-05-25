@@ -13,7 +13,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
     public DbSet<Seat> Seats { get; init; }
     public DbSet<Screening> Screenings { get; init; }
     public DbSet<Room> Rooms { get; init; } 
-     
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -76,6 +76,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
         modelBuilder.Entity<SeatReservation>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
         
         
+        
         /*Relationships*/
         modelBuilder.Entity<Category>().HasMany(e => e.Movies);
         
@@ -98,7 +99,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
         modelBuilder.Entity<SeatReservation>().HasOne(e => e.Seat).WithMany(e => e.SeatReservations)
             .HasForeignKey(e => e.SeatId).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<SeatReservation>().HasOne(e => e.Reservation).WithMany(e => e.SeatReservations).HasForeignKey(e => e.ReservationId).OnDelete(DeleteBehavior.NoAction);
-        
-        
+
+
     }
 }

@@ -66,6 +66,19 @@ namespace MovieTicket.Infrastructure.EfCore
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<TEntity> EditAsync(TEntity entity, bool autoSave = true, CancellationToken cancellationToken = default)
+        {
+            var entry = _dbContext.Entry(entity);
+            entry.State = EntityState.Modified;
+
+            if (autoSave)
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+
+            return await Task.FromResult(entry.Entity);
+        }
+
         private static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery,
             ISpecification<TEntity> specification)
         {

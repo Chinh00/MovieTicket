@@ -11,9 +11,9 @@ import {
 import {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import vi from 'dayjs/locale/vi'
-import TabCustom from "@/app/modules/room/components/TabCustom.tsx";
 import {dayOfWeek} from "@/infrastructure/utils/datetime.ts";
 import {useParams} from "react-router-dom";
+import TabCustom from "@/app/modules/screening/components/TabCustom.tsx";
 
 type TabOptions = {
     id: number,

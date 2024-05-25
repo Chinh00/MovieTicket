@@ -5,8 +5,8 @@ const moduleConfig: ModuleConfig = {
     path: "/room",
     routes: [
         {
-            name: "Room view",
-            page: "RoomPage",
+            name: "Room list",
+            page: "RoomList",
             path: "",
             authenticate: "any"
         },

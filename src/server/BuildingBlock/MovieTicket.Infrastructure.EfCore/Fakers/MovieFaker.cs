@@ -15,7 +15,6 @@ public sealed class MovieFaker : Faker<Movie>
         RuleFor(b => b.Description, e => e.Lorem.Paragraph(100));
         RuleFor(b => b.Avatar, e => e.Image.PicsumUrl());
         RuleFor(b => b.Trailer, e => e.Image.PicsumUrl());
-        RuleFor(b => b.Price, 80000);
         RuleFor(b => b.Categories, f => new CategoryFaker("en_US").Generate(f.Random.Number(1, 5)));
     }
 }

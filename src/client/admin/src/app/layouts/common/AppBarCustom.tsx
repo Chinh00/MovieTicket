@@ -18,7 +18,15 @@ import {AppbarRouteConfig} from "@/app/layouts/interface/AppbarRouteConfig.ts";
 
 const appbarRouteConfig: AppbarRouteConfig[] = [
     {
-        title: "Quản lý rạp phim",
+        title: "Quản lý lịch chiếu phim ",
+        path: "/screening"
+    },
+    {
+        title: "Quản lý phim",
+        path: "/movie"
+    },
+    {
+        title: "Cấu hình phòng ",
         path: "/room"
     },
     
@@ -39,7 +47,7 @@ const AppBarCustom = () => {
     const nav = useNavigate()
     
     return <>
-        <AppBar color={"transparent"} position={"sticky"} >
+        <AppBar color={"default"} position={"sticky"} >
             <Toolbar>
                 <IconButton
                     color="inherit"

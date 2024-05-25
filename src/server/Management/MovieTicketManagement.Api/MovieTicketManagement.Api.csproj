@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>disable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,7 +13,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Infrastructure.EfCore\MovieTicket.Infrastructure.EfCore.csproj" />
       <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Infrastructure\MovieTicket.Infrastructure.csproj" />
+      <ProjectReference Include="..\MovieTicketManagement.Application\MovieTicketManagement.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
     </ItemGroup>
 
 </Project>
