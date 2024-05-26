@@ -6,7 +6,7 @@ on:
 
 jobs:
   main:
-    name: Build dotnet api
+    name: Build server for movie
 
     runs-on: ubuntu-latest
     
@@ -26,23 +26,43 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           
-      - name: Build and push Docker image for api server
+      - name: Build and push Docker image for admin server
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: src/server/Management/MovieTicketManagement.Api/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_API_SERVER_NAME}}:latest
+      - name: Build and push Docker image for admin identity server
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: src/server/Management/MovieTicketManagement.IdentityServer/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_IDENTITY_SERVER_NAME}}:latest
+          
+        
+      - name: Build and push Docker image for client server
         uses: docker/build-push-action@v5
         with:
           context: .
           file: src/server/Client/MovieTicketClient.Api/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_API_SERVER_NAME}}:latest
-      - name: Build and push Docker image for identity server
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_API_CLIENT_NAME}}:latest
+      - name: Build and push Docker image for client identity server
         uses: docker/build-push-action@v5
         with:
           context: .
           file: src/server/Client/MovieTicketClient.IdentityServer/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_IDENTITY_SERVER_NAME}}:latest
-     
-        
-        
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_IDENTITY_CLIENT_NAME}}:latest
+      - name: Build and push Docker image app gateway server
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: src/server/Proxy/MovieTicket.AppGateway/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_APPGATEWAY_NAME}}:latest
         
         
   mobile:
