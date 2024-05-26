@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace MovieTicketManagement.IndentityServer.Data;
+namespace MovieTicketManagement.IdentityServer.Data;
 
 public interface IFacadeResolver
 {

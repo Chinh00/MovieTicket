@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicketClient.IdentityS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicketManagement.Application", "src\server\Management\MovieTicketManagement.Application\MovieTicketManagement.Application.csproj", "{DF85C67A-C247-4CE3-96BF-18826E39104D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicketManagement.IndentityServer", "src\server\Management\MovieTicketManagement.IndentityServer\MovieTicketManagement.IndentityServer.csproj", "{7BBD4B00-2877-4ECD-B25D-473374E3895A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicketManagement.IdentityServer", "src\server\Management\MovieTicketManagement.IdentityServer\MovieTicketManagement.IdentityServer.csproj", "{7BBD4B00-2877-4ECD-B25D-473374E3895A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Proxy", "Proxy", "{85A73314-4235-47FF-ACCB-C43574B3D47E}"
 EndProject

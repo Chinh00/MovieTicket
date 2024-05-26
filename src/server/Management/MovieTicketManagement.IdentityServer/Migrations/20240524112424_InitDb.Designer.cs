@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MovieTicketManagement.IndentityServer.Data;
+using MovieTicketManagement.IdentityServer.Data;
 
 #nullable disable
 
-namespace MovieTicketManagement.IndentityServer.Migrations
+namespace MovieTicketManagement.IdentityServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240524112424_InitDb")]
+    partial class InitDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,7 +156,7 @@ namespace MovieTicketManagement.IndentityServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MovieTicketManagement.IndentityServer.Data.Admin", b =>
+            modelBuilder.Entity("MovieTicketManagement.IdentityServer.Data.Admin", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -230,7 +233,7 @@ namespace MovieTicketManagement.IndentityServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("MovieTicketManagement.IndentityServer.Data.Admin", null)
+                    b.HasOne("MovieTicketManagement.IdentityServer.Data.Admin", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -239,7 +242,7 @@ namespace MovieTicketManagement.IndentityServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("MovieTicketManagement.IndentityServer.Data.Admin", null)
+                    b.HasOne("MovieTicketManagement.IdentityServer.Data.Admin", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -254,7 +257,7 @@ namespace MovieTicketManagement.IndentityServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieTicketManagement.IndentityServer.Data.Admin", null)
+                    b.HasOne("MovieTicketManagement.IdentityServer.Data.Admin", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -263,7 +266,7 @@ namespace MovieTicketManagement.IndentityServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("MovieTicketManagement.IndentityServer.Data.Admin", null)
+                    b.HasOne("MovieTicketManagement.IdentityServer.Data.Admin", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

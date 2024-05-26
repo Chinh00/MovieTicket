@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace MovieTicketManagement.IndentityServer.Data.Internal;
+namespace MovieTicketManagement.IdentityServer.Data.Internal;
 
 public class DbMigrationHostedService : IHostedService
 {

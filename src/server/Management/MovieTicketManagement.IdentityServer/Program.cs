@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MovieTicketManagement.IndentityServer;
-using MovieTicketManagement.IndentityServer.Data;
-using MovieTicketManagement.IndentityServer.Data.Internal;
+using MovieTicketManagement.IdentityServer;
+using MovieTicketManagement.IdentityServer.Data;
+using MovieTicketManagement.IdentityServer.Data.Internal;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

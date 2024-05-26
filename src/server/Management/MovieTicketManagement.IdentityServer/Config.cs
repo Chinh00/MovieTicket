@@ -1,6 +1,6 @@
 ﻿using Duende.IdentityServer.Models;
 
-namespace MovieTicketManagement.IndentityServer;
+namespace MovieTicketManagement.IdentityServer;
 
 public static class Config
 {

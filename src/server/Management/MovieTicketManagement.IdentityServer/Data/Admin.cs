@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace MovieTicketManagement.IndentityServer.Data;
+namespace MovieTicketManagement.IdentityServer.Data;
 
 public class Admin : IdentityUser<Guid>
 {

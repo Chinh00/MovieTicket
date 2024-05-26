@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace MovieTicketManagement.IndentityServer.Data;
+namespace MovieTicketManagement.IdentityServer.Data;
 
 public class AppDbContext : IdentityDbContext<Admin, IdentityRole<Guid>, Guid>, IFacadeResolver
 {
