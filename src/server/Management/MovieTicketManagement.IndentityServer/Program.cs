@@ -3,9 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using MovieTicketManagement.IndentityServer;
 using MovieTicketManagement.IndentityServer.Data;
 using MovieTicketManagement.IndentityServer.Data.Internal;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
+Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+builder.Services.AddSerilog();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Cors", policyBuilder =>
+    {
+        policyBuilder.AllowAnyOrigin();
+    });
+});
 builder.Services.AddDbContext<AppDbContext>((provider, optionsBuilder) =>
 {
     optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("db"), contextOptionsBuilder =>
@@ -32,7 +41,7 @@ builder.Services.AddIdentityServer(options =>
 builder.Services.AddScoped<IFacadeResolver>(provider => provider.GetService<AppDbContext>());
 builder.Services.AddHostedService<DbMigrationHostedService>();
 var app = builder.Build();
-
+app.UseCors("Cors");
 app.MapGet("/", () => "Hello World!");
 
 app.UseIdentityServer();

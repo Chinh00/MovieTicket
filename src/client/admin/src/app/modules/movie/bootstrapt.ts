@@ -8,10 +8,10 @@ const moduleConfig: ModuleConfig = {
             name: "movie list",
             page: "MovieList",
             path: "",
-            authenticate: "any",
+            authenticate: true,
         }  
     ],
-    authenticate: "any"
+    authenticate: true
 }
 
 export default moduleConfig

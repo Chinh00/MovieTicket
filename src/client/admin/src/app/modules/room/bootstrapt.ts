@@ -8,16 +8,16 @@ const moduleConfig: ModuleConfig = {
             name: "Room list",
             page: "RoomList",
             path: "",
-            authenticate: "any"
+            authenticate: true
         },
         {
             name: "Screening view",
             page: "RoomScreenings",
             path: ":id/screenings",
-            authenticate: "any"
+            authenticate: true
         }
     ],
-    authenticate: "any"
+    authenticate: true
 }
 
 export default moduleConfig

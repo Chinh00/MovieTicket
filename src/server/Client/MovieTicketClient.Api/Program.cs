@@ -36,6 +36,9 @@ builder.Services.AddMediatR(e => e.RegisterServicesFromAssemblies(typeof(Anchor)
 
 
 var app = builder.Build();
+
+
+
 app.UseCors("Cors");
 app.UseAuthentication();
 app.UseAuthorization();
@@ -44,7 +47,6 @@ app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapFallbackToController("Index", "Fallback");
 
 app.Run();
 

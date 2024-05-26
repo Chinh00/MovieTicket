@@ -5,7 +5,7 @@ import {Room} from "@/domain/entities/room.model.ts";
 
 
 const GetRooms = async () => {
-    return await http.get<SuccessResponse<ListResponse<Room>>>("/api/Room")
+    return await http.get<SuccessResponse<ListResponse<Room>>>("/admin-api/Room")
 }
 
 export type RoomCreateModel = {
@@ -18,7 +18,7 @@ export type SeatCreateModel = {
     colNumber: number
 }
 
-const CreateRoom = async (model: RoomCreateModel) => await http.post<SuccessResponse<Room>>("/api/Room", model)
+const CreateRoom = async (model: RoomCreateModel) => await http.post<SuccessResponse<Room>>("/admin-api/Room", model)
 
 const useGetRooms = () => {
     return useQuery({

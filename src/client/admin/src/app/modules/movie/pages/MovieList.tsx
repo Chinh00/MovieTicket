@@ -17,13 +17,7 @@ import {useEffect, useState} from "react";
 import CreateMovie from "@/app/modules/movie/components/CreateMovie.tsx";
 import {GetToken} from "@/app/usecases/auth.usecase.ts";
 const MovieList = () => {
-    useEffect(() => {
-        GetToken({
-            username: "admin",
-            password: "P@ssw0rd02"
-        })
-    }, []);
-    
+
     const [onEdit, setOnEdit] = useState<string>("")
     const [onCreate, setOnCreate] = useState(false)
     const {data} = useGetMovies()

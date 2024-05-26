@@ -1,39 +1,122 @@
 ﻿version: "3.7"
 
 services:
-  
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
-      - 1433:1433
+      - "1433:1433"
     environment:
       SA_PASSWORD: "@P@ssw0rd02"
       ACCEPT_EULA: "Y"
-      MSSQL_PID: Express
+      MSSQL_PID: "Express"
     volumes:
       - data:/var/opt/mssql
-  movieticket:
+    networks:
+      movie-network:
+
+  movieticketclient:
     build:
       context: .
       dockerfile: src/server/Client/MovieTicketClient.Api/Dockerfile
     environment:
-      ConnectionStrings__db: Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
-      Identity__Url: identityserver:8081
+      - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
+      - Identity__Url=http://identityserverclient:8091
     ports:
-      - "8080:80"
+      - "8090:80"
     depends_on:
       - db
-  identityserver:
+      - identityserverclient
+    networks:
+      movie-network:
+
+  identityserverclient:
     build:
       context: .
       dockerfile: src/server/Client/MovieTicketClient.IdentityServer/Dockerfile
     environment:
-        ConnectionStrings__db: Server=db;Database=movie_user;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
+      - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
     ports:
-      - "8081:80"
+      - "8091:80"
     depends_on:
       - db
+    networks:
+      movie-network:
 
+  movieticketmanagement:
+    build:
+      context: .
+      dockerfile: src/server/Management/MovieTicketManagement.Api/Dockerfile
+    environment:
+      - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
+      - Identity__Url=http://identityservermanagement:8094
+    ports:
+      - "8093:80"
+    depends_on:
+      - db
+      - identityservermanagement
+    networks:
+      movie-network:
+
+  identityservermanagement:
+    build:
+      context: .
+      dockerfile: src/server/Management/MovieTicketManagement.IndentityServer/Dockerfile
+    environment:
+      - ConnectionStrings__db=Server=db;Database=movie_admin;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
+    ports:
+      - "8094:80"
+    depends_on:
+      - db
+    networks:
+      movie-network:
+
+  appgateway:
+    build:
+      context: .
+      dockerfile: src/server/Proxy/MovieTicket.AppGateway/Dockerfile
+    ports:
+      - "9000:80"
+    environment:
+      #- ReverseProxy__Clusters__api-auth__Destinations__destination1__Address=http://identityservermanagement
+      - ReverseProxy__Routes__clientapi__ClusterId=client-api
+      - ReverseProxy__Routes__clientapi__Match__Path=/client-api/{**remainder}
+      - ReverseProxy__Routes__clientapi__Transforms_0__PathRemovePrefix=/client-api
+      - ReverseProxy__Routes__clientapi__Transforms_1__PathPrefix=/api
+      - ReverseProxy__Routes__clientidentity__ClusterId=client-identity
+      - ReverseProxy__Routes__clientidentity__Match__Path=/client-identity/{**remainder}
+      - ReverseProxy__Routes__clientidentity__Transforms_0__PathRemovePrefix=/client-identity
+      - ReverseProxy__Routes__clientidentity__Transforms_1__PathPrefix=/
+      - ReverseProxy__Routes__adminapi__ClusterId=admin-api
+      - ReverseProxy__Routes__adminapi__Match__Path=/admin-api/{**remainder}
+      - ReverseProxy__Routes__adminapi__Transforms_0__PathRemovePrefix=/admin-api
+      - ReverseProxy__Routes__adminapi__Transforms_1__PathPrefix=/api
+      - ReverseProxy__Routes__adminui__ClusterId=admin-api
+      - ReverseProxy__Routes__adminui__Match__Path=/{**catch-all}
+      #- ReverseProxy__Routes__adminui__Transforms_0__PathRemovePrefix=/admin
+      - ReverseProxy__Routes__adminui__Transforms_1__PathPrefix=/
+      - ReverseProxy__Routes__assets__ClusterId=admin-api
+      - ReverseProxy__Routes__assets__Match__Path=/assets/{**remainder}
+      - ReverseProxy__Routes__assets__Transforms_0__PathRemovePrefix=/assets
+      - ReverseProxy__Routes__assets__Transforms_1__PathPrefix=/assets
+      - ReverseProxy__Routes__adminidentity__ClusterId=admin-identity
+      - ReverseProxy__Routes__adminidentity__Match__Path=/admin-identity/{**remainder}
+      - ReverseProxy__Routes__adminidentity__Transforms_0__PathRemovePrefix=/admin-identity
+      - ReverseProxy__Routes__adminidentity__Transforms_1__PathPrefix=/
+      - ReverseProxy__Clusters__client-api__Destinations__destination1__Address=http://movieticketclient
+      - ReverseProxy__Clusters__client-identity__Destinations__destination1__Address=http://identityserverclient
+      - ReverseProxy__Clusters__admin-api__Destinations__destination1__Address=http://movieticketmanagement:80
+      - ReverseProxy__Clusters__admin-identity__Destinations__destination1__Address=http://identityservermanagement
+      
+        
+    depends_on:
+      - movieticketclient
+      - identityserverclient
+      - movieticketmanagement
+      - identityservermanagement
+    networks:
+      movie-network:
 
 volumes:
   data:
+networks:
+  movie-network:

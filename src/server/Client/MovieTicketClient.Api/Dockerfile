@@ -1,10 +1,4 @@
-﻿FROM node:lts-alpine AS node-build
-WORKDIR /app
-COPY ["src/client/admin/", "./"]
-RUN yarn install
-RUN ls -l /app
-RUN yarn run build
-
+﻿
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
@@ -24,7 +18,6 @@ COPY . .
 
 RUN dotnet build "/src/src/server/Client/MovieTicketClient.Api/MovieTicketClient.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-COPY --from=node-build /app/dist /src/src/server/Client/MovieTicketClient.Api/wwwroot
 
 
 FROM build AS publish

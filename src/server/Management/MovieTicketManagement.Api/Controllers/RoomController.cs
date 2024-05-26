@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieTicket.Core.Domain;
 using MovieTicket.Infrastructure;
@@ -7,6 +8,7 @@ using MovieTicketManagement.Application.Usecases.RoomCRUD;
 namespace MovieTicketManagement.Api.Controllers;
 
 /// <inheritdoc />
+[Authorize]
 public class RoomController : BaseController
 {
     /// <summary>

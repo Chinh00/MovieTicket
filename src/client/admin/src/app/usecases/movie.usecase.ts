@@ -4,8 +4,8 @@ import {Movie} from "@/domain/entities/movie.model.ts";
 import {useMutation, useQuery} from "react-query";
 
 
-const GetMovies = async () => await http.get<SuccessResponse<ListResponse<Movie>>>("/api/Movie")
-const CreateMovie = async (data: FormData) => await http.post<SuccessResponse<ListResponse<Movie>>>("/api/Movie", data, {
+const GetMovies = async () => await http.get<SuccessResponse<ListResponse<Movie>>>("/admin-api/Movie")
+const CreateMovie = async (data: FormData) => await http.post<SuccessResponse<ListResponse<Movie>>>("/admin-api/Movie", data, {
     headers: {
         "Content-Type": 'multipart/form-data'
     }

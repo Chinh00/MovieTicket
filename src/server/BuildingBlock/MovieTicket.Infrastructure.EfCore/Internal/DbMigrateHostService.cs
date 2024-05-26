@@ -16,6 +16,7 @@ public class DbMigrateHostService : IHostedService
     {
         using var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetService<IFacadeResolver>();
+        
         await dbContext?.Database.MigrateAsync(cancellationToken: cancellationToken)!;
     }
 

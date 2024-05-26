@@ -20,7 +20,7 @@ const moduleConfig: ModuleConfig = {
         },
         
     ],
-    authenticate: "any"
+    authenticate: true
 }
 
 export default moduleConfig

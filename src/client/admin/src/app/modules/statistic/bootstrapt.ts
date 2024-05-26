@@ -11,7 +11,7 @@ const moduleConfig: ModuleConfig = {
             authenticate: "any"
         }
     ],
-    authenticate: "any",
+    authenticate: true,
 }
 
 export default moduleConfig
