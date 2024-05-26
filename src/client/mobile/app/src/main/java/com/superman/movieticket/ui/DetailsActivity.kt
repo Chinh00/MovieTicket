@@ -1,5 +1,7 @@
 package com.superman.movieticket.ui
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +16,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.FabPosition
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -35,6 +39,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
@@ -51,12 +56,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.superman.movieticket.ui.home.model.listMovies
+import com.superman.movieticket.ui.order.ticket.TicketActivity
 
 class DetailsActivity : ComponentActivity() {
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContent {
+
             DetailScreen()
         }
     }
@@ -66,21 +75,24 @@ class DetailsActivity : ComponentActivity() {
 
 @Composable
 private fun DetailScreen() {
+    var context = LocalContext.current
 
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
+            .safeContentPadding()
             .background(color = Color.Black)
     ) {
         val (t, b, ic1, ic2, ic3, bgbottom) = createRefs()
         Image(
             painter = painterResource(id = R.drawable.kingkong2024), modifier = Modifier
                 .fillMaxWidth()
+                .height(350.dp)
 
                 .constrainAs(t) {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }, contentScale = ContentScale.FillBounds, contentDescription = ""
+                }, contentScale = ContentScale.Fit, contentDescription = ""
         )
         Box(
             modifier = Modifier
@@ -88,7 +100,7 @@ private fun DetailScreen() {
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .constrainAs(b) {
-                    top.linkTo(bgbottom.bottom)
+                    top.linkTo(t.bottom)
                     bottom.linkTo(parent.bottom)
                 }
         ) {
@@ -108,14 +120,16 @@ private fun DetailScreen() {
                         textAlign = TextAlign.Center,
                         color = Color.White,
                         maxLines = 2,
-                        fontSize = 39.sp
+                        fontSize = 40.sp
                     )
 
                 }
 
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                ) {
                     val c = Color.Yellow
                     val radius = RoundedCornerShape(8.dp)
                     Column(Modifier.wrapContentSize()) {
@@ -177,14 +191,21 @@ private fun DetailScreen() {
                 Column(
                     Modifier
                         .fillMaxSize()
-                        .padding(5.dp)
-                        .verticalScroll(state)) {
+                        .padding(15.dp)
+                        .verticalScroll(state)
+                ) {
                     LaunchedEffect(Unit) { state.animateScrollTo(100) }
-                    repeat(10){
+                    repeat(10) {
                         val gradientColors = listOf(Color.White, Color.Gray, Color.DarkGray)
-                        Text(text = listMovies[0].description+listMovies[0].description+listMovies[0].description, style = TextStyle(
-                            brush = Brush.verticalGradient(gradientColors), textAlign = TextAlign.Justify
-                        ), fontSize = 20.sp, color = Color.White)
+                        Text(
+                            text = listMovies[0].description + listMovies[0].description + listMovies[0].description,
+                            style = TextStyle(
+                                brush = Brush.verticalGradient(gradientColors),
+                                textAlign = TextAlign.Justify
+                            ),
+                            fontSize = 20.sp,
+                            color = Color.White
+                        )
                     }
                 }
 
@@ -250,18 +271,30 @@ private fun DetailScreen() {
             )
         }
 
-        Button(onClick = {null},modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp)
-            .background(color = Color(0xFFDB4E22))
-            .constrainAs(bgbottom) {
+        Button(
+            onClick = {
+                val intent = Intent(context, TicketActivity::class.java)
+                context.startActivity(intent)
+            }, modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 15.dp)
+                .padding(bottom = 5.dp)
+                .clip(RoundedCornerShape(5.dp))
+                .background(color = Color(0xFFDB4E22))
+                .constrainAs(bgbottom) {
 
-                bottom.linkTo(parent.bottom)
-            }, colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    bottom.linkTo(parent.bottom)
+                }, colors = androidx.compose.material3.ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent
-            )) {
-            Icon(modifier =Modifier.size(34.dp),painter = painterResource(id = R.drawable.ticket), contentDescription =null, tint = Color.White )
-                Text(text = "     Book", fontSize = 20.sp)
+            )
+        ) {
+            Icon(
+                modifier = Modifier.size(34.dp),
+                painter = painterResource(id = R.drawable.ticket),
+                contentDescription = null,
+                tint = Color.White
+            )
+            Text(text = "   Book", fontSize = 20.sp)
         }
 
 

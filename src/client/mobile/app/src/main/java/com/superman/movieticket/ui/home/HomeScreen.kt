@@ -1,5 +1,6 @@
 package com.superman.movieticket.ui.home
 
+import android.content.Intent
 import android.graphics.Paint.Align
 import android.util.Log
 import android.widget.ImageButton
@@ -94,10 +95,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
+import androidx.core.content.ContextCompat
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -106,8 +109,10 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarStyle
 import com.superman.movieticket.R
+import com.superman.movieticket.ui.DetailsActivity
 import com.superman.movieticket.ui.home.model.Movie
 import com.superman.movieticket.ui.home.model.listMovies
+import com.superman.movieticket.ui.shared.activity.MainActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -126,7 +131,7 @@ fun HomeScreen() {
                 .padding(15.dp)
 
         ) {
-            HeaderContent("Đông")
+//            HeaderContent("Đông")
             Spacer(modifier = Modifier.height(13.dp))
             SearchField()
             Spacer(modifier = Modifier.height(13.dp))
@@ -225,6 +230,7 @@ fun TabCustomComp() {
 }
 
 @Composable
+//@Preview(showSystemUi = true)
 fun ComingUpScreenComp() {
 
     Box(modifier = Modifier.wrapContentSize()) {
@@ -242,7 +248,7 @@ fun ComingUpScreenComp() {
 @Composable
 
 fun ComingUpMovies(onMovieClicked: (Movie) -> Unit, onMovieFavourite: (Movie) -> Unit) {
-    LazyColumn {
+    LazyVerticalGrid(columns = GridCells.Fixed(2)) {
 
 
         items(listMovies.size) {
@@ -258,7 +264,7 @@ fun ComingUpMovies(onMovieClicked: (Movie) -> Unit, onMovieFavourite: (Movie) ->
                 Image(
                     painter = painterResource(id = R.drawable.kungfu),
                     modifier = Modifier.clip(RoundedCornerShape(30.dp)),
-                    contentScale = ContentScale.FillBounds,
+                    contentScale = ContentScale.Fit,
                     contentDescription = ""
                 )
                 Icon(
@@ -311,6 +317,8 @@ fun ComingUpMoviesPre() {
 @Composable
 //@Preview()
 fun NowPlayingScreenComp() {
+    val cp = LocalContext.current
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -325,14 +333,14 @@ fun NowPlayingScreenComp() {
             ) {
                 Text(
                     text = "Category", style = TextStyle(
-                        color = Color.White, fontSize = 20.sp
+                        color = Color.White, fontSize = 16.sp
                     )
                 )
                 TextButton(onClick = { /*TODO*/ }) {
                     Text(
                         text = "See All", style = TextStyle(
                             color = Color(0xFFFF9800),
-                            fontSize = 18.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -367,10 +375,11 @@ fun NowPlayingScreenComp() {
             Spacer(modifier = Modifier.height(13.dp))
         }
         item {
-            var cp = LocalContext.current
             Row(modifier = Modifier.wrapContentSize()) {
                 NowPlayingMovies { movie ->
                     Toast.makeText(cp, movie.avatar, Toast.LENGTH_SHORT).show()
+                    val intent = Intent(cp,DetailsActivity::class.java)
+                    cp.startActivity(intent)
                 }
             }
         }
@@ -382,14 +391,14 @@ fun NowPlayingScreenComp() {
             ) {
                 Text(
                     text = "Popular Movies", style = TextStyle(
-                        color = Color.White, fontSize = 20.sp
+                        color = Color.White, fontSize = 16.sp
                     )
                 )
                 TextButton(onClick = { /*TODO*/ }) {
                     Text(
                         text = "See All", style = TextStyle(
                             color = Color(0xFFFF9800),
-                            fontSize = 18.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -402,6 +411,10 @@ fun NowPlayingScreenComp() {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
                     .fillMaxWidth()
+                    .clickable {
+                        val intent = Intent(cp, DetailsActivity::class.java)
+                        cp.startActivity(intent)
+                    }
                     .height(200.dp)
             ) {
                 Image(
@@ -430,7 +443,11 @@ fun NowPlayingScreenComp() {
 
                         Icon(painter = painterResource(id = R.drawable.bookmark),
                             modifier = Modifier
-                                .clickable { }//Onclicked Favoureite
+                                .clickable {
+                                    Toast
+                                        .makeText(cp, "Thêm mục iu thích", Toast.LENGTH_SHORT)
+                                        .show()
+                                }//Onclicked Favoureite
                                 .size(25.dp)
                                 .align(Alignment.TopEnd),
                             contentDescription = null,
@@ -499,6 +516,7 @@ fun NowPlayingScreenComp() {
                 }
 
             }
+            Spacer(modifier = Modifier.height(13.dp))
         }
 
 
@@ -528,6 +546,7 @@ fun PopularMovies(onMovieClicked: (Movie) -> Unit, onMovieFavouriteClicked: (Mov
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
                     .fillMaxWidth()
+                    .padding(20.dp)
                     .height(200.dp)
             ) {
                 Image(
@@ -621,8 +640,9 @@ fun PopularMovies(onMovieClicked: (Movie) -> Unit, onMovieFavouriteClicked: (Mov
 
                     }
                 }
-
             }
+            Spacer(modifier = Modifier.height(10.dp))
+
         }
 
     }
@@ -648,8 +668,8 @@ fun NowPlayingMovies(onMovieClicked: (Movie) -> Unit) {
         modifier = Modifier
 
             .wrapContentSize(),
-        contentPadding = PaddingValues(horizontal = 50.dp),
-        pageSpacing = 20.dp
+        contentPadding = PaddingValues(horizontal = 60.dp),
+        pageSpacing = 10.dp
     ) { page ->
         Column(
             modifier = Modifier
@@ -692,9 +712,11 @@ fun NowPlayingMovies(onMovieClicked: (Movie) -> Unit) {
                 Image(
 
                     painter = painterResource(id = R.drawable.poster_payoff_aquaman_6_1_),
-                    contentDescription = "", contentScale = ContentScale.FillBounds,
+                    contentDescription = "", contentScale = ContentScale.FillHeight,
                     modifier = Modifier
-                        .wrapContentSize()
+                        .height(300.dp)
+                        .width(250.dp)
+                        .clip(RoundedCornerShape(15.dp))
                 )
 
             }
@@ -702,7 +724,7 @@ fun NowPlayingMovies(onMovieClicked: (Movie) -> Unit) {
 
             Text(
                 text = listMovies[page].title,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold, style = TextStyle(
                     letterSpacing = 2.sp,
                 ),
@@ -740,7 +762,7 @@ fun CategoryItemComp(name: String) {
 
 
     ) {
-        Text(text = name, color = Color.White, fontSize = 18.sp)
+        Text(text = name, color = Color.White, fontSize = 14.sp)
 
     }
     Spacer(modifier = Modifier.width(5.dp))
@@ -753,36 +775,37 @@ fun CategoryItemPre() {
     CategoryItemComp("")
 }
 
-@Composable
-fun HeaderContent(name: String) {
-
-    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-        Column {
-            Text(text = "Hello, $name", color = Color.White, fontSize = 20.sp)
-            Text(
-                text = "Let's book your favourite film",
-                color = Color.Gray,
-                fontSize = 18.sp
-            )
-        }
-        Image(
-            painter = painterResource(id = R.drawable.avatar),
-            contentDescription = null,
-            modifier = Modifier
-                .shadow(elevation = 5.dp)
-                .clip(
-                    CircleShape
-                )
-        )
-    }
-
-
-}
+//@Composable
+//fun HeaderContent(name: String) {
+//
+//    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+//        Column {
+//            Text(text = "Hello, $name", color = Color.White, fontSize = 18.sp)
+//            Text(
+//                text = "Let's book your favourite film",
+//                color = Color.Gray,
+//                fontSize = 16.sp
+//            )
+//        }
+//        Image(
+//            painter = painterResource(id = R.drawable.avatar),
+//            contentDescription = null,
+//            modifier = Modifier
+//                .shadow(elevation = 5.dp)
+//                .clip(
+//                    CircleShape
+//                )
+//                .size(50.dp)
+//        )
+//    }
+//
+//
+//}
 
 @Composable
 //@Preview(showBackground = true, backgroundColor = Long.MAX_VALUE)
 fun HeaderContentPre() {
-    HeaderContent("Đông")
+//    HeaderContent("Đông")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -797,14 +820,14 @@ fun SearchField() {
         ), leadingIcon = {
         Icon(
             painter = painterResource(id = R.drawable.search),
-            contentDescription = null, Modifier.size(24.dp)
+            contentDescription = null, Modifier.size(20.dp)
         )
     }, placeholder = { Text(text = "Search", fontSize = 18.sp) }, trailingIcon = {
         IconButton(onClick = { /*TODO*/ }) {
             Icon(
                 painter = painterResource(id = R.drawable.microphone),
                 contentDescription = null,
-                Modifier.size(24.dp)
+                Modifier.size(20.dp)
             )
         }
     }, colors = TextFieldDefaults.colors(

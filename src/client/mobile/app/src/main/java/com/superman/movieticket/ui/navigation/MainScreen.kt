@@ -8,10 +8,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.superman.movieticket.ui.favourite.FavouriteScreen
 import com.superman.movieticket.ui.home.HomeScreen
 import com.superman.movieticket.ui.shared.activity.BottomNavigationBar
 import com.superman.movieticket.ui.shared.activity.ProfileScreen
-import com.superman.movieticket.ui.shared.activity.SearchScreen
+import com.superman.movieticket.ui.shared.activity.TicketScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -28,7 +29,9 @@ fun MainScreen(){
 fun Navigation(navController: NavHostController) {
     NavHost(navController, startDestination = "home") {
         composable("home") { HomeScreen() }
-        composable("search") { SearchScreen() }
+        composable("favourite") { FavouriteScreen() }
+        composable("ticket") { TicketScreen() }
+
         composable("profile") { ProfileScreen() }
     }
 }

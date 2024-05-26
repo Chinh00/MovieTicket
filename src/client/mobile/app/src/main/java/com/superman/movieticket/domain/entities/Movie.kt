@@ -12,3 +12,4 @@ data class Movie (
     val avatar: String,
     val trailer: String,
 ): BaseEntity()
+
