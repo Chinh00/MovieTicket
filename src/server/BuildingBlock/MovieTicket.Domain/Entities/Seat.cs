@@ -9,7 +9,5 @@ public class Seat : EntityBase
     
     public Guid RoomId { get; init; }
     public virtual Room Room { get; init; }
-    
-    
     public virtual ICollection<SeatReservation> SeatReservations { get; init; }
 }

@@ -6,7 +6,9 @@
 const Modules = [
     "screening",
     "statistic",
-    "room"
+    "room",
+    "movie",
+    "auth"
 ]
 
 export default Modules

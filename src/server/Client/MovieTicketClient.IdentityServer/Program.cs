@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using MovieTicketClient.IdentityServer;
 using MovieTicketClient.IdentityServer.Data;
 using MovieTicketClient.IdentityServer.Data.Internal;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
+Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+builder.Services.AddSerilog();
 builder.Services.AddDbContext<AppDbContext>((provider, optionsBuilder) =>
 {
     optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("db"), contextOptionsBuilder =>

@@ -5,19 +5,19 @@ const moduleConfig: ModuleConfig = {
     path: "/room",
     routes: [
         {
-            name: "Room view",
-            page: "RoomPage",
+            name: "Room list",
+            page: "RoomList",
             path: "",
-            authenticate: "any"
+            authenticate: true
         },
         {
             name: "Screening view",
             page: "RoomScreenings",
             path: ":id/screenings",
-            authenticate: "any"
+            authenticate: true
         }
     ],
-    authenticate: "any"
+    authenticate: true
 }
 
 export default moduleConfig

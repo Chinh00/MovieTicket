@@ -12,7 +12,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Usecases\" />
+      <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Core\MovieTicket.Core.csproj" />
+      <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Domain\MovieTicket.Domain.csproj" />
+      <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Infrastructure\MovieTicket.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
     </ItemGroup>
 
 </Project>

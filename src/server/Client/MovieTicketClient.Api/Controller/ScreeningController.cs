@@ -4,7 +4,7 @@ using MovieTicket.Infrastructure;
 using MovieTicket.Infrastructure.Controller;
 using MovieTicketClient.Application.Usecases.Screening;
 
-namespace MovieTicketClient.Api.Controller.Client;
+namespace MovieTicketClient.Api.Controller;
 
 public class ScreeningController : BaseController
 {

@@ -1,10 +1,15 @@
 import http from "@/infrastructure/network/http.ts";
 import {ListResponse, SuccessResponse} from "@/infrastructure/utils/response.ts";
 import {Movie} from "@/domain/entities/movie.model.ts";
-import {useQuery} from "react-query";
+import {useMutation, useQuery} from "react-query";
 
 
-const GetMovies = async () => await http.get<SuccessResponse<ListResponse<Movie>>>("/api/Movie")
+const GetMovies = async () => await http.get<SuccessResponse<ListResponse<Movie>>>("/admin-api/Movie")
+const CreateMovie = async (data: FormData) => await http.post<SuccessResponse<ListResponse<Movie>>>("/admin-api/Movie", data, {
+    headers: {
+        "Content-Type": 'multipart/form-data'
+    }
+})
 
 const useGetMovies = () => {
     return useQuery({
@@ -13,4 +18,12 @@ const useGetMovies = () => {
     })
 }
 
-export {useGetMovies}
+const useCreateMovie = () => {
+    return useMutation({
+        mutationKey: "create-movie",
+        mutationFn: CreateMovie
+    })
+}
+
+
+export {useGetMovies, useCreateMovie}

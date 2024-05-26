@@ -10,6 +10,7 @@ namespace MovieTicket.Core.Repository
         Task<List<TEntity>> FindAsync(ISpecification<TEntity> spec);
         Task<TEntity> AddAsync(TEntity entity);
         Task RemoveAsync(TEntity entity);
+        Task<TEntity> EditAsync(TEntity entity, bool autoSave = true, CancellationToken cancellationToken = default);
     }
 
     public interface IGridRepository<TEntity> where TEntity : EntityBase
