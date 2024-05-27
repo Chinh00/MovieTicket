@@ -198,11 +198,11 @@ fun BottomNavigationBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .height(60.dp)
-            .background(Color(0xFFABB5F1)),
+        modifier = Modifier.padding(horizontal = 10.dp)
+            .fillMaxWidth().height(60.dp)
+            .clip(RoundedCornerShape(10.dp))
+
+            .background(Color(0xFFFFEB3B)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -215,7 +215,7 @@ fun BottomNavigationBar(navController: NavController) {
                 if (selected) painterResource(id = item.iconFill) else painterResource(id = item.iconOutline)
             Box(
                 modifier = Modifier
-                    .clip(CircleShape)
+                    .padding(horizontal = 5.dp)
                     .clickable {
                         navController.navigate(item.route) {
                             navController.graph.startDestinationRoute?.let { route ->
@@ -227,7 +227,7 @@ fun BottomNavigationBar(navController: NavController) {
                             restoreState = true
                         }
                     }
-                    .background(bg)
+                    .background(bg).clip(CircleShape)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -237,7 +237,7 @@ fun BottomNavigationBar(navController: NavController) {
                     Icon(
                         painter = paint,
                         contentDescription = null,
-                        modifier = Modifier.size(30.dp),
+                        modifier = Modifier.size(25.dp),
                         tint = contentColor
                     )
                     AnimatedVisibility(visible = selected) {

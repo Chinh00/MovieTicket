@@ -1,66 +1,47 @@
 package com.superman.movieticket.ui.order.food
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.ViewGroup.MarginLayoutParams
-import android.view.WindowInsets
+
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.annotation.DrawableRes
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imeNestedScroll
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.safeGestures
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
-import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -68,33 +49,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.app.ActivityCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
-import androidx.lifecycle.ViewModel
+
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.superman.movieticket.core.entity.BaseEntity
-import com.superman.movieticket.domain.entities.EntityBase
-import java.util.Stack
+import com.superman.movieticket.ui.order.payment.PaymentActivity
 
 class OrderFoodActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        actionBar?.show()
+        actionBar?.hide()
 
         setContent {
 
             Surface(
-                modifier = Modifier.fillMaxSize()
-                    .safeContentPadding()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .safeDrawingPadding()
             ) {
                 val viewModel: OrderFoodActivityModel =
                     ViewModelProvider(this).get(OrderFoodActivityModel::class.java)
@@ -107,7 +81,7 @@ class OrderFoodActivity : ComponentActivity() {
 @Composable
 fun OrderFoodScreen(viewModel: OrderFoodActivityModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     var totalAmount = viewModel.totalPriceFood.collectAsState()
-
+    val context = LocalContext.current
 
 
     ConstraintLayout(
@@ -137,7 +111,8 @@ fun OrderFoodScreen(viewModel: OrderFoodActivityModel = androidx.lifecycle.viewm
                 tint = Color.White,
                 modifier = Modifier
                     .weight(0.3f)
-                    .size(36.dp).clickable {  }
+                    .size(36.dp)
+                    .clickable { }
                     .padding(start = 5.dp)
             )
             androidx.compose.material.Text(
@@ -202,7 +177,10 @@ fun OrderFoodScreen(viewModel: OrderFoodActivityModel = androidx.lifecycle.viewm
                         fontSize = 16.sp
                     )
                 }
-                Row(modifier = Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.padding(vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
                         text = "P", color = Color.White, fontWeight = FontWeight.Bold,
                         modifier = Modifier
@@ -288,7 +266,7 @@ fun OrderFoodScreen(viewModel: OrderFoodActivityModel = androidx.lifecycle.viewm
             listFood.forEach {
                 ItemFood(it,
                     onClickedMinimusQuantity = { quantity, it ->
-                        if(quantity>0){
+                        if (quantity > 0) {
                             viewModel.setTotalPrice(totalAmount.value - (it.price.toInt()))
 
                         }
@@ -320,27 +298,32 @@ fun OrderFoodScreen(viewModel: OrderFoodActivityModel = androidx.lifecycle.viewm
         }
         Row(
             modifier = Modifier
+                .fillMaxWidth()
                 .constrainAs(b) {
                     bottom.linkTo(parent.bottom)
                     top.linkTo(e.bottom)
                 }
-                .fillMaxWidth()
+                .padding(bottom = 10.dp)
+
         ) {
             Button(
-                onClick = { /*TODO*/ },
-                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
-                    contentColor = Color.White,
-                    disabledContainerColor = Color.White
+                onClick = {
+
+                    val intent = Intent(context, PaymentActivity::class.java)
+                    context.startActivity(intent)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFFF1DC24),
+                    contentColor = Color.Black
                 ),
                 modifier = Modifier
                     .padding(10.dp)
                     .fillMaxWidth()
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFD58611),
-                        shape = RoundedCornerShape(8.dp)
+                    .shadow(
+                        elevation = 10.dp,
+                        ambientColor = Color.Black,
+                        spotColor = Color.Yellow
                     )
-                    .clip(RoundedCornerShape(10.dp))
             ) {
                 Text(text = " Finish Payment")
             }
@@ -355,7 +338,7 @@ fun ItemFood(
     onClickedAddQuantity: (Int, MovieFood) -> Unit
 ) {
     val c = Color(0xFFA8F54E)
-    var quantity = rememberSaveable{
+    var quantity = rememberSaveable {
         mutableStateOf(0)
     }
     var totalPrice = remember {
@@ -385,9 +368,9 @@ fun ItemFood(
             ) {
                 Column {
                     IconButton(onClick = {
-                        if(quantity.value>0){
+                        if (quantity.value > 0) {
                             onClickedMinimusQuantity(quantity.value--, f)
-                        }else{
+                        } else {
                             onClickedMinimusQuantity(0, f)
                         }
 
