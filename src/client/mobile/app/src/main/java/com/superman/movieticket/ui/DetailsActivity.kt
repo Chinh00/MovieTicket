@@ -8,7 +8,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -51,6 +53,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -76,7 +79,7 @@ class DetailsActivity : ComponentActivity() {
 @Composable
 private fun DetailScreen() {
     var context = LocalContext.current
-
+val scrollVerticalDesc = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -87,12 +90,12 @@ private fun DetailScreen() {
         Image(
             painter = painterResource(id = R.drawable.kingkong2024), modifier = Modifier
                 .fillMaxWidth()
-                .height(350.dp)
+                .height(450.dp)
 
                 .constrainAs(t) {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }, contentScale = ContentScale.Fit, contentDescription = ""
+                }, contentScale = ContentScale.FillBounds, contentDescription = ""
         )
         Box(
             modifier = Modifier
@@ -188,28 +191,9 @@ private fun DetailScreen() {
                 val state = rememberScrollState()
 
                 Spacer(modifier = Modifier.height(15.dp))
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(15.dp)
-                        .verticalScroll(state)
-                ) {
-                    LaunchedEffect(Unit) { state.animateScrollTo(100) }
-                    repeat(10) {
-                        val gradientColors = listOf(Color.White, Color.Gray, Color.DarkGray)
-                        Text(
-                            text = listMovies[0].description + listMovies[0].description + listMovies[0].description,
-                            style = TextStyle(
-                                brush = Brush.verticalGradient(gradientColors),
-                                textAlign = TextAlign.Justify
-                            ),
-                            fontSize = 20.sp,
-                            color = Color.White
-                        )
-                    }
-                }
-
+                DescriptionText(listMovies[0].description,scrollVerticalDesc)
             }
+
         }
 
         IconButton(
@@ -249,7 +233,7 @@ private fun DetailScreen() {
             )
         }
         IconButton(
-            onClick = { /*TODO*/ }, modifier = Modifier
+            onClick = { /*TODO*/ }, modifier = Modifier.padding(vertical = 30.dp)
                 .size(100.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(Color.Transparent)
@@ -298,6 +282,40 @@ private fun DetailScreen() {
         }
 
 
+    }
+}
+
+@Composable
+fun DescriptionText(text:String,verticalScroll:ScrollState) {
+    val seeMore = remember { mutableStateOf(true) }
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(15.dp)
+            .verticalScroll(verticalScroll)
+    ) {
+        val gradientColors = listOf(Color.White, Color.Gray, Color.DarkGray)
+        Text(
+            text = text,
+            style = TextStyle(
+//                brush = Brush.verticalGradient(gradientColors),
+                textAlign = TextAlign.Justify
+            ),
+            maxLines = if (seeMore.value) 2 else 4,
+            fontSize = 20.sp,
+
+            overflow = if(seeMore.value) TextOverflow.Ellipsis else TextOverflow.Clip,
+            color = Color.White
+        )
+        Text(modifier = Modifier.clickable { seeMore.value = !seeMore.value },
+            text = if(seeMore.value) "Xem thêm" else "Thu gọn",
+            style = TextStyle(
+                textAlign = TextAlign.Justify, fontWeight = FontWeight.Bold
+            ),
+            maxLines = if (seeMore.value) 2 else 4,
+            fontSize = 20.sp,
+            color = Color(0xFF1459D1)
+        )
     }
 }
 

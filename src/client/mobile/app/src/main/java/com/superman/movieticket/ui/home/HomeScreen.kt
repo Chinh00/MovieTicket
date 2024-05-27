@@ -1,9 +1,7 @@
 package com.superman.movieticket.ui.home
 
 import android.content.Intent
-import android.graphics.Paint.Align
 import android.util.Log
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.Animatable
@@ -19,7 +17,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,15 +24,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -44,11 +38,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.TabRow
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -74,20 +65,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.lerp
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -95,16 +79,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.lerp
-import androidx.core.content.ContextCompat
+
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarStyle
@@ -112,7 +92,6 @@ import com.superman.movieticket.R
 import com.superman.movieticket.ui.DetailsActivity
 import com.superman.movieticket.ui.home.model.Movie
 import com.superman.movieticket.ui.home.model.listMovies
-import com.superman.movieticket.ui.shared.activity.MainActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -318,63 +297,62 @@ fun ComingUpMoviesPre() {
 //@Preview()
 fun NowPlayingScreenComp() {
     val cp = LocalContext.current
-
-    LazyColumn(
+    val scroll = rememberScrollState()
+    Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize().verticalScroll(scroll)
 
 
     ) {
-        item {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Category", style = TextStyle(
-                        color = Color.White, fontSize = 16.sp
-                    )
-                )
-                TextButton(onClick = { /*TODO*/ }) {
-                    Text(
-                        text = "See All", style = TextStyle(
-                            color = Color(0xFFFF9800),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
-            }
-        }
-        item {
-            val listCategory = remember {
-                mutableListOf(
-                    "All",
-                    "Drama",
-                    "Romance",
-                    "Comedy",
-                    "Adventure",
-                    "Action",
-                    "Documentary",
-                    "Fantasy",
-                    "Horror",
-                    "Mystery",
-                    "Romance",
-                    "Science Fiction"
-                )
-            }
-            Row(modifier = Modifier.fillMaxWidth()) {
-                LazyRow {
-                    items(listCategory.size) {
-                        CategoryItemComp(name = listCategory[it])
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(13.dp))
-        }
-        item {
+//        item {
+//            Row(
+//                horizontalArrangement = Arrangement.SpaceBetween,
+//                modifier = Modifier.fillMaxWidth(),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Text(
+//                    text = "Category", style = TextStyle(
+//                        color = Color.White, fontSize = 16.sp
+//                    )
+//                )
+//                TextButton(onClick = { /*TODO*/ }) {
+//                    Text(
+//                        text = "See All", style = TextStyle(
+//                            color = Color(0xFFFF9800),
+//                            fontSize = 14.sp,
+//                            fontWeight = FontWeight.Bold
+//                        )
+//                    )
+//                }
+//            }
+//        }
+//        item {
+//            val listCategory = remember {
+//                mutableListOf(
+//                    "All",
+//                    "Drama",
+//                    "Romance",
+//                    "Comedy",
+//                    "Adventure",
+//                    "Action",
+//                    "Documentary",
+//                    "Fantasy",
+//                    "Horror",
+//                    "Mystery",
+//                    "Romance",
+//                    "Science Fiction"
+//                )
+//            }
+//            Row(modifier = Modifier.fillMaxWidth()) {
+//                LazyRow {
+//                    items(listCategory.size) {
+//                        CategoryItemComp(name = listCategory[it])
+//                    }
+//                }
+//            }
+//
+//            Spacer(modifier = Modifier.height(13.dp))
+//        }
             Row(modifier = Modifier.wrapContentSize()) {
                 NowPlayingMovies { movie ->
                     Toast.makeText(cp, movie.avatar, Toast.LENGTH_SHORT).show()
@@ -382,8 +360,6 @@ fun NowPlayingScreenComp() {
                     cp.startActivity(intent)
                 }
             }
-        }
-        item {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth(),
@@ -404,10 +380,9 @@ fun NowPlayingScreenComp() {
                     )
                 }
             }
-        }
 
 
-        items(listMovies.size) {
+        (listMovies).forEach {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
                     .fillMaxWidth()
@@ -418,7 +393,7 @@ fun NowPlayingScreenComp() {
                     .height(200.dp)
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(listMovies[it].avatar, error = painterResource(
+                    painter = rememberAsyncImagePainter(it.avatar, error = painterResource(
                         id = R.drawable.poster_payoff_aquaman_6_1_
                     )),
                     contentDescription = null, modifier = Modifier
@@ -435,7 +410,7 @@ fun NowPlayingScreenComp() {
                 ) {
                     Box {
                         Text(
-                            text = listMovies[it].title.uppercase(),
+                            text = it.title.uppercase(),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold, color = Color.White,
                             modifier = Modifier.fillMaxWidth()
@@ -455,7 +430,7 @@ fun NowPlayingScreenComp() {
                     }
                     Row {
                         Text(
-                            text = listMovies[it].description,
+                            text = it.description,
                             fontSize = 18.sp, maxLines = 2, overflow = TextOverflow.Ellipsis,
                             color = Color.Gray,
                             fontWeight = FontWeight.Normal,
@@ -483,7 +458,7 @@ fun NowPlayingScreenComp() {
                     Row {
                         Text(text = buildAnnotatedString {
                             withStyle(SpanStyle(color = Color.White)) {
-                                append("${listMovies[it].duration} | Khoa hoc vien tuong")
+                                append("${it.duration} | Khoa hoc vien tuong")
                             }
                         })
 

@@ -1,6 +1,7 @@
 package com.superman.movieticket.ui.order.ticket
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -27,6 +28,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -47,6 +49,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
@@ -55,17 +58,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.superman.movieticket.ui.order.food.OrderFoodActivity
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 import javax.annotation.meta.When
+import kotlin.coroutines.coroutineContext
 
 class TicketActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                TicketActivityComp()
+            }
         }
     }
 }
@@ -73,6 +81,7 @@ class TicketActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TicketActivityComp() {
+    val context = LocalContext.current
     val selectedSeat = remember {
 
         mutableStateListOf<String>()
@@ -281,7 +290,11 @@ fun TicketActivityComp() {
         ) {
             Column {
                 Text(text = "Total", fontSize = 18.sp, color = colorText)
-                Text(text = "${totalPrice.value*selectedSeat.size}đ", fontSize = 18.sp, color = colorText)
+                Text(
+                    text = "${totalPrice.value * selectedSeat.size}đ",
+                    fontSize = 18.sp,
+                    color = colorText
+                )
             }
             Column {
                 Text(text = "Selected Seats", fontSize = 18.sp, color = colorText)
@@ -319,10 +332,18 @@ fun TicketActivityComp() {
             }) {
 
             Button(
-                onClick = { /*TODO*/ }, modifier = Modifier
+                onClick = { val intent = Intent(context, OrderFoodActivity::class.java)
+                    context.startActivity(intent) }, modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp)
-                    .padding(5.dp)
+                    .padding(5.dp).shadow(
+                        elevation = 10.dp,
+                        ambientColor = Color.Black,
+                        spotColor = Color.Yellow
+                    ), colors = androidx.compose.material.ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFFF1DC24),
+                    contentColor = Color.Black
+                )
             ) {
                 Text(text = "PAY TICKET")
             }
@@ -349,14 +370,15 @@ fun DateComp(
     Surface(
         modifier = Modifier
             .wrapContentSize()
-            .clip(RoundedCornerShape(16.dp))
-            .clickable { onClick(date) }, shape = RoundedCornerShape(16.dp), color = color
+            .clip(RoundedCornerShape(8.dp))
+            .clickable { onClick(date) }, shape = RoundedCornerShape(8.dp), color = color
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            Box(modifier = Modifier.size(10.dp).background(Color.Black, CircleShape))
             Text(
                 text = date.month.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
                 style = MaterialTheme.typography.caption
@@ -365,10 +387,11 @@ fun DateComp(
                 modifier = Modifier
                     .clip(CircleShape)
                     .background(textBg)
-                    .padding(4.dp)
+                    .padding(2.dp)
             ) {
                 Text(text = date.dayOfMonth.toString(), style = MaterialTheme.typography.caption)
             }
+
         }
     }
 }
@@ -390,18 +413,20 @@ fun TimeComp(
     Surface(
         modifier = Modifier
             .wrapContentSize()
-            .clip(RoundedCornerShape(16.dp))
-            .clickable { onClick(time) }, shape = RoundedCornerShape(16.dp), color = color
+            .clip(RectangleShape)
+            .clickable { onClick(time) }, color = color
     ) {
-        Column(
-            modifier = Modifier.padding(2.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            Box(modifier = Modifier.size(10.dp).background(Color.Black, CircleShape))
             Text(
                 text = time,
                 style = MaterialTheme.typography.caption, modifier = Modifier.padding(12.dp)
             )
+            Box(modifier = Modifier.size(10.dp).background(Color.Black, CircleShape))
 
         }
     }
