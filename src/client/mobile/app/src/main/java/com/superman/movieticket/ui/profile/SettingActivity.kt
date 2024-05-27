@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.Animatable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,17 +36,26 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,12 +76,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.rememberPagerState
 import com.superman.movieticket.R
 import com.superman.movieticket.ui.DetailsActivity
 import com.superman.movieticket.ui.favourite.FavouriteItem
 import com.superman.movieticket.ui.favourite.FavouriteScreen
+import com.superman.movieticket.ui.home.ComingUpScreenComp
+import com.superman.movieticket.ui.home.NowPlayingScreenComp
+import com.superman.movieticket.ui.home.PopularMovieComp
 import com.superman.movieticket.ui.home.model.Movie
 import com.superman.movieticket.ui.home.model.listMovies
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
@@ -86,9 +104,11 @@ class SettingActivity : ComponentActivity(){
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun SettingActivityComp() {
     val context = LocalContext.current
+    var selectedTabIndex by remember { mutableStateOf(0) }
 
     Box(
         modifier = Modifier
@@ -126,7 +146,7 @@ fun SettingActivityComp() {
 
             LazyColumn {
                 item {
-                    Anh(context, listMovies.first())
+                    Image(context, listMovies.first())
                 }
             }
 
@@ -139,14 +159,108 @@ fun SettingActivityComp() {
                     .background(Color.Gray)
             )
 
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_language_24),
+                    contentDescription = "Language",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(70.dp)
+                        .padding(top = 16.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Khoảng cách giữa Icon và Text
+                Text(
+                    text = "Language",
+                    color = Color.White,
+                    fontSize = 25.sp,
 
+                )
+
+
+            }
+
+            val tabItems = listOf("Việt Nam", "English")
+            val pagerState = rememberPagerState()
+            val coroutineScope = rememberCoroutineScope()
+
+            Column(modifier = Modifier.wrapContentSize()) {
+                TabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    backgroundColor = Color(0xE6C7C7C7), indicator = { tabPositions ->
+                        TabRowDefaults.Indicator(
+                            Modifier
+                                .pagerTabIndicatorOffset(pagerState, tabPositions)
+                                .height(0.dp)
+                                .width(0.dp)
+                        )
+                    },
+                    modifier = Modifier
+                        .clip(
+                            RoundedCornerShape(30.dp)
+                        )
+                        .background(color = Color(0xE6C7C7C7))
+                ) {
+                    tabItems.forEachIndexed { index, title ->
+                        val c = remember {
+                            Animatable(Color(0xE6C7C7C7))
+                        }
+                        LaunchedEffect(key1 = pagerState.currentPage == index) {
+                            c.animateTo(
+                                if (pagerState.currentPage == index) Color(0xFFDE7101) else Color(
+                                    0xE6C7C7C7
+                                )
+                            )
+                        }
+
+                        androidx.compose.material3.Tab(
+                            text = {
+                                androidx.compose.material3.Text(
+                                    text = title,
+                                    style = if (pagerState.currentPage == index) androidx.compose.ui.text.TextStyle(
+                                        color = Color.White,
+                                        fontSize = 18.sp
+                                    ) else androidx.compose.ui.text.TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 16.sp
+                                    )
+                                )
+                            },
+                            selected = pagerState.currentPage == index, modifier = Modifier
+                                .clip(
+                                    RoundedCornerShape(30.dp)
+                                )
+                                .background(color = c.value), onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            })
+                    }
+                }
+                Spacer(modifier = Modifier.height(13.dp));
+                HorizontalPager(
+                    state = pagerState, count = 1, modifier = Modifier
+                        .fillMaxSize()
+                )
+                {
+
+                }
+
+
+            }
 
         }
     }
+
+}
+
+fun Text(text: String, style: TextStyle) {
+
 }
 
 @Composable
-fun Anh(context: Context, movie: Movie) {
+fun Image(context: Context, movie: Movie) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -170,6 +284,7 @@ fun Anh(context: Context, movie: Movie) {
                 contentDescription = null
             )
         }
+
     }
     Text(
         text = "Dong Chinh Khanh",
@@ -191,6 +306,7 @@ fun Anh(context: Context, movie: Movie) {
             .fillMaxWidth()
             .wrapContentSize(align = Alignment.Center)
     )
+
 }
 @Composable
 @Preview(showSystemUi = true)

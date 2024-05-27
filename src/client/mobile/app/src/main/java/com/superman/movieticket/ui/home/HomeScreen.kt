@@ -211,7 +211,6 @@ fun TabCustomComp() {
                 .fillMaxSize()
                 .background(color = Color(0xFF181824))
         ) { page ->
-//            Text(text = tabItems[page], modifier = Modifier.padding(50.dp), color = Color.Black)
             when (pagerState.currentPage) {
                 1 -> ComingUpScreenComp()
 
@@ -246,7 +245,6 @@ fun ComingUpScreenComp() {
 }
 
 @Composable
-
 fun ComingUpMovies(onMovieClicked: (Movie) -> Unit, onMovieFavourite: (Movie) -> Unit) {
     LazyVerticalGrid(columns = GridCells.Fixed(2)) {
 
@@ -324,7 +322,8 @@ fun NowPlayingScreenComp() {
             .fillMaxSize()
 
 
-    ) {
+    )
+    {
         item {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
