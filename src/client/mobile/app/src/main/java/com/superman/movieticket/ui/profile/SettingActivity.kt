@@ -81,12 +81,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.superman.movieticket.R
-import com.superman.movieticket.ui.DetailsActivity
-import com.superman.movieticket.ui.favourite.FavouriteItem
-import com.superman.movieticket.ui.favourite.FavouriteScreen
-import com.superman.movieticket.ui.home.ComingUpScreenComp
-import com.superman.movieticket.ui.home.NowPlayingScreenComp
-import com.superman.movieticket.ui.home.PopularMovieComp
+
 import com.superman.movieticket.ui.home.model.Movie
 import com.superman.movieticket.ui.home.model.listMovies
 import kotlinx.coroutines.launch

@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 import {RiEditBoxLine} from "react-icons/ri";
 import {useState} from "react";
 import CreateRoom from "@/app/modules/room/components/CreateRoom.tsx";
-
+import { IoIosNotificationsOutline } from "react-icons/io";
 const RoomList = () => {
     const {data} = useGetRooms()
     const [onCreate, setOnCreate] = useState(false)
@@ -24,6 +24,7 @@ const RoomList = () => {
         <TableContainer component={Paper} sx={{
             marginTop: "10px"
         }}>
+            <Button variant={"contained"} onClick={() => setOnCreate(true)}>Thêm phòng </Button>
             <Table border={2} className={"border-2"} sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
@@ -31,7 +32,7 @@ const RoomList = () => {
                         <TableCell >Tổng số ghế  </TableCell>
                         <TableCell >Hành động  </TableCell>
                     </TableRow> 
-                </TableHead>
+                </TableHead>/
                 <TableBody>
                     {!!data && data?.data?.data?.items.map((row) => (
                         <TableRow
@@ -42,7 +43,6 @@ const RoomList = () => {
                                 {row.roomNumber}
                             </TableCell>
                             <TableCell >{dayjs(row?.seats?.length).format("ll")}</TableCell>
-                            <TableCell >{}</TableCell>
                             <TableCell>
                                 <IconButton onClick={() => {}} type={"button"}><RiEditBoxLine size={30} /></IconButton>
                             </TableCell>

@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 import { RiEditBoxLine } from "react-icons/ri";
 import {useEffect, useState} from "react";
 import CreateMovie from "@/app/modules/movie/components/CreateMovie.tsx";
-import {GetToken} from "@/app/usecases/auth.usecase.ts";
+import {IoIosNotificationsOutline} from "react-icons/io";
 const MovieList = () => {
 
     const [onEdit, setOnEdit] = useState<string>("")
@@ -65,7 +65,8 @@ const MovieList = () => {
                                 </Box>
                             </TableCell>
                             <TableCell>
-                                <IconButton onClick={() => setOnEdit(row.id)} type={"button"}><RiEditBoxLine size={30} /></IconButton>
+                                <IconButton color={"info"} onClick={() => setOnEdit(row.id)} type={"button"}><RiEditBoxLine size={30} /></IconButton>
+                                <IconButton color={'warning'} onClick={() => {}} type={"button"}><IoIosNotificationsOutline size={30} /></IconButton>
                             </TableCell>
                         </TableRow>
                     ))}

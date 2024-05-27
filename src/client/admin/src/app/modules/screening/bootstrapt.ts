@@ -8,14 +8,14 @@ const moduleConfig: ModuleConfig = {
             name: "Screening View",
             page: "ScreeningView",
             path: "/",
-            authenticate: "any"
+            authenticate: true
             
         },
         {
             name: "Screening View",
             page: "RoomScreenings",
             path: ":id/add-movie",
-            authenticate: "any"
+            authenticate: true
             
         },
         

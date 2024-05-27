@@ -15,6 +15,7 @@ import { MdMenuOpen } from "react-icons/md";
 import { CgCloseR } from "react-icons/cg";
 import {useNavigate} from "react-router-dom";
 import {AppbarRouteConfig} from "@/app/layouts/interface/AppbarRouteConfig.ts";
+import {useAppSelector} from "@/app/stores/hook.ts";
 
 const appbarRouteConfig: AppbarRouteConfig[] = [
     {
@@ -45,11 +46,11 @@ const AppBarCustom = () => {
         setOpen(false);
     };
     const nav = useNavigate()
-    
+    const {authenticate} = useAppSelector(e => e.app)
     return <>
         <AppBar color={"default"} position={"sticky"} >
             <Toolbar>
-                <IconButton
+                {authenticate && <IconButton
                     color="inherit"
                     aria-label="open drawer"
                     onClick={handleDrawerOpen}
@@ -57,9 +58,9 @@ const AppBarCustom = () => {
                     sx={{ mr: 2, ...(open && { display: 'none' }) }}
                 >
                     <MdMenuOpen size={30} />
-                </IconButton>
-                <Typography variant="h6" noWrap component="div">
-                    Persistent drawer
+                </IconButton>}
+                <Typography variant="h6" noWrap component="div" align={"center"}>
+                    Quản lý rạp phim 
                 </Typography>
             </Toolbar>
         </AppBar>
