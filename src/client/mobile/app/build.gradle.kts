@@ -118,4 +118,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.1.0")
     implementation ("androidx.navigation:navigation-compose:2.6.1")
     implementation ("com.github.a914-gowtham:compose-ratingbar:1.3.12")
+
+    //profile
+//    implementation ("androidx.cardview:cardview:1.0.0")
+      implementation ("com.makeramen:roundedimageview:2.3.0")
 }
