@@ -74,9 +74,8 @@ fun EditActivity() {
                     text = "Profile",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
+                        .padding(start = 105.dp),
+                    fontSize = 25.sp,
                     color = Color.White
                 )
             }

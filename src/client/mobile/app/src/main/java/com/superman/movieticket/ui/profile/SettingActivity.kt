@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -56,8 +57,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
@@ -84,9 +84,12 @@ import com.superman.movieticket.R
 import com.superman.movieticket.ui.DetailsActivity
 import com.superman.movieticket.ui.favourite.FavouriteItem
 import com.superman.movieticket.ui.favourite.FavouriteScreen
-import com.superman.movieticket.ui.home.ComingUpScreenComp
-import com.superman.movieticket.ui.home.NowPlayingScreenComp
-import com.superman.movieticket.ui.home.PopularMovieComp
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
 import com.superman.movieticket.ui.home.model.Movie
 import com.superman.movieticket.ui.home.model.listMovies
 import kotlinx.coroutines.launch
@@ -137,9 +140,8 @@ fun SettingActivityComp() {
                     text = "Profile",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
+                        .padding(start = 105.dp),
+                    fontSize = 25.sp,
                     color = Color.White
                 )
             }
@@ -150,7 +152,7 @@ fun SettingActivityComp() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(2.dp))
             // Thêm phần thanh ngang
             Box(
                 modifier = Modifier
@@ -167,18 +169,16 @@ fun SettingActivityComp() {
                     contentDescription = "Language",
                     tint = Color.White,
                     modifier = Modifier
-                        .size(70.dp)
-                        .padding(top = 16.dp),
+                        .size(50.dp)
+                        .padding(top = 5.dp),
                 )
                 Spacer(modifier = Modifier.width(8.dp)) // Khoảng cách giữa Icon và Text
                 Text(
                     text = "Language",
                     color = Color.White,
-                    fontSize = 25.sp,
+                    fontSize = 20.sp,
 
                 )
-
-
             }
 
             val tabItems = listOf("Việt Nam", "English")
@@ -197,10 +197,10 @@ fun SettingActivityComp() {
                         )
                     },
                     modifier = Modifier
-                        .clip(
-                            RoundedCornerShape(30.dp)
-                        )
+                        .padding(top = 2.dp) // Tạo khoảng cách  phía trên TabRow
+                        .clip(RoundedCornerShape(30.dp))
                         .background(color = Color(0xE6C7C7C7))
+
                 ) {
                     tabItems.forEachIndexed { index, title ->
                         val c = remember {
@@ -215,15 +215,18 @@ fun SettingActivityComp() {
                         }
 
                         androidx.compose.material3.Tab(
+
                             text = {
                                 androidx.compose.material3.Text(
                                     text = title,
                                     style = if (pagerState.currentPage == index) androidx.compose.ui.text.TextStyle(
                                         color = Color.White,
                                         fontSize = 18.sp
+
                                     ) else androidx.compose.ui.text.TextStyle(
                                         color = Color.Black,
-                                        fontSize = 16.sp
+                                        fontSize = 18.sp,
+
                                     )
                                 )
                             },
@@ -244,16 +247,267 @@ fun SettingActivityComp() {
                         .fillMaxSize()
                 )
                 {
+                    // Thêm phần thanh ngang
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(Color.Gray)
+                    )
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_add_location_24),
+                        contentDescription = "Address",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(top = 3.dp),
+                    )
+//                    Spacer(modifier = Modifier.width(8.dp)) // Khoảng cách giữa Icon và Text
+                    Text(
+                        text = "Address",
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(start = 55.dp)
+                            .padding(top = 12.dp)
+
+                    )
+
+
+                    val tabItems = listOf("BHD Phạm Ngọc Thạch", "Beta Thanh Xuân", "CGV")
+                    val pagerState = rememberPagerState()
+                    val coroutineScope = rememberCoroutineScope()
+
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        // Thêm thanh dọc lên bên trái
+                        Spacer(modifier = Modifier.height(47.dp))
+                        Box(
+                            modifier = Modifier
+                                .width(1.dp)
+                                .background(Color.Gray)
+                        )
+
+                        // Tạo các tab dọc
+                        Column(verticalArrangement = Arrangement.spacedBy(5.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .verticalScroll(rememberScrollState())
+                                .padding(start = 55.dp)
+
+                        )
+
+                        {
+                            tabItems.forEachIndexed { index, title ->
+                                val backgroundColor = remember { Animatable(Color(0xE6C7C7C7)) }
+                                val textColor = remember { Animatable(Color.Black) }
+
+                                LaunchedEffect(key1 = pagerState.currentPage == index) {
+                                    coroutineScope.launch {
+                                        backgroundColor.animateTo(
+                                            if (pagerState.currentPage == index) Color(0xFFDE7101) else Color(0xE6C7C7C7)
+                                        )
+                                        textColor.animateTo(
+                                            if (pagerState.currentPage == index) Color.White else Color.Black
+                                        )
+                                    }
+                                }
+
+                                androidx.compose.material3.Tab(
+                                    text = {
+                                        androidx.compose.material3.Text(
+                                            text = title,
+                                            style = androidx.compose.ui.text.TextStyle(
+                                                color = textColor.value,
+                                                fontSize = 18.sp
+                                            )
+                                        )
+                                    },
+                                    selected = pagerState.currentPage == index,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
+                                        .background(color = backgroundColor.value)
+                                        .width(250.dp)
+                                    , // Khoảng cách giữa các tab dọc
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(index)
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .background(Color.Gray)
+
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.padlock),
+                                contentDescription = "Change Password",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .padding(top = 5.dp),
+                            )
+                            Spacer(modifier = Modifier.width(8.dp)) // Khoảng cách giữa Icon và Text
+                            Text(
+                                text = "Change Password",
+                                color = Color.White,
+                                fontSize = 20.sp,
+
+                                )
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+
+                        OutlinedTextField(
+                            value = "",
+                            onValueChange = { /* Do nothing */ },
+                            modifier = Modifier
+
+                                .padding(horizontal = 15.dp)
+                                .fillMaxWidth()
+                                .border(1.dp, Color.Gray, shape = RoundedCornerShape(6.dp))
+                                .size(50.dp)
+                                ,
+
+                            placeholder = {
+                                Text(
+                                    text = "User name",
+                                    color = Color.LightGray,
+                                    fontSize = 16.sp
+                                )
+                            },
+                            shape = RoundedCornerShape(16.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                backgroundColor = Color.Transparent,
+                            )
+
+                        )
+                        Spacer(modifier = Modifier.height(5.dp))
+                        OutlinedTextField(
+                            value = "",
+                            onValueChange = { /* Do nothing */ },
+                            modifier = Modifier
+
+                                .padding(horizontal = 15.dp)
+                                .fillMaxWidth()
+                                .border(1.dp, Color.Gray, shape = RoundedCornerShape(6.dp))
+                                .size(50.dp)
+                            ,
+
+                            placeholder = {
+                                Text(
+                                    text = "User name",
+                                    color = Color.LightGray,
+                                    fontSize = 16.sp
+                                )
+                            },
+                            shape = RoundedCornerShape(16.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                backgroundColor = Color.Transparent,
+                            )
+
+                        )
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Button(
+                            onClick = { /* Xử lý khi nút được nhấn */ },
+                            modifier = Modifier.fillMaxWidth()
+                                .align(Alignment.CenterHorizontally),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Yellow),
+                        ) {
+                            Text(text = "SAVE")
+                        }
+
+
+                    }
+
 
                 }
 
-
             }
 
+
+
+        }
+
+
+    }
+
+    @Composable
+    fun TabDemo() {
+        val tabItems = listOf("Việt Nam", "English")
+        val pagerState = rememberPagerState()
+        val coroutineScope = rememberCoroutineScope()
+
+        Column(modifier = Modifier.wrapContentSize()) {
+            TabRow(
+                selectedTabIndex = pagerState.currentPage,
+                backgroundColor = Color(0xE6C7C7C7),
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier
+                            .pagerTabIndicatorOffset(pagerState, tabPositions)
+                            .height(0.dp)
+                            .width(0.dp)
+                    )
+                },
+                modifier = Modifier
+                    .clip(RoundedCornerShape(30.dp))
+                    .background(color = Color(0xE6C7C7C7))
+            ) {
+                tabItems.forEachIndexed { index, title ->
+                    val backgroundColor = remember { Animatable(Color(0xE6C7C7C7)) }
+                    val textColor = remember { Animatable(Color.Black) }
+
+                    LaunchedEffect(key1 = pagerState.currentPage == index) {
+                        backgroundColor.animateTo(
+                            if (pagerState.currentPage == index) Color(0xFFDE7101) else Color(0xE6C7C7C7)
+                        )
+                        textColor.animateTo(
+                            if (pagerState.currentPage == index) Color.White else Color.Black
+                        )
+                    }
+
+                    androidx.compose.material3.Tab(
+                        text = {
+                            androidx.compose.material3.Text(
+                                text = title,
+                                style = androidx.compose.ui.text.TextStyle(
+                                    color = textColor.value,
+                                    fontSize = 18.sp
+                                )
+                            )
+                        },
+                        selected = pagerState.currentPage == index,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(30.dp))
+                            .background(color = backgroundColor.value),
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        }
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(13.dp))
+            HorizontalPager(
+                state = pagerState,
+                count = tabItems.size,
+                modifier = Modifier.fillMaxSize()
+            ) { page ->
+                // Nội dung của từng trang
+            }
         }
     }
 
 }
+
 
 fun Text(text: String, style: TextStyle) {
 
@@ -284,7 +538,6 @@ fun Image(context: Context, movie: Movie) {
                 contentDescription = null
             )
         }
-
     }
     Text(
         text = "Dong Chinh Khanh",
