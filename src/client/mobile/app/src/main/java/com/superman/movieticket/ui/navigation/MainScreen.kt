@@ -31,7 +31,6 @@ fun Navigation(navController: NavHostController) {
         composable("home") { HomeScreen() }
         composable("favourite") { FavouriteScreen() }
         composable("ticket") { TicketScreen() }
-
         composable("profile") { ProfileScreen() }
     }
 }

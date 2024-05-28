@@ -1,4 +1,4 @@
-package com.superman.movieticket.ui.home
+package com.superman.movieticket.ui.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,7 +44,7 @@ import com.superman.movieticket.ui.home.model.Movie
 import com.superman.movieticket.ui.home.model.listMovies
 
 @Composable
-fun HomeActivity() {
+fun EditActivity() {
     val context = LocalContext.current
 
     Box(
@@ -287,6 +287,6 @@ fun Avatar(movie: Movie) {
 
 @Composable
 @Preview(showSystemUi = true)
-fun HomeScreen() {
-    HomeActivity()
+fun EditActivityPre() {
+    EditActivity()
 }
