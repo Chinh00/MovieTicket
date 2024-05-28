@@ -1,4 +1,8 @@
 package com.superman.movieticket.ui.auth.components
 
-class TextFieldMui {
+import androidx.compose.runtime.Composable
+
+
+@Composable
+fun TextFieldMui() {
 }

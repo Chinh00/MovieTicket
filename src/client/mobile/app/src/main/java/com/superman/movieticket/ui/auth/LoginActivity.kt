@@ -21,7 +21,6 @@ public class LoginActivity : BaseActivity<LoginActivityModelImpl>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HomeScreen()
         }
     }
 
