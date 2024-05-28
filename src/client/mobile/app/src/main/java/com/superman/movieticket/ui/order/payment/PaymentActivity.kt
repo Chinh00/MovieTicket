@@ -200,7 +200,7 @@ fun PaymentTopComp(title: String, context: Context, img: Any?, onBackClick: (Con
 }
 
 @Composable
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 fun PaymentTopPre() {
 
     val context = LocalContext.current
@@ -298,7 +298,7 @@ fun PaymentTotaltComp(list: Any, price: Double) {
 }
 
 @Composable
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 
 fun PaymentContentPre() {
     PaymentContentComp("Items Ordered") {
@@ -364,7 +364,7 @@ fun PaymentSelectMethodPaymenttComp(
 }
 
 @Composable
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 
 fun PaymentSelectMethodPaymenttPre() {
     PaymentContentComp("Payment methods") {
@@ -436,7 +436,7 @@ fun PaymentFooterComp(
 }
 
 @Composable
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 
 fun PaymentFooterPre() {
     PaymentFooterComp(false, onClicked = {

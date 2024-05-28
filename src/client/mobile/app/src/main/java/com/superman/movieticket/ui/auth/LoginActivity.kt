@@ -58,317 +58,321 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
+}
 
-    @Composable
-    @Preview(showBackground = true, showSystemUi = true)
-    fun LoginScreen() {
-        val containerColor = Color(0x8FDFD0D0)
-        val txtUsername = remember {
-            mutableStateOf("")
+@Composable
+@Preview(showBackground = true, showSystemUi = true)
+fun LoginScreen() {
+    val containerColor = Color(0x8FDFD0D0)
+    val txtUsername = remember {
+        mutableStateOf("")
 
-        }
-        val txtPassword = remember {
-            mutableStateOf("")
+    }
+    val txtPassword = remember {
+        mutableStateOf("")
 
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .paint(
-                    painterResource(id = R.drawable.poster1),
-                    contentScale = ContentScale.Crop, alignment = Alignment.TopCenter,
-                    alpha = .9f
-                )
-                .background(color = Color(0x4D773131))
-        ) {
-            TextAuthContent("LOGIN", "")
-            Spacer(modifier = Modifier.height(10.dp))
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                TextField(
-                    value = txtUsername.value,
-                    label = { Text(text = "Username") },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.user_icon_oulined),
-                            contentDescription = "", Modifier.size(24.dp)
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = containerColor,
-                        unfocusedContainerColor = containerColor,
-                        disabledContainerColor = containerColor,
-                        cursorColor = Color.Black,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        unfocusedLeadingIconColor = Color.White,
-                        unfocusedTrailingIconColor = Color.White,
-                    ),
-                    placeholder = { Text(text = "Enter Username", color = Color.LightGray) },
-                    onValueChange = { txtUsername.value = it },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = Color(
-                                0x3C817676
-                            )
-                        ),
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                TextField(
-                    value = txtPassword.value,
-                    label = { Text(text = "Password") },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.padlock),
-                            contentDescription = "", Modifier.size(24.dp)
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = containerColor,
-                        unfocusedContainerColor = containerColor,
-                        disabledContainerColor = containerColor,
-                        cursorColor = Color.Black,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        unfocusedLeadingIconColor = Color.White,
-                        unfocusedTrailingIconColor = Color.White,
-                    ),
-                    trailingIcon = {
-
-
-                            IconButton(onClick = { /*TODO*/ }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.show),
-                                    contentDescription = "",
-                                    Modifier.size(24.dp)
-                                )
-                            }
-
-                    },
-                    placeholder = { Text(text = "Enter password", color = Color.LightGray) },
-                    onValueChange = { txtPassword.value = it },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = Color(
-                                0x3C817676
-                            )
-                        ),
-                )
-                Spacer(modifier = Modifier.height(5.dp))
-
-                TextButton(onClick = {}) {
-                    Text(
-                        text = "I've forgotten my password",
-                        style = TextStyle(
-                            color = Color.White,
-                            textDecoration = TextDecoration.Underline,
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.End
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-
-
-
-                Spacer(modifier = Modifier.height(10.dp))
-                Button(
-                    onClick = { Log.d("Message","Username: ${txtUsername.value}, password:${txtPassword.value}")}, colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFFEB3B),
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text(text = "LOGIN")
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(
-                                style = SpanStyle(
-                                    color = Color.White,
-                                    fontSize = 23.sp,
-                                    fontWeight = FontWeight.ExtraBold
-                                )
-                            ) {
-                                append("Login ")
-                            }
-                            withStyle(
-                                style = SpanStyle(
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            ) {
-                                append("with others")
-                            }
-                        },
-                        style = TextStyle(
-                            color = Color.LightGray,
-                            fontSize = 19.sp,
-                            textAlign = TextAlign.Center
-                        ),
-                        modifier = Modifier.wrapContentWidth()
-                    )
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Don't have account??",
-                            style = TextStyle(
-                                color = Color.LightGray,
-                                fontSize = 18.sp,
-                                textAlign = TextAlign.Center
-                            ),
-                            modifier = Modifier.wrapContentWidth()
-                        )
-                        TextButton(onClick = { /*TODO*/ }) {
-                            Text(
-                                text = "Sign Up", color = Color(0xFFDE7101),
-                                style = TextStyle(
-                                    color = Color.LightGray,
-                                    fontSize = 18.sp,
-                                    textAlign = TextAlign.Center, fontWeight = FontWeight.ExtraBold
-                                ),
-                            )
-                        }
-                    }
-                }
-            }
-        }
     }
 
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun TextFieldCustom(
-        value: String,
-        textHolder: String,
-        @DrawableRes leadIcon: Int,
-        @DrawableRes trailingIcon: Int? = 0
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .paint(
+                painterResource(id = R.drawable.poster1),
+                contentScale = ContentScale.Crop, alignment = Alignment.TopCenter,
+                alpha = .9f
+            )
+            .background(color = Color(0x4D773131))
     ) {
-        var textField by remember {
-            mutableStateOf("")
-        }
-        val containerColor = Color(0x8FDFD0D0)
-        TextField(
-            value = textField,
-            label = { Text(text = "$textHolder") },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = leadIcon),
-                    contentDescription = "", Modifier.size(24.dp)
-                )
-            },
-            trailingIcon = {
-                if (trailingIcon == 0) {
-                    null
-                } else {
+        TextAuthContent("LOGIN", "")
+        Spacer(modifier = Modifier.height(10.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TextField(
+                value = txtUsername.value,
+                label = { Text(text = "Username") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.user_icon_oulined),
+                        contentDescription = "", Modifier.size(24.dp)
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = containerColor,
+                    unfocusedContainerColor = containerColor,
+                    disabledContainerColor = containerColor,
+                    cursorColor = Color.Black,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    unfocusedLeadingIconColor = Color.White,
+                    unfocusedTrailingIconColor = Color.White,
+                ),
+                placeholder = { Text(text = "Enter Username", color = Color.LightGray) },
+                onValueChange = { txtUsername.value = it },
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color(
+                            0x3C817676
+                        )
+                    ),
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            TextField(
+                value = txtPassword.value,
+                label = { Text(text = "Password") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.padlock),
+                        contentDescription = "", Modifier.size(24.dp)
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = containerColor,
+                    unfocusedContainerColor = containerColor,
+                    disabledContainerColor = containerColor,
+                    cursorColor = Color.Black,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    unfocusedLeadingIconColor = Color.White,
+                    unfocusedTrailingIconColor = Color.White,
+                ),
+                trailingIcon = {
+
 
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(
-                            painter = painterResource(id = trailingIcon!!),
+                            painter = painterResource(id = R.drawable.show),
                             contentDescription = "",
                             Modifier.size(24.dp)
                         )
                     }
 
-                }
-            },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = containerColor,
-                unfocusedContainerColor = containerColor,
-                disabledContainerColor = containerColor,
-                cursorColor = Color.Black,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                unfocusedLeadingIconColor = Color.White,
-                unfocusedTrailingIconColor = Color.White,
-            ),
-            placeholder = { Text(text = "Enter Username", color = Color.LightGray) },
-            onValueChange = { textField = it },
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = Color(
-                        0x3C817676
+                },
+                placeholder = { Text(text = "Enter password", color = Color.LightGray) },
+                onValueChange = { txtPassword.value = it },
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color(
+                            0x3C817676
+                        )
+                    ),
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+
+            TextButton(onClick = {}) {
+                Text(
+                    text = "I've forgotten my password",
+                    style = TextStyle(
+                        color = Color.White,
+                        textDecoration = TextDecoration.Underline,
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.End
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+
+
+            Spacer(modifier = Modifier.height(10.dp))
+            Button(
+                onClick = {
+                    Log.d(
+                        "Message",
+                        "Username: ${txtUsername.value}, password:${txtPassword.value}"
                     )
-                ),
-        )
-
+                }, colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFFEB3B),
+                    contentColor = Color.Black
+                )
+            ) {
+                Text(text = "LOGIN")
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.White,
+                                fontSize = 23.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        ) {
+                            append("Login ")
+                        }
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.White,
+                                fontWeight = FontWeight.Medium
+                            )
+                        ) {
+                            append("with others")
+                        }
+                    },
+                    style = TextStyle(
+                        color = Color.LightGray,
+                        fontSize = 19.sp,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier.wrapContentWidth()
+                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Don't have account??",
+                        style = TextStyle(
+                            color = Color.LightGray,
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center
+                        ),
+                        modifier = Modifier.wrapContentWidth()
+                    )
+                    TextButton(onClick = { /*TODO*/ }) {
+                        Text(
+                            text = "Sign Up", color = Color(0xFFDE7101),
+                            style = TextStyle(
+                                color = Color.LightGray,
+                                fontSize = 18.sp,
+                                textAlign = TextAlign.Center, fontWeight = FontWeight.ExtraBold
+                            ),
+                        )
+                    }
+                }
+            }
+        }
     }
+}
 
-    @Composable
-    fun TextAuthContent(title: String, titleNote: String) {
-        Spacer(modifier = Modifier.height(50.dp))
-        Text(
-            text = "MOVIES BOT", style = TextStyle(
-                color = Color.Yellow, fontSize = 28.sp, textAlign = TextAlign.Center
-            ), modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(50.dp))
-        Text(
-            text = buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(color = Color.White, letterSpacing = 10.sp)
-                ) {
-                    append("WELCOME ")
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextFieldCustom(
+    value: String,
+    textHolder: String,
+    @DrawableRes leadIcon: Int,
+    @DrawableRes trailingIcon: Int? = 0
+) {
+    var textField by remember {
+        mutableStateOf("")
+    }
+    val containerColor = Color(0x8FDFD0D0)
+    TextField(
+        value = textField,
+        label = { Text(text = "$textHolder") },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = leadIcon),
+                contentDescription = "", Modifier.size(24.dp)
+            )
+        },
+        trailingIcon = {
+            if (trailingIcon == 0) {
+                null
+            } else {
+
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(
+                        painter = painterResource(id = trailingIcon!!),
+                        contentDescription = "",
+                        Modifier.size(24.dp)
+                    )
                 }
 
-                withStyle(
-                    style = SpanStyle(color = Color.White, letterSpacing = 10.sp)
-                ) {
-                    append("BACK!")
-                }
-            }, style = TextStyle(
-                color = Color.White,
-                fontSize = 28.sp,
-                textAlign = TextAlign.Center
-            ), modifier = Modifier.fillMaxWidth()
+            }
+        },
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = containerColor,
+            unfocusedContainerColor = containerColor,
+            disabledContainerColor = containerColor,
+            cursorColor = Color.Black,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            unfocusedLeadingIconColor = Color.White,
+            unfocusedTrailingIconColor = Color.White,
+        ),
+        placeholder = { Text(text = "Enter Username", color = Color.LightGray) },
+        onValueChange = { textField = it },
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = Color(
+                    0x3C817676
+                )
+            ),
+    )
+
+}
+
+@Composable
+fun TextAuthContent(title: String, titleNote: String) {
+    Spacer(modifier = Modifier.height(50.dp))
+    Text(
+        text = "MOVIES BOT", style = TextStyle(
+            color = Color.Yellow, fontSize = 28.sp, textAlign = TextAlign.Center
+        ), modifier = Modifier.fillMaxWidth()
+    )
+    Spacer(modifier = Modifier.height(50.dp))
+    Text(
+        text = buildAnnotatedString {
+            withStyle(
+                style = SpanStyle(color = Color.White, letterSpacing = 10.sp)
+            ) {
+                append("WELCOME ")
+            }
+
+            withStyle(
+                style = SpanStyle(color = Color.White, letterSpacing = 10.sp)
+            ) {
+                append("BACK!")
+            }
+        }, style = TextStyle(
+            color = Color.White,
+            fontSize = 28.sp,
+            textAlign = TextAlign.Center
+        ), modifier = Modifier.fillMaxWidth()
 
 
-        )
-        Spacer(modifier = Modifier.height(10.dp))
+    )
+    Spacer(modifier = Modifier.height(10.dp))
+    Text(
+        text = title.uppercase(),
+        style = TextStyle(
+            letterSpacing = 4.sp,
+            color = Color.White,
+            fontSize = 23.sp,
+            textAlign = TextAlign.Center
+        ),
+        modifier = Modifier.fillMaxWidth()
+    )
+    Spacer(modifier = Modifier.height(10.dp))
+    if (titleNote.equals("")) {
+        null
+    } else {
         Text(
-            text = title.uppercase(),
+            text = titleNote,
             style = TextStyle(
-                letterSpacing = 4.sp,
-                color = Color.White,
-                fontSize = 23.sp,
+                color = Color.LightGray,
+                fontSize = 20.sp,
                 textAlign = TextAlign.Center
             ),
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(10.dp))
-        if (titleNote.equals("")) {
-            null
-        } else {
-            Text(
-                text = titleNote,
-                style = TextStyle(
-                    color = Color.LightGray,
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
     }
-
 }

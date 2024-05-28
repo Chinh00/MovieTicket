@@ -19,19 +19,20 @@
             android:name=".ui.DetailsActivity"
             android:exported="false" />
 
-
+        <activity
+            android:name=".ui.auth.SignUpActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MovieTicket" />
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.MovieTicket" />
         <activity
             android:name=".ui.order.food.OrderFoodActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="false"/>
 
         <activity
-            android:name=".ui.order.ticket.TicketActivity"
+            android:name=".ui.order.MyOrderActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +40,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.order.ticket.TicketActivity"
+            android:exported="false"/>
+
         <activity
             android:name=".ui.shared.activity.MainActivity"
             android:exported="false" />
