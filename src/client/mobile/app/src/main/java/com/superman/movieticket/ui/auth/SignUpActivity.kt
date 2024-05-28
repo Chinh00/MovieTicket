@@ -66,6 +66,20 @@ class SignUpActivity : ComponentActivity() {
     @Composable
     @Preview(showBackground = true, showSystemUi = true)
     fun SignUpScreen() {
+        val containerColor = Color(0x8FDFD0D0)
+
+        var txtUsername by remember {
+            mutableStateOf("")
+        }
+        var txtPassword by remember {
+            mutableStateOf("")
+        }
+        var txtEmail by remember {
+            mutableStateOf("")
+        }
+        var txtPhone by remember {
+            mutableStateOf("")
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -86,13 +100,142 @@ class SignUpActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextFieldCustom("Username", "Username", R.drawable.user)
+                TextField(
+                    value = txtUsername,
+                    label = { Text(text = "Username") },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.user_icon_oulined),
+                            contentDescription = "", Modifier.size(24.dp)
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = containerColor,
+                        unfocusedContainerColor = containerColor,
+                        disabledContainerColor = containerColor,
+                        cursorColor = Color.Black,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        unfocusedLeadingIconColor = Color.White,
+                        unfocusedTrailingIconColor = Color.White,
+                    ),
+                    placeholder = { Text(text = "Enter Username", color = Color.LightGray) },
+                    onValueChange = { txtUsername = it },
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color(
+                                0x3C817676
+                            )
+                        ),
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                TextFieldCustom("Email", "Email", R.drawable.mail)
+                TextField(
+                    value = txtEmail,
+                    label = { Text(text = "Email") },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.mail),
+                            contentDescription = "", Modifier.size(24.dp)
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = containerColor,
+                        unfocusedContainerColor = containerColor,
+                        disabledContainerColor = containerColor,
+                        cursorColor = Color.Black,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        unfocusedLeadingIconColor = Color.White,
+                        unfocusedTrailingIconColor = Color.White,
+                    ),
+                    placeholder = { Text(text = "Enter Email", color = Color.LightGray) },
+                    onValueChange = { txtEmail = it },
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color(
+                                0x3C817676
+                            )
+                        ),
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                TextFieldCustom("Phone", "Phone", R.drawable.phonecall)
+                TextField(
+                    value = txtPhone,
+                    label = { Text(text = "Phone") },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.phonecall),
+                            contentDescription = "", Modifier.size(24.dp)
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = containerColor,
+                        unfocusedContainerColor = containerColor,
+                        disabledContainerColor = containerColor,
+                        cursorColor = Color.Black,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        unfocusedLeadingIconColor = Color.White,
+                        unfocusedTrailingIconColor = Color.White,
+                    ),
+
+                    placeholder = { Text(text = "Enter password", color = Color.LightGray) },
+                    onValueChange = { txtPhone = it },
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color(
+                                0x3C817676
+                            )
+                        ),
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                TextFieldCustom("Password", "Password", R.drawable.padlock, R.drawable.show)
+                TextField(
+                    value = txtPassword,
+                    label = { Text(text = "Password") },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.padlock),
+                            contentDescription = "", Modifier.size(24.dp)
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = containerColor,
+                        unfocusedContainerColor = containerColor,
+                        disabledContainerColor = containerColor,
+                        cursorColor = Color.Black,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        unfocusedLeadingIconColor = Color.White,
+                        unfocusedTrailingIconColor = Color.White,
+                    ),
+                    trailingIcon = {
+
+
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.show),
+                                contentDescription = "",
+                                Modifier.size(24.dp)
+                            )
+                        }
+
+                    },
+                    placeholder = { Text(text = "Enter password", color = Color.LightGray) },
+                    onValueChange = { txtPassword = it },
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color(
+                                0x3C817676
+                            )
+                        ),
+                )
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
                     onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(
@@ -133,7 +276,7 @@ class SignUpActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-     fun TextFieldCustom(
+    fun TextFieldCustom(
         value: String,
         textHolder: String,
         @DrawableRes leadIcon: Int,
