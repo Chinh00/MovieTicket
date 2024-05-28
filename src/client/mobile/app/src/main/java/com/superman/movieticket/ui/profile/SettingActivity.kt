@@ -377,7 +377,7 @@ fun SettingActivityComp() {
 
                             placeholder = {
                                 Text(
-                                    text = "User name",
+                                    text = "Password",
                                     color = Color.LightGray,
                                     fontSize = 16.sp
                                 )
@@ -402,7 +402,7 @@ fun SettingActivityComp() {
 
                             placeholder = {
                                 Text(
-                                    text = "User name",
+                                    text = "A new password",
                                     color = Color.LightGray,
                                     fontSize = 16.sp
                                 )
