@@ -1,6 +1,7 @@
 package com.superman.movieticket.ui.auth
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
@@ -49,10 +50,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.superman.movieticket.R
 
-class LoginActivity :ComponentActivity() {
+class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent{
+        setContent {
             LoginScreen()
         }
     }
@@ -61,6 +62,16 @@ class LoginActivity :ComponentActivity() {
     @Composable
     @Preview(showBackground = true, showSystemUi = true)
     fun LoginScreen() {
+        val containerColor = Color(0x8FDFD0D0)
+        val txtUsername = remember {
+            mutableStateOf("")
+
+        }
+        val txtPassword = remember {
+            mutableStateOf("")
+
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -81,12 +92,82 @@ class LoginActivity :ComponentActivity() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextFieldCustom("Username", "Username", R.drawable.user)
+                TextField(
+                    value = txtUsername.value,
+                    label = { Text(text = "Username") },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.user_icon_oulined),
+                            contentDescription = "", Modifier.size(24.dp)
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = containerColor,
+                        unfocusedContainerColor = containerColor,
+                        disabledContainerColor = containerColor,
+                        cursorColor = Color.Black,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        unfocusedLeadingIconColor = Color.White,
+                        unfocusedTrailingIconColor = Color.White,
+                    ),
+                    placeholder = { Text(text = "Enter Username", color = Color.LightGray) },
+                    onValueChange = { txtUsername.value = it },
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color(
+                                0x3C817676
+                            )
+                        ),
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                TextFieldCustom("Password", "Password", R.drawable.padlock, R.drawable.show)
+                TextField(
+                    value = txtPassword.value,
+                    label = { Text(text = "Password") },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.padlock),
+                            contentDescription = "", Modifier.size(24.dp)
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = containerColor,
+                        unfocusedContainerColor = containerColor,
+                        disabledContainerColor = containerColor,
+                        cursorColor = Color.Black,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        unfocusedLeadingIconColor = Color.White,
+                        unfocusedTrailingIconColor = Color.White,
+                    ),
+                    trailingIcon = {
+
+
+                            IconButton(onClick = { /*TODO*/ }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.show),
+                                    contentDescription = "",
+                                    Modifier.size(24.dp)
+                                )
+                            }
+
+                    },
+                    placeholder = { Text(text = "Enter password", color = Color.LightGray) },
+                    onValueChange = { txtPassword.value = it },
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color(
+                                0x3C817676
+                            )
+                        ),
+                )
                 Spacer(modifier = Modifier.height(5.dp))
 
-                TextButton(onClick = {}){
+                TextButton(onClick = {}) {
                     Text(
                         text = "I've forgotten my password",
                         style = TextStyle(
@@ -103,23 +184,36 @@ class LoginActivity :ComponentActivity() {
 
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
-                    onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFDE7101)
+                    onClick = { Log.d("Message","Username: ${txtUsername.value}, password:${txtPassword.value}")}, colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFFEB3B),
+                        contentColor = Color.Black
                     )
                 ) {
-                    Text(text = "SIGN UP")
+                    Text(text = "LOGIN")
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Column(
-horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween, modifier =Modifier.fillMaxSize()
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     Text(
                         text = buildAnnotatedString {
-                                                    withStyle(style = SpanStyle(color=Color.White, fontSize = 23.sp, fontWeight = FontWeight.ExtraBold)){
-                                                        append("Login ")
-                                                    }
-                            withStyle(style = SpanStyle(color=Color.White, fontWeight = FontWeight.Medium)){
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color.White,
+                                    fontSize = 23.sp,
+                                    fontWeight = FontWeight.ExtraBold
+                                )
+                            ) {
+                                append("Login ")
+                            }
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            ) {
                                 append("with others")
                             }
                         },
@@ -262,9 +356,9 @@ horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(10.dp))
-        if(titleNote.equals("")){
+        if (titleNote.equals("")) {
             null
-        }else{
+        } else {
             Text(
                 text = titleNote,
                 style = TextStyle(
