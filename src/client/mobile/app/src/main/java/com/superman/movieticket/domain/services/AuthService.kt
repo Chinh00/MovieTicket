@@ -1,6 +1,7 @@
 package com.superman.movieticket.domain.services
 
 import android.telecom.Call
+import com.superman.movieticket.ui.auth.model.TokenResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
@@ -15,9 +16,3 @@ interface AuthService {
         @Field("password") password: String
     ): retrofit2.Call<TokenResponse>
 }
-data class TokenResponse(
-    val access_token: String,
-    val token_type: String,
-    val expires_in: Int,
-    val scope: String
-)
