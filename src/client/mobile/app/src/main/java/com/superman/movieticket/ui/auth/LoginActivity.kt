@@ -58,7 +58,9 @@ fun HomeScreen(
     val password = remember {
         mutableStateOf("")
     }
+    fun HandleLogin () = {
 
+    }
     BaseScreen {
         Column (modifier = Modifier.apply {
             fillMaxSize().padding(10.dp)
