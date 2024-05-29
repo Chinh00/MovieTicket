@@ -64,16 +64,7 @@ dependencies {
 
     //di
     implementation(libs.hilt.android)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.material.icons.extended.android)
-    implementation(libs.androidx.navigation.compose)
     ksp(libs.hilt.compiler)
-
-    // bottom navbar
-    implementation(libs.smoothbottombar)
-
-
 
 
     // app core
@@ -92,37 +83,25 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.scalars)
 
-    //jetpack compose
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-
-    //layout in compose
+    // constrainlayout
     implementation(libs.androidx.constraintlayout.compose)
 
 
-    implementation ("com.google.accompanist:accompanist-pager:0.24.10-beta")
+    // jetpack compose
+    val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.compose.material:material-icons-core")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.material3:material3-window-size-class")
 
-    // If using indicators, also depend on
-    implementation ("com.google.accompanist:accompanist-pager-indicators:0.24.10-beta")
+    implementation("androidx.activity:activity-compose:1.9.0")
 
-    implementation("io.coil-kt:coil-compose:2.1.0")
-    implementation ("com.github.a914-gowtham:compose-ratingbar:1.3.12")
 
-    //profile
-//    implementation ("androidx.cardview:cardview:1.0.0")
-      implementation ("com.makeramen:roundedimageview:2.3.0")
-//      implementation ("com.superman:movieticket:1.0.0")
 
 }
