@@ -123,7 +123,6 @@ dependencies {
     //profile
 //    implementation ("androidx.cardview:cardview:1.0.0")
       implementation ("com.makeramen:roundedimageview:2.3.0")
-
-
+      implementation ("com.superman:movieticket:1.0.0")
 
 }
