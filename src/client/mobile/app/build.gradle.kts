@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.material.icons.extended.android)
+    implementation(libs.androidx.navigation.compose)
     ksp(libs.hilt.compiler)
 
     // bottom navbar
@@ -116,10 +118,12 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-pager-indicators:0.24.10-beta")
 
     implementation("io.coil-kt:coil-compose:2.1.0")
-    implementation ("androidx.navigation:navigation-compose:2.6.1")
     implementation ("com.github.a914-gowtham:compose-ratingbar:1.3.12")
 
     //profile
 //    implementation ("androidx.cardview:cardview:1.0.0")
       implementation ("com.makeramen:roundedimageview:2.3.0")
+
+
+
 }
