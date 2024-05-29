@@ -24,8 +24,9 @@ fun ButtonLoading (
     isLoading: Boolean,
     modifier: Modifier,
     colors: ButtonColors = ButtonDefaults.buttonColors(),
+    onClick: () -> Unit
 ) {
-    Button(onClick = { /*TODO*/ }, enabled = !isLoading, colors = colors) {
+    Button(onClick = { onClick() }, enabled = !isLoading, colors = colors) {
         FlowRow (verticalArrangement = Arrangement.Center, horizontalArrangement = Arrangement.Center) {
             if (isLoading) {
                 CircularProgressIndicator(

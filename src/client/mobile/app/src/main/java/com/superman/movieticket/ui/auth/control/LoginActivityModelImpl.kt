@@ -1,5 +1,6 @@
 package com.superman.movieticket.ui.auth.control
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -38,18 +39,19 @@ class LoginActivityModelImpl @Inject constructor(private val authService: AuthSe
         viewModelScope.launch {
             apiState.emit(ApiState.LOADING)
 
-            authService.getToken(grantType = "password", username = userLoginModel.username, password = userLoginModel.password, clientId = "react_client").enqueue(object: Callback<TokenResponse> {
+            authService.getToken(grantType = "password", username = userLoginModel.username, password = userLoginModel.password, clientId = "react_client", scope = "openid profile api").enqueue(object: Callback<TokenResponse> {
                 override fun onResponse(
                     call: Call<TokenResponse>,
                     response: Response<TokenResponse>
                 ) {
                     apiState.value = ApiState.SUCCESS
-                    TODO("Not yet implemented")
+                    Log.d("Login", response.toString())
                 }
 
                 override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
                     apiState.value = ApiState.FAIL
-                    TODO("Not yet implemented")
+                    Log.d("Login", t.message.toString())
+
                 }
 
             })

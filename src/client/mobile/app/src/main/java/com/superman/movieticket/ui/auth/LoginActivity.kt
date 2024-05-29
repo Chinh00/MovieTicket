@@ -64,8 +64,7 @@ public class LoginActivity : BaseActivity<LoginActivityModelImpl>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HomeScreen()
-
+            HomeScreen(_model, lifecycleScope)
         }
     }
 
@@ -77,7 +76,8 @@ public class LoginActivity : BaseActivity<LoginActivityModelImpl>() {
 @Composable
 @Preview
 fun HomeScreen(
-
+    model: LoginActivityModel,
+    lifecycleScope: LifecycleCoroutineScope
 ) {
     val username = remember {
         mutableStateOf("")
@@ -85,8 +85,13 @@ fun HomeScreen(
     val password = remember {
         mutableStateOf("")
     }
-    fun HandleLogin () = {
-
+    fun HandleLogin () {
+        lifecycleScope.launch {
+            val userLoginModel = UserLoginModel()
+            userLoginModel.username = username.value
+            userLoginModel.password = password.value
+            model.HandleLoginAction(userLoginModel)
+        }
     }
 
 
@@ -120,9 +125,11 @@ fun HomeScreen(
                     })
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    ButtonLoading(content = {Text(text = "Đăng nhập ", modifier = Modifier.apply { fillMaxSize() })}, isLoading = 1 == 1, modifier = Modifier.apply {
+                    ButtonLoading(content = {Text(text = "Đăng nhập ", modifier = Modifier.apply { fillMaxSize() })}, isLoading = 1 != 1, modifier = Modifier.apply {
                         padding(5.dp)
-                    }, colors = ButtonDefaults.buttonColors(Color.Red))
+                    }, colors = ButtonDefaults.buttonColors(Color.Red), onClick = {
+                        HandleLogin()
+                    })
 
                 }
             }

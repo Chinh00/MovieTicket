@@ -8,11 +8,12 @@ import retrofit2.http.POST
 
 interface AuthService {
     @FormUrlEncoded
-    @POST("/connect/token")
+    @POST("/client-identity/connect/token")
     fun getToken(
         @Field("grant_type") grantType: String,
         @Field("client_id") clientId: String,
         @Field("username") username: String,
-        @Field("password") password: String
+        @Field("password") password: String,
+        @Field("scope") scope: String
     ): retrofit2.Call<TokenResponse>
 }
