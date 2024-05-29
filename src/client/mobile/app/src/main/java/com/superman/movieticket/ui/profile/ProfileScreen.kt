@@ -1,9 +1,7 @@
 package com.superman.movieticket.ui.profile
 
-import android.media.Image
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,15 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
@@ -39,11 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.superman.movieticket.R
-import com.superman.movieticket.domain.entities.Movie
-
-
 
 @Composable
 fun ProfileScreen() {
@@ -59,7 +49,65 @@ fun ProfileScreen() {
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+//                Icon(
+//                    Icons.Outlined.KeyboardArrowLeft,
+//                    contentDescription = null,
+//                    tint = Color.White,
+//                    modifier = Modifier.size(36.dp)
+//                )
+//                Text(
+//                    text = "Profile",
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(start = 105.dp),
+//                    fontSize = 25.sp,
+//                    color = Color.White
+//                )
+            }
 
+            // Thêm Ảnh Hồ Sơ
+            Spacer(modifier = Modifier.height(20.dp))
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.avatar), // Thay đổi ID ảnh tương ứng
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            // Thêm Tên và Username
+            Text(
+                text = "Dong Chinh Khanh",
+                color = Color.White,
+                fontSize = 30.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(align = Alignment.Center)
+                    .padding(top = 20.dp)
+            )
+            Text(
+                text = "@123promax",
+                color = Color.White,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(align = Alignment.Center)
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
             Button(
@@ -140,7 +188,6 @@ fun ProfileScreen() {
                     modifier = Modifier
                         .size(40.dp)
                 )
-
             }
             Spacer(modifier = Modifier.height(70.dp))
             // Thêm phần thanh ngang
@@ -170,58 +217,8 @@ fun ProfileScreen() {
                     fontWeight = FontWeight.Bold // Nếu muốn làm đậm chữ
                 )
             }
-
         }
     }
-}
-
-
-@Composable
-fun Image1(movie: Movie) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp),
-    ) {
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val image = createRef()
-
-            Image(
-                modifier = Modifier
-                    .constrainAs(image) {
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
-                    .clip(CircleShape)
-                    .size(100.dp),
-                contentScale = ContentScale.Crop,
-                painter = painterResource(id = R.drawable.avatar),
-                contentDescription = null
-            )
-        }
-    }
-    Text(
-        text = "Dong Chinh Khanh",
-        color = Color.White,
-        fontSize = 30.sp,
-        textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentSize(align = Alignment.Center)
-            .padding(top = 20.dp)
-    )
-    Text(
-        text = "@123promax",
-        color = Color.White,
-        fontSize = 20.sp,
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentSize(align = Alignment.Center)
-    )
 }
 
 @Composable
