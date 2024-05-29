@@ -2,14 +2,7 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
-<<<<<<< Updated upstream
-      <SelectionState runConfigName="app">
-=======
-      <SelectionState runConfigName="SearchBoxPre">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="HomeContent">
->>>>>>> Stashed changes
+      <SelectionState runConfigName="SavedMoviePre">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
