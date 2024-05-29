@@ -45,12 +45,12 @@ class LoginActivityModelImpl @Inject constructor(private val authService: AuthSe
                     response: Response<TokenResponse>
                 ) {
                     apiState.value = ApiState.SUCCESS
-                    Log.d("Login", response.toString())
+                    Log.d("Login", response.body()?.access_token.toString())
                 }
 
                 override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
                     apiState.value = ApiState.FAIL
-                    Log.d("Login", t.message.toString())
+                    Log.d("Login", t.toString())
 
                 }
 
