@@ -17,10 +17,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.superman.movieticket.domain.entities.Movie
+import com.superman.movieticket.ui.detail.view.DetailScreen
+import com.superman.movieticket.ui.detail.view.ListScreen
 import com.superman.movieticket.ui.home.HomeScreen
 import com.superman.movieticket.ui.main.model.NavigationBarItemConfig
 
@@ -57,6 +63,7 @@ val navigationBarItems = listOf<NavigationBarItemConfig>(
 @Composable
 @Preview
 fun MainScreen () {
+    val context = LocalContext.current
     val navController = rememberNavController()
     Scaffold (
         topBar = {
@@ -79,8 +86,22 @@ fun MainScreen () {
         Surface (modifier = Modifier
             .padding(it)
             .fillMaxSize()) {
-            NavHost(navController = navController, startDestination = "home" ) {
+            NavHost(navController = navController, startDestination = "list" ) {
                 composable("home") { HomeScreen()}
+                composable("list") { ListScreen (context) }
+//                composable("detail/{id}/{s}", arguments = listOf(
+//                    navArgument("id"){
+//                        type = NavType.IntType
+//                    },
+//                    navArgument("s"){
+//                        type = NavType.StringType
+//                    }
+//                )
+//                ) {
+//                    val id=it.arguments?.getInt("id")
+//                    val s=it.arguments?.getString("s")
+//                    DetailScreen(id!!.toInt(),s.toString())
+//                }s
             }
         }
     }
