@@ -44,5 +44,6 @@ var app = builder.Build();
 app.UseCors("Cors");
 app.MapGet("/", () => "Hello World!");
 
+app.UseRouting();
 app.UseIdentityServer();
 app.Run();

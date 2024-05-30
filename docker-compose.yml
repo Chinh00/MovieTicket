@@ -4,7 +4,7 @@ services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
-      - "1433:1433"
+      - "1435:1433"
     environment:
       SA_PASSWORD: "@P@ssw0rd02"
       ACCEPT_EULA: "Y"
@@ -14,34 +14,7 @@ services:
     networks:
       movie-network:
 
-  movieticketclient:
-    build:
-      context: .
-      dockerfile: src/server/Client/MovieTicketClient.Api/Dockerfile
-    environment:
-      - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
-      - Identity__Url=http://identityserverclient:8091
-    ports:
-      - "8090:80"
-    depends_on:
-      - db
-      - identityserverclient
-    networks:
-      movie-network:
-
-  identityserverclient:
-    build:
-      context: .
-      dockerfile: src/server/Client/MovieTicketClient.IdentityServer/Dockerfile
-    environment:
-      - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
-    ports:
-      - "8091:80"
-    depends_on:
-      - db
-    networks:
-      movie-network:
-
+  
   movieticketmanagement:
     build:
       context: .
@@ -60,7 +33,7 @@ services:
   identityservermanagement:
     build:
       context: .
-      dockerfile: src/server/Management/MovieTicketManagement.IndentityServer/Dockerfile
+      dockerfile: src/server/Management/MovieTicketManagement.IdentityServer/Dockerfile
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_admin;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
     ports:
@@ -109,8 +82,6 @@ services:
       
         
     depends_on:
-      - movieticketclient
-      - identityserverclient
       - movieticketmanagement
       - identityservermanagement
     networks:
