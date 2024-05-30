@@ -1,8 +1,6 @@
 package com.superman.movieticket.ui.theme
 
 
-
-
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -31,7 +29,8 @@ private val LightColorPalette = lightColorScheme(
     onPrimary = Color.Black,
     onSecondary = Color.White,
     onBackground = Color.Black,
-    onSurface = Color.Black
+    onSurface = Color.Black,
+
 )
 
 @Composable
@@ -48,7 +47,7 @@ fun MyAppTheme(
     MaterialTheme(
         colorScheme = colors,
         typography = CustomTypography,
-
+        shapes = CustomShapes,
         content = content
     )
 }

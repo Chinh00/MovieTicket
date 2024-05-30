@@ -20,12 +20,11 @@ retrofit = "2.9.0"
 gson = "2.10.1"
 
 
+
 [libraries]
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
-androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
-androidx-material3 = { module = "androidx.compose.material3:material3" }
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

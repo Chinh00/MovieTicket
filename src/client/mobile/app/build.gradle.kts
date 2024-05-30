@@ -95,8 +95,8 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.ui.tooling.preview)
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
@@ -113,14 +113,12 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.1.0")
 
 
-    // image round
-    implementation ("com.makeramen:roundedimageview:2.3.0")
+
+      implementation ("com.makeramen:roundedimageview:2.3.0")
 
 
-    // datastore
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    //ViedeoYoutubetrailer
+    implementation( "com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
 
-    // hilt composable
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
 }

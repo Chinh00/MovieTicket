@@ -6,7 +6,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -25,16 +24,5 @@ object CoroutineProvider {
     @Singleton
     fun AddCoroutineScopeDefault() = CoroutineScope(Dispatchers.Default)
 
+
 }
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class CoroutineScopeIO
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class CoroutineScopeMain
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class CoroutineScopeDefault

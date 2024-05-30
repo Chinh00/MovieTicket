@@ -17,11 +17,11 @@ class Http {
             baseURL: AppConfig.BASE_URL,
             timeout: 2 * 60 * 60
         })
-        this.accessToken = CookieHelper.GetToken().access_token
+        
         this.instance.interceptors.request.use(value => {
             nProgress.start()
             
-            if (this.accessToken) {
+            if (!!this.accessToken) {
                 value.headers.Authorization = `Bearer ${this.accessToken}`
             }
             
