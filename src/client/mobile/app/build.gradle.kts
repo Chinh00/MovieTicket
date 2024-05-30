@@ -113,8 +113,14 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.1.0")
 
 
+    // image round
+    implementation ("com.makeramen:roundedimageview:2.3.0")
 
-      implementation ("com.makeramen:roundedimageview:2.3.0")
 
+    // datastore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    // hilt composable
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 }

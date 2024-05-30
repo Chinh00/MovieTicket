@@ -95,7 +95,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.superman.movieticket.ui.theme.MyAppTheme
+import kotlinx.coroutines.flow.collect
+import java.time.LocalDateTime
+import java.util.Date
 
 @Composable
 fun HomeScreen() {
@@ -108,7 +112,7 @@ fun HomeScreen() {
 @Composable
 @Preview(showSystemUi = true)
 fun HomeContent() {
-    val homeViewModel = HomeScreenViewModel()
+    val homeViewModel: HomeScreenViewModel = hiltViewModel()
     var valueSearch by rememberSaveable {
         mutableStateOf("")
     }
@@ -119,14 +123,6 @@ fun HomeContent() {
     }
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (s, t, b, e) = createRefs()
-//        Column(modifier = Modifier.constrainAs(s) {
-//            top.linkTo(parent.top)
-//        }) {
-//            SearchBox { s, isSubmited ->
-//                searchScreen = isSubmited
-//                valueSearch = s
-//            }
-//        }
         Column(modifier = Modifier
             .padding(vertical = 10.dp)
             .fillMaxWidth()
@@ -181,13 +177,16 @@ fun HomeContent() {
 @Composable
 fun ComingPage(homeScreenModel: HomeScreenViewModel) {
     var isLoading by remember { mutableStateOf(true) }
-val movies = homeScreenModel.listMoviesNowing.value
+    val movies = remember {
+        mutableStateOf(emptyList<Movie>())
+    }
     // Simulate loading data with a delay
     LaunchedEffect(Unit) {
-        delay(2000)  // Giả lập tải dữ liệu trong 2 giây
-        isLoading = false
+        homeScreenModel.listMovies.collect {
+            movies.value = it
+        }
     }
-
+    Log.d("Chinh", movies.value.toString())
     if (isLoading) {
         Column(
             modifier = Modifier
@@ -206,7 +205,7 @@ val movies = homeScreenModel.listMoviesNowing.value
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            movies.forEach {
+            movies.value.forEach {
                 ComingPageItem(m = it)
             }
         }
@@ -313,78 +312,30 @@ fun ComingPageItem(m: Movie) {
 @Composable
 @Preview(showSystemUi = true)
 fun ComingPagePre() {
-    val item = HomeScreenViewModel().listMoviesNowing.value[0]
-    ComingPageItem(item)
+    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+
+    val item = remember {
+        mutableStateOf({} as Movie)
+    }
+    LaunchedEffect(Unit) {
+        homeScreenViewModel.listMovies.collect {
+            item.value = it[0]
+        }
+    }
+    ComingPageItem(item.value)
 }
 
-//@Composable
-//@Preview(showSystemUi = true)
-//fun ScreenShape() {
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(16.dp),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        Box(
-//            modifier = Modifier
-//                .size(300.dp, 150.dp)
-//                .padding(16.dp)
-//        ) {
-//            DrawScreenCurve()
-//        }
-//    }
-//}
 
-//@Composable
-//fun DrawScreenCurve() {
-//    Canvas(modifier = Modifier.fillMaxSize()) {
-//        val width = size.width
-//        val height = size.height
-//
-//        val shadowPath = Path().apply {
-//            moveTo(0f, height * 0.2f)  // Bắt đầu từ điểm bên trái dưới
-//            cubicTo(
-//                width * 0.25f, 0f,     // Điểm điều khiển thứ nhất
-//                width * 0.75f, 0f,     // Điểm điều khiển thứ hai
-//                width, height * 0.2f   // Điểm cuối cùng bên phải
-//            )
-//        }
-//
-//        // Vẽ đường cong đổ bóng
-//        drawPath(
-//            path = shadowPath,
-//            color = Color.Green.copy(alpha = 0.1f),  // Màu xám nhạt
-//            style = Stroke(width = 10.dp.toPx())
-//        )
-//
-//        // Vẽ đường cong chính
-//        val mainPath = Path().apply {
-//            moveTo(0f, height * 0.2f)  // Bắt đầu từ điểm bên trái dưới
-//            cubicTo(
-//                width * 0.25f, 0f,     // Điểm điều khiển thứ nhất
-//                width * 0.75f, 0f,     // Điểm điều khiển thứ hai
-//                width, height * 0.2f   // Điểm cuối cùng bên phải
-//            )
-//        }
-//
-//        drawPath(
-//            path = mainPath,
-//            color = Color.Gray,
-//            style = Stroke(width = 4.dp.toPx())
-//        )
-//    }
-//}
 @Composable
 fun HomePage(homeScreenModel: HomeScreenViewModel) {
-    val movies by homeScreenModel.listMoviesNowing
-    var isLoading by remember { mutableStateOf(true) }
 
+    val movies = remember { mutableStateOf(emptyList<Movie>())  }
+
+    var isLoading by remember { mutableStateOf(true) }
+    Log.d("Chinh", movies.value.size.toString())
     // Simulate loading data with a delay
     LaunchedEffect(Unit) {
-        delay(2000)  // Giả lập tải dữ liệu trong 2 giây
-        isLoading = false
+        homeScreenModel.listMovies.collect {movies.value = it}
     }
 
     if (isLoading) {
@@ -410,9 +361,9 @@ fun HomePage(homeScreenModel: HomeScreenViewModel) {
             ) {
 //
 //
-            NowingMovieComp(movies)
+            NowingMovieComp(movies.value)
 
-            PopularMovieComp(movies)
+            PopularMovieComp(movies.value)
         }
     }
 }
