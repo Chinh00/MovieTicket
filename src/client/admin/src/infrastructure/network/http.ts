@@ -22,7 +22,7 @@ class Http {
             nProgress.start()
             
             if (!!this.accessToken) {
-                value.headers.Authorization = `Bearer ${this.accessToken}`
+                value.headers.Authorization = `Bearer ${CookieHelper.GetToken().access_token}`
             }
             
             return value
