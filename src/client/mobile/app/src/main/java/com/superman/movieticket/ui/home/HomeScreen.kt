@@ -88,6 +88,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material3.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -95,7 +96,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.superman.movieticket.ui.theme.MyAppTheme
+import kotlinx.coroutines.flow.collect
+import java.time.LocalDateTime
+import java.util.Date
 
 @Composable
 fun HomeScreen() {
@@ -108,7 +113,7 @@ fun HomeScreen() {
 @Composable
 @Preview(showSystemUi = true)
 fun HomeContent() {
-    val homeViewModel = HomeScreenViewModel()
+    val homeViewModel: HomeScreenViewModel = hiltViewModel()
     var valueSearch by rememberSaveable {
         mutableStateOf("")
     }
@@ -119,14 +124,6 @@ fun HomeContent() {
     }
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (s, t, b, e) = createRefs()
-//        Column(modifier = Modifier.constrainAs(s) {
-//            top.linkTo(parent.top)
-//        }) {
-//            SearchBox { s, isSubmited ->
-//                searchScreen = isSubmited
-//                valueSearch = s
-//            }
-//        }
         Column(modifier = Modifier
             .padding(vertical = 10.dp)
             .fillMaxWidth()
@@ -169,7 +166,7 @@ fun HomeContent() {
 
                 1 -> {
                     Log.d("Screen", "Search Scereen")
-                    ComingPage(homeViewModel)
+                    ComingPage()
                 }
             }
 
@@ -179,36 +176,20 @@ fun HomeContent() {
 }
 
 @Composable
-fun ComingPage(homeScreenModel: HomeScreenViewModel) {
-    var isLoading by remember { mutableStateOf(true) }
-val movies = homeScreenModel.listMoviesNowing.value
-    // Simulate loading data with a delay
-    LaunchedEffect(Unit) {
-        delay(2000)  // Giả lập tải dữ liệu trong 2 giây
-        isLoading = false
-    }
+fun ComingPage() {
+    val homeScreenModel: HomeScreenViewModel = hiltViewModel()
+    val movies = homeScreenModel.listMovies.collectAsState()
 
-    if (isLoading) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-        }
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            movies.forEach {
-                ComingPageItem(m = it)
-            }
+    Log.d("Chinh", movies.value.toString())
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        movies.value.forEach {
+            ComingPageItem(m = it)
         }
     }
 }
@@ -313,107 +294,36 @@ fun ComingPageItem(m: Movie) {
 @Composable
 @Preview(showSystemUi = true)
 fun ComingPagePre() {
-    val item = HomeScreenViewModel().listMoviesNowing.value[0]
+    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+
+    val item = homeScreenViewModel.listMovies.collectAsState().value[0]
+    LaunchedEffect(Unit) {
+
+    }
     ComingPageItem(item)
 }
 
-//@Composable
-//@Preview(showSystemUi = true)
-//fun ScreenShape() {
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(16.dp),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        Box(
-//            modifier = Modifier
-//                .size(300.dp, 150.dp)
-//                .padding(16.dp)
-//        ) {
-//            DrawScreenCurve()
-//        }
-//    }
-//}
 
-//@Composable
-//fun DrawScreenCurve() {
-//    Canvas(modifier = Modifier.fillMaxSize()) {
-//        val width = size.width
-//        val height = size.height
-//
-//        val shadowPath = Path().apply {
-//            moveTo(0f, height * 0.2f)  // Bắt đầu từ điểm bên trái dưới
-//            cubicTo(
-//                width * 0.25f, 0f,     // Điểm điều khiển thứ nhất
-//                width * 0.75f, 0f,     // Điểm điều khiển thứ hai
-//                width, height * 0.2f   // Điểm cuối cùng bên phải
-//            )
-//        }
-//
-//        // Vẽ đường cong đổ bóng
-//        drawPath(
-//            path = shadowPath,
-//            color = Color.Green.copy(alpha = 0.1f),  // Màu xám nhạt
-//            style = Stroke(width = 10.dp.toPx())
-//        )
-//
-//        // Vẽ đường cong chính
-//        val mainPath = Path().apply {
-//            moveTo(0f, height * 0.2f)  // Bắt đầu từ điểm bên trái dưới
-//            cubicTo(
-//                width * 0.25f, 0f,     // Điểm điều khiển thứ nhất
-//                width * 0.75f, 0f,     // Điểm điều khiển thứ hai
-//                width, height * 0.2f   // Điểm cuối cùng bên phải
-//            )
-//        }
-//
-//        drawPath(
-//            path = mainPath,
-//            color = Color.Gray,
-//            style = Stroke(width = 4.dp.toPx())
-//        )
-//    }
-//}
 @Composable
 fun HomePage(homeScreenModel: HomeScreenViewModel) {
-    val movies by homeScreenModel.listMoviesNowing
-    var isLoading by remember { mutableStateOf(true) }
 
-    // Simulate loading data with a delay
+    val movies = homeScreenModel.listMovies.collectAsState()
+
     LaunchedEffect(Unit) {
-        delay(2000)  // Giả lập tải dữ liệu trong 2 giây
-        isLoading = false
+
     }
 
-    if (isLoading) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+
         ) {
-//            androidx.compose.material3.CircularProgressIndicator(
-//                modifier = Modifier.width(64.dp),
-//                color = androidx.compose.material3.MaterialTheme.colorScheme.secondary,
-//                trackColor = Color.LightGray,
-//            )
-        }
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-
-            ) {
 //
 //
-            NowingMovieComp(movies)
+        NowingMovieComp(movies.value)
 
-            PopularMovieComp(movies)
-        }
+        PopularMovieComp(movies.value)
     }
 }
 
@@ -541,17 +451,6 @@ fun PopularMovies(
                         fontWeight = FontWeight.Normal,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    var rating by remember { mutableStateOf(3.2f) }
-//                    RatingBar(
-//                        value = rating,
-//                        style = RatingBarStyle.Fill(),
-//                        onValueChange = {
-//                            rating = it
-//                        },
-//                        onRatingChanged = {
-//                            Log.d("TAG", "onRatingChanged: $it")
-//                        }
-//                    )
                     Text(
                         text = buildAnnotatedString {
                             withStyle(SpanStyle(color = Color.White)) {
@@ -591,82 +490,6 @@ fun PopularMovies(
     }
 }
 
-//@Composable
-//@Preview(showBackground = true, showSystemUi = true)
-//fun PopularMoviesPre() {
-//    PopularMovieComp()
-//}
-
-//@Composable
-//@Preview(showSystemUi = true)
-//fun NowingMoviePre() {
-//    NowingMovieComp()
-//
-//}
-
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun SearchBox(onSearch: (String, Int) -> Unit) {
-//    val keyboardController = LocalSoftwareKeyboardController.current
-//    var txtString = remember {
-//        mutableStateOf("")
-//    }
-//    TextField(value = txtString.value,
-//        onValueChange = {
-//            txtString.value = it
-//        },
-//        placeholder = { Text(text = "Search", color = Color.Gray) },
-//        leadingIcon = {
-//            Icon(
-//                painter = painterResource(id = R.drawable.search),
-//                contentDescription = null,
-//                modifier = Modifier.size(24.dp),
-//                tint = Color.Gray
-//            )
-//        },
-//        trailingIcon = {
-//            Icon(
-//                painter = painterResource(id = R.drawable.microphone),
-//                contentDescription = null, modifier = Modifier.size(24.dp), tint = Color.Gray
-//            )
-//        }, keyboardOptions = KeyboardOptions.Default.copy(
-//            imeAction = ImeAction.Search
-//        ), keyboardActions = KeyboardActions(
-//            onSearch = {
-//                onSearch(txtString.value, 2)
-//                keyboardController?.hide()
-//            }
-//
-//        ),
-//        colors = androidx.compose.material3.TextFieldDefaults.textFieldColors(
-//            containerColor = Color.LightGray,
-//            unfocusedIndicatorColor = Color.Transparent,
-//            focusedIndicatorColor = Color.Transparent,
-//            focusedTextColor = Color.White
-//
-//        ),
-//        modifier = Modifier
-//            .padding(horizontal = 10.dp)
-//            .clip(RoundedCornerShape(10.dp))
-//            .fillMaxWidth()
-//    )
-//}
-//
-//@Composable
-//@Preview(showSystemUi = true)
-//fun SearchBoxPre() {
-//    var valueSearch = remember {
-//        mutableStateOf("")
-//    }
-//    SearchBox { s, isSubmited ->
-//        if (isSubmited == 1) {
-//            Log.d("Screen", "Search Scereen")
-//        }
-//    }
-//
-//
-//}
 
 data class TabItem(
     val title: String,
@@ -687,282 +510,6 @@ val tabsList = listOf(
     )
 
 )
-
-//@Composable
-//fun ComingUpScreenComp(listViewMoviesNowing: List<Movie>) {
-//
-//    Box(modifier = Modifier.wrapContentSize()) {
-//        ComingUpMovies(listViewMoviesNowing,
-//            onMovieFavourite = {
-//
-//            },
-//            onMovieClicked = {
-//
-//            }
-//        )
-//    }
-//}
-
-
-//@Composable
-//@Preview(showSystemUi = true)
-//fun ComingUpScreenPre() {
-//    val homeScreenViewModel = HomeScreenViewModel()
-//    val list = homeScreenViewModel.listMoviesNowing
-//    Box(modifier = Modifier.wrapContentSize()) {
-//        ComingUpMovies(list.value,
-//            onMovieFavourite = {
-//
-//            },
-//            onMovieClicked = {
-//
-//            }
-//        )
-//    }
-//}
-//@Composable
-
-//private fun ComingUpMovies(
-//    listViewMoviesNowing: List<Movie>,
-//    onMovieClicked: (Movie) -> Unit,
-//    onMovieFavourite: (Movie) -> Unit
-//) {
-//    LazyColumn {
-//
-//
-//        items(listViewMoviesNowing.size) {
-//            Box(
-//                modifier = Modifier
-//                    .wrapContentSize()
-//                    .background(Color.Transparent)
-//                    .padding(5.dp)
-//
-//
-//            ) {
-//
-//                Image(
-//                    painter = painterResource(id = R.drawable.kungfu),
-//                    modifier = Modifier.clip(RoundedCornerShape(30.dp)),
-//                    contentScale = ContentScale.FillBounds,
-//                    contentDescription = ""
-//                )
-//                Icon(
-//                    imageVector = Icons.Outlined.FavoriteBorder,
-//                    contentDescription = null, tint = Color.White,
-//                    modifier = Modifier
-//                        .clip(CircleShape)
-//                        .background(
-//                            color = Color(0xBEE7E7E7)
-//                        )
-//                        .clickable { onMovieFavourite(listViewMoviesNowing[it]) }
-//                        .padding(20.dp)
-//                )
-//                Icon(
-//                    painter = painterResource(id = R.drawable.arrow),
-//                    contentDescription = null,
-//                    modifier = Modifier
-//                        .clip(CircleShape)
-//                        .align(Alignment.BottomEnd)
-//                        .background(
-//                            color = Color(0xC30E0E69)
-//                        )
-//                        .size(60.dp)
-//                        .clickable { onMovieFavourite(listViewMoviesNowing[it]) }
-//                        .padding(20.dp), tint = Color.White
-//                )
-//            }
-//        }
-//
-//    }
-//}
-
-//@Composable
-//@Preview(showBackground = true)
-//fun ComingUpMoviesPre() {
-//    val homeScreenViewModel = HomeScreenViewModel()
-//    val list = homeScreenViewModel.listMoviesNowing
-//    ComingUpMovies(list.value,
-//        onMovieClicked = { movie ->
-//            // Xử lý khi một bộ phim được nhấp vào
-//            // Đối số 'movie' là đối tượng Movie tương ứng
-//        },
-//        onMovieFavourite = { movie ->
-//            // Xử lý khi một bộ phim được đánh dấu là yêu thích
-//            // Đối số 'movie' là đối tượng Movie tương ứng
-//        }
-//    )
-//
-//
-//}
-
-//@Composable
-////@Preview()
-//fun NowPlayingScreenComp(listViewMoviesNowing: List<Movie>) {
-//    LazyColumn(
-//        modifier = Modifier
-//            .fillMaxSize()
-//
-//
-//    ) {
-//        item {
-//            Row(
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//                modifier = Modifier.fillMaxWidth(),
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                Text(
-//                    text = "Category", style = TextStyle(
-//                        color = Color.White, fontSize = 20.sp
-//                    )
-//                )
-//                TextButton(onClick = { /*TODO*/ }) {
-//                    Text(
-//                        text = "See All", style = TextStyle(
-//                            color = Color(0xFFFF9800),
-//                            fontSize = 18.sp,
-//                            fontWeight = FontWeight.Bold
-//                        )
-//                    )
-//                }
-//            }
-//        }
-////
-////        item {
-////
-////        }
-////
-//
-//
-//    }
-//
-//
-//}
-
-//@Composable
-//fun PopularMovieComp() {
-//    PopularMovies(
-//        onMovieClicked = {
-//
-//        },
-//        onMovieFavouriteClicked = {
-//
-//        }
-//    )
-//}
-
-//@Composable
-//fun PopularMovies(onMovieClicked: (Movie) -> Unit, onMovieFavouriteClicked: (Movie) -> Unit) {
-//
-//    LazyColumn(modifier = Modifier.fillMaxSize()) {
-//        items(listMovies.size) {
-//            Row(
-//                horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(200.dp)
-//            ) {
-//                Image(
-//                    painter = painterResource(id = R.drawable.bietdoidanhthue),
-//                    contentDescription = null, modifier = Modifier
-//                        .width(150.dp)
-//                        .clip(
-//                            RoundedCornerShape(13.dp)
-//                        )
-//                        .height(200.dp), contentScale = ContentScale.FillBounds
-//                )
-//                Spacer(modifier = Modifier.width(10.dp))
-//                Column(
-//                    modifier = Modifier.fillMaxHeight(),
-//                    verticalArrangement = Arrangement.SpaceBetween
-//                ) {
-//                    Box {
-//                        Text(
-//                            text = listMovies[it].title.uppercase(),
-//                            fontSize = 20.sp,
-//                            fontWeight = FontWeight.Bold,
-//                            modifier = Modifier.fillMaxWidth()
-//                        )
-//
-//                        Icon(painter = painterResource(id = R.drawable.bookmark),
-//                            modifier = Modifier
-//                                .clickable { onMovieFavouriteClicked(listMovies[it]) }
-//                                .size(25.dp)
-//                                .align(Alignment.TopEnd),
-//                            contentDescription = null,
-//                            tint = Color.Black)
-//                    }
-//                    Row {
-//                        Text(
-//                            text = listMovies[it].description,
-//                            fontSize = 18.sp, maxLines = 2, overflow = TextOverflow.Ellipsis,
-//                            color = Color.Gray,
-//                            fontWeight = FontWeight.Normal,
-//                            modifier = Modifier.fillMaxWidth()
-//                        )
-//
-//                    }
-//                    var rating by remember {
-//                        mutableStateOf(3.2f)
-//                    }
-//                    Row {
-//                        RatingBar(
-//                            value = rating,
-//                            style = RatingBarStyle.Fill(),
-//                            onValueChange = {
-//                                rating = rating
-//                            },
-//                            onRatingChanged = {
-//                                Log.d("TAG", "onRatingChanged: $it")
-//                            }
-//
-//                        )
-//
-//                    }
-//                    Row {
-//                        Text(text = buildAnnotatedString {
-//                            withStyle(SpanStyle(color = Color.Black)) {
-//                                append("${listMovies[it].duration} | Khoa hoc vien tuong")
-//                            }
-//                        })
-//
-//                    }
-//                    Row {
-//                        Text(
-//                            text = "CGV", color = Color.White,
-//                            modifier = Modifier
-//                                .background(Color.Gray, RoundedCornerShape(20.dp))
-//                                .padding(5.dp)
-//                        )
-//                        Spacer(modifier = Modifier.width(13.dp))
-//
-//                        Text(
-//                            text = "Cinema", color = Color.White,
-//                            modifier = Modifier
-//                                .background(Color.Gray, RoundedCornerShape(20.dp))
-//                                .padding(5.dp)
-//                        )
-//                        Spacer(modifier = Modifier.width(13.dp))
-//
-//                        Text(
-//                            text = "BHD Star", color = Color.White,
-//                            modifier = Modifier
-//                                .background(Color.Gray, RoundedCornerShape(20.dp))
-//                                .padding(5.dp)
-//                        )
-//
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//    }
-//}
-
-//@Composable
-//@Preview(showBackground = true, showSystemUi = true)
-//fun PopularMoviesPre() {
-//    NowPlayingScreenComp(listViewMoviesNowing = )
-//}
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
