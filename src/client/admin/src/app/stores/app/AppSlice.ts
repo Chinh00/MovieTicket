@@ -5,7 +5,7 @@ export type AppState = {
 
 
 export const defaultAppState: AppState = {
-    authenticate: true
+    authenticate: false
 }
 
 
