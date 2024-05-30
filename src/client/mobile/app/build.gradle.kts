@@ -117,4 +117,8 @@ dependencies {
       implementation ("com.makeramen:roundedimageview:2.3.0")
 
 
+    //ViedeoYoutubetrailer
+    implementation( "com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
+
+
 }

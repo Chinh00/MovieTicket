@@ -31,7 +31,7 @@ val listMovies1 = listOf(
         releaseDate = Date(),
         totalTime = 162,
         description = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
-        trailer = "0",
+        trailer = "7f-49jDbK10",
         avatar = "https://images-na.ssl-images-amazon.com/images/M/MV5BMjEyOTYyMzUxNl5BMl5BanBnXkFtZTcwNTg0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"
 
     ),

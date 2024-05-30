@@ -23,10 +23,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -35,6 +38,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +50,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -61,6 +66,7 @@ import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.home.control.HomeScreenViewModel
 import com.superman.movieticket.ui.theme.MyAppTheme
+import com.superman.movieticket.ui.theme.YoutubePlayer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.format.TextStyle
@@ -80,10 +86,15 @@ class DetailActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(m: Movie) {
     val context = LocalContext.current
+    val sheetState = rememberModalBottomSheetState()
+    var isOpenBottomSheet = rememberSaveable {
+        mutableStateOf(false)
 
+    }
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -113,10 +124,10 @@ fun DetailScreen(m: Movie) {
                 top.linkTo(parent.top)
                 end.linkTo(parent.end)
                 start.linkTo(parent.start)
-                bottom.linkTo(b.top)
+                bottom.linkTo(parent.bottom)
             }) {
             ConstraintLayout {
-                val (c1,c2)=createRefs()
+                val (c1, c2) = createRefs()
                 Image(
                     painter = painterResource(id = R.drawable.kingkong2024),
                     contentScale = ContentScale.FillBounds,
@@ -140,11 +151,14 @@ fun DetailScreen(m: Movie) {
                         start.linkTo(c1.start)
                         end.linkTo(c1.end)
                     }) {
-                    IconButton(onClick = { /*TODO*/ },
+                    IconButton(
+                        onClick = { isOpenBottomSheet.value =true },
                         modifier = Modifier
-                            .size(100.dp)) {
+                            .size(100.dp)
+                    ) {
                         Image(
-                            painter = painterResource(id = R.drawable.play_icon), contentDescription = null
+                            painter = painterResource(id = R.drawable.play_icon),
+                            contentDescription = null
                         )
                     }
                 }
@@ -213,15 +227,15 @@ fun DetailScreen(m: Movie) {
             val scrollDesc = rememberScrollState()
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 25.dp)
                     .fillMaxWidth()
+                    .fillMaxHeight()
             ) {
                 DescriptionText(text = m.description, verticalScroll = scrollDesc)
             }
         }
 
         Row(modifier = Modifier
-            .padding(bottom = 10.dp, end = 10.dp, start = 10.dp)
+            .padding(bottom = 20.dp, end = 10.dp, start = 10.dp)
             .constrainAs(b) {
                 bottom.linkTo(parent.bottom)
             }) {
@@ -237,6 +251,19 @@ fun DetailScreen(m: Movie) {
 
 
     }
+val videotrailer = rememberSaveable {
+    mutableStateOf(m.trailer)
+}
+    if (isOpenBottomSheet.value) {
+        ModalBottomSheet(
+
+            onDismissRequest = {isOpenBottomSheet.value=false}, sheetState = sheetState, modifier = Modifier
+                .padding(top = 40.dp)
+                .fillMaxSize()
+        , shape = MaterialTheme.shapes.medium) {
+            YoutubePlayer(videotrailer.value, LocalLifecycleOwner.current)
+        }
+    }
 }
 
 @Composable
@@ -245,12 +272,13 @@ fun DescriptionText(text: String, verticalScroll: ScrollState) {
     Column(
         Modifier
             .fillMaxSize()
-            .padding(15.dp)
+            .fillMaxHeight()
+            .padding(end = 15.dp, start = 15.dp)
             .verticalScroll(verticalScroll)
     ) {
         val gradientColors = listOf(Color.White, Color.Gray, Color.DarkGray)
         Text(
-            text = text+text,
+            text = text + text + text + text,
             style = androidx.compose.ui.text.TextStyle(
                 brush = Brush.verticalGradient(gradientColors),
                 textAlign = TextAlign.Justify
@@ -258,7 +286,7 @@ fun DescriptionText(text: String, verticalScroll: ScrollState) {
             maxLines = if (seeMore.value) 2 else Int.MAX_VALUE,
             fontSize = 20.sp,
             overflow = if (seeMore.value) TextOverflow.Ellipsis else TextOverflow.Clip,
-            color = Color.White, modifier = Modifier.clickable { seeMore.value = !seeMore.value}
+            color = Color.White, modifier = Modifier.clickable { seeMore.value = !seeMore.value }
         )
         Text(
             modifier = Modifier.clickable { seeMore.value = !seeMore.value },
