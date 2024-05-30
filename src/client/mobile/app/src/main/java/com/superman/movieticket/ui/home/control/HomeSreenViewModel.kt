@@ -23,16 +23,12 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(private val movieService: MovieService) :ViewModel(){
 
-    private var _listMoviesNowing = mutableStateOf<List<Movie>>(
-        emptyList()
-    )
-    val listMoviesNowing: State<List<Movie>> = _listMoviesNowing
+
     val _listMovies: MutableStateFlow<List<Movie>> = MutableStateFlow(emptyList())
     val listMovies: StateFlow<List<Movie>> = _listMovies.asStateFlow()
 
 
     init {
-        fetchMovies()
         viewModelScope.launch {
             movieService.HandleGetMoviesAsync("").enqueue(object : Callback<SuccessResponse<ListResponse<Movie>>> {
                 override fun onResponse(
@@ -53,63 +49,5 @@ class HomeScreenViewModel @Inject constructor(private val movieService: MovieSer
             })
         }
     }
-    public fun fetchMovies() {
-        /*viewModelScope.launch {
-            movieService.HandleGetMoviesAsync("").enqueue(object: Callback<SuccessResponse<ListResponse<Movie>>> {
-                override fun onResponse(
-                    call: Call<SuccessResponse<ListResponse<Movie>>>,
-                    response: Response<SuccessResponse<ListResponse<Movie>>>
-                ) {
-                    listMovie.value = response.body()?.data?.items!!
-                    Log.d("Movie get list", response.body()?.data?.items.toString())
-                }
 
-                override fun onFailure(
-                    call: Call<SuccessResponse<ListResponse<Movie>>>,
-                    t: Throwable
-                ) {
-                }
-
-            })
-
-
-
-        }*/
-    }
 }
-//val listMovies1 = listOf(
-//    Movie(
-//        name = "Avatar",
-//        releaseDate = Date(),
-//        totalTime = 162,
-//        description = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
-//        trailer = "0",
-//        avatar = "https://images-na.ssl-images-amazon.com/images/M/MV5BMjEyOTYyMzUxNl5BMl5BanBnXkFtZTcwNTg0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"
-//
-//    ),
-//    Movie(
-//        name = "Avatar",
-//        releaseDate = Date(),
-//        totalTime = 162,
-//        description = "A paraplegic marine dispatched to the moon Pando/ra on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
-//        trailer = "0",
-//        avatar = "https://images-na.ssl-images-amazon.com/images/M/MV5BMjEyOTYyMzUxNl5BMl5BanBnXkFtZTcwNTg0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"
-//
-//    ),Movie(
-//        name = "Avatar",
-//        releaseDate = Date(),
-//        totalTime = 162,
-//        description = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
-//        trailer = "0",
-//        avatar = "https://images-na.ssl-images-amazon.com/images/M/MV5BMjEyOTYyMzUxNl5BMl5BanBnXkFtZTcwNTg0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"
-//
-//    ),Movie(
-//        name = "Avatar",
-//        releaseDate = Date(),
-//        totalTime = 162,
-//        description = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
-//        trailer = "0",
-//        avatar = "https://images-na.ssl-images-amazon.com/images/M/MV5BMjEyOTYyMzUxNl5BMl5BanBnXkFtZTcwNTg0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"
-//
-//    ),)
-
