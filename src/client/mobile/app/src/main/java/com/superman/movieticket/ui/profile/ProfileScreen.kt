@@ -75,20 +75,7 @@ fun ProfileScreen() {
                     .height(50.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-//                Icon(
-//                    Icons.Outlined.KeyboardArrowLeft,
-//                    contentDescription = null,
-//                    tint = Color.White,
-//                    modifier = Modifier.size(36.dp)
-//                )
-//                Text(
-//                    text = "Profile",
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(start = 105.dp),
-//                    fontSize = 25.sp,
-//                    color = Color.White
-//                )
+
             }
             Spacer(modifier = Modifier.height(30.dp))
 
