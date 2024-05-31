@@ -64,7 +64,7 @@ public class LoginActivity : BaseActivity<LoginActivityModelImpl>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HomeScreen(_model, lifecycleScope)
+            LoginScreen(_model, lifecycleScope)
         }
     }
 
@@ -74,8 +74,7 @@ public class LoginActivity : BaseActivity<LoginActivityModelImpl>() {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-@Preview
-fun HomeScreen(
+fun LoginScreen(
     model: LoginActivityModel,
     lifecycleScope: LifecycleCoroutineScope
 ) {

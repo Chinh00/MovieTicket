@@ -81,6 +81,7 @@ import kotlin.math.absoluteValue
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -88,6 +89,7 @@ import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
@@ -95,8 +97,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 
 import com.superman.movieticket.ui.theme.MyAppTheme
+import java.util.Date
+
 @Composable
 fun HomeScreen() {
     MyAppTheme {
@@ -106,7 +111,7 @@ fun HomeScreen() {
 }
 
 @Composable
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 fun HomeContent() {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         HomePage()
@@ -173,7 +178,11 @@ fun ComingPageItem(m: Movie) {
                     .wrapContentSize(), verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Row {
-                    Text(m.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text(
+                        m.name,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -200,7 +209,8 @@ fun ComingPageItem(m: Movie) {
                     ) {
                         Text(
                             "IMDB: 9.3",
-                            style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier
 
                                 .padding(5.dp),
@@ -231,7 +241,7 @@ fun ComingPageItem(m: Movie) {
 }
 
 @Composable
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 fun ComingPagePre() {
     val homeViewModel: HomeScreenViewModel = hiltViewModel()
     val item = homeViewModel.listMovies.collectAsState().value[0]
@@ -239,16 +249,16 @@ fun ComingPagePre() {
 }
 
 
-
-
 @Composable
 fun HomePage() {
     val homeViewModel: HomeScreenViewModel = hiltViewModel()
     val movies = homeViewModel.listMovies.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
 
         ) {
         NowingMovieComp(movies.value)
@@ -264,7 +274,7 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Now in Cinema", color = Color.White)
+            Text(text = "Now in Cinema", color = MaterialTheme.colorScheme.surface)
             TextButton(onClick = {}) {
                 Text(text = "See all", color = Color.Red)
             }
@@ -308,14 +318,14 @@ fun PopularMovies(
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Image(
-                    painter = painterResource(id = R.drawable.bietdoidanhthue),
+                    painter = rememberAsyncImagePainter(model = item.avatar),
                     contentDescription = null,
                     modifier = Modifier
                         .width(100.dp)
                         .clip(RoundedCornerShape(13.dp))
                         .height(170.dp)
                         .border(1.dp, Color.Gray, shape = RoundedCornerShape(6.dp)),
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.FillBounds
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Column(
@@ -327,7 +337,7 @@ fun PopularMovies(
                             text = item.name.uppercase(),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.fillMaxWidth(), color = Color.White
+                            modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.surface
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.bookmark),
@@ -388,9 +398,6 @@ fun PopularMovies(
 }
 
 
-
-
-
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 
@@ -405,13 +412,13 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
         modifier = Modifier
 
             .wrapContentSize(),
-        contentPadding = PaddingValues(horizontal = 80.dp),
+        contentPadding = PaddingValues(horizontal = 60.dp),
         pageSpacing = 20.dp
     ) { page ->
         Column(
             modifier = Modifier
-                .wrapContentSize()
-                .clickable { onMovieClicked(listViewMoviesNowing[page]) }
+                .width(360.dp)
+                .clickable { }
 
                 .graphicsLayer {
                     val pageOffset = (
@@ -428,47 +435,346 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                         scaleX = it.scaleX
                         scaleY = it.scaleY
                     }
-                }
-//            ,
-//            horizontalAlignment = Alignment.CenterHorizontally
+                },
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
 //                rememberAsyncImagePainter(model = listMovies[page].avatar)
             val rotation = when {
-                pagerState.currentPage == page + 1 -> -4f // Trang trước đó
+                pagerState.currentPage == page + 1 -> -2f // Trang trước đó
                 pagerState.currentPage == page -> 0f // Trang hiện tại
-                else -> 4f // Các trang khác
+                else -> 2f // Các trang khác
             }
-            Box(
+            Column(
                 modifier = Modifier
+                    .padding(5.dp)
                     .rotate(rotation)
                     .clip(RoundedCornerShape(16.dp))
-                    .wrapContentSize()
-            ) {
-                Log.d("ImageURL", "Loading image from URL: ${listViewMoviesNowing[page].avatar}")
-                Image(
 
-                    painter = painterResource(id = R.drawable.poster_payoff_aquaman_6_1_),
-                    contentDescription = "", contentScale = ContentScale.FillBounds,
+                    .background(Color(0xFF792105)),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
                     modifier = Modifier
-                        .size(200.dp,260.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .wrapContentSize()
+                ) {
+                    Log.d("ImageURL", "Loading image from URL: ${listViewMoviesNowing[page].avatar}")
+                    Image(
+
+                        painter = rememberAsyncImagePainter(model = listViewMoviesNowing[page].avatar),
+                        contentDescription = "", contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .size(330.dp, 300.dp)
+                    )
+
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Text(
+                    text = listViewMoviesNowing[page].name.uppercase(),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, letterSpacing = 1.sp, maxLines = 2,
+                    color = MaterialTheme.colorScheme.surface, modifier = Modifier.wrapContentSize()
                 )
 
-            }
-            Spacer(modifier = Modifier.height(5.dp))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .size(10.dp),
+                            painter = painterResource(id = R.drawable.star_fill),
+                            tint = Color.Yellow,
+                            contentDescription = null
+                        )
+                        Text(
+                            text = "9.6",
+                            color = MaterialTheme.colorScheme.surface,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .size(16.dp),
+                            painter = painterResource(id = R.drawable.timemanagement),
+                            contentDescription = null
+                        )
+                        Text(
+//                        text = "${listViewMoviesNowing[page].totalTime} phut",
+                            text = "115 phút",
 
-            Text(
-                text = listViewMoviesNowing[page].name,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold, style = TextStyle(
-                    letterSpacing = 2.sp,
-                ),
-                color = MaterialTheme.colorScheme.surface, modifier = Modifier.wrapContentSize()
-            )
+                            color = MaterialTheme.colorScheme.surface,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Text(
+//                        text = "${listViewMoviesNowing[page].releaseDate} ",\
+                            text = "31/05/2024 ",
+
+                            color = MaterialTheme.colorScheme.surface,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    }
+
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .fillMaxWidth()
+                ) {
+                    val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                    Canvas(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                    ) {
+
+                        drawLine(
+                            color = Color.White,
+                            start = Offset(0f, 0f),
+                            end = Offset(size.width, 0f),
+                            pathEffect = pathEffect
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(vertical = 5.dp)
+                        .fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = { onMovieClicked(listViewMoviesNowing[page])}, colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0x4FCECECE)
+                        ), modifier = Modifier
+                            .padding(horizontal = 15.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(text = "Đặt vé")
+                    }
+                }
+            }
         }
 
     }
 }
+
+//@OptIn(ExperimentalFoundationApi::class)
+//@Composable
+//@Preview
+//fun Item() {
+//    val pagerState =
+//        androidx.compose.foundation.pager.rememberPagerState(pageCount = { listMovies1.size })
+//    androidx.compose.foundation.pager.HorizontalPager(
+//        verticalAlignment = Alignment.CenterVertically,
+//        state = pagerState,
+//        modifier = Modifier
+//
+//            .wrapContentSize(),
+//        contentPadding = PaddingValues(horizontal = 80.dp),
+//        pageSpacing = 20.dp
+//    ) { page ->
+//        Column(
+//            modifier = Modifier
+//                .width(350.dp)
+//                .clickable { }
+//
+//                .graphicsLayer {
+//                    val pageOffset = (
+//                            (pagerState.currentPage - page) + pagerState
+//                                .currentPageOffsetFraction
+//                            ).absoluteValue
+//
+//
+//
+//                    lerp(
+//                        start = ScaleFactor(1f, 0.85f),
+//                        stop = ScaleFactor(1f, 1f), fraction = 1f - pageOffset.coerceIn(0f, 1f)
+//                    ).also {
+//                        scaleX = it.scaleX
+//                        scaleY = it.scaleY
+//                    }
+//                },
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//
+////                rememberAsyncImagePainter(model = listMovies[page].avatar)
+//            val rotation = when {
+//                pagerState.currentPage == page + 1 -> -4f // Trang trước đó
+//                pagerState.currentPage == page -> 0f // Trang hiện tại
+//                else -> 4f // Các trang khác
+//            }
+//            Column(
+//                modifier = Modifier
+//                    .padding(5.dp)
+//                    .rotate(rotation)
+//                    .clip(RoundedCornerShape(16.dp))
+//
+//                    .background(Color(0xFF792105)),
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                Box(
+//                    modifier = Modifier
+//                        .clip(RoundedCornerShape(16.dp))
+//                        .wrapContentSize()
+//                ) {
+//                    Log.d("ImageURL", "Loading image from URL: ${listMovies1[page].avatar}")
+//                    Image(
+//
+//                        painter = painterResource(id = R.drawable.poster_payoff_aquaman_6_1_),
+//                        contentDescription = "", contentScale = ContentScale.FillBounds,
+//                        modifier = Modifier
+//                            .size(330.dp, 300.dp)
+//                    )
+//
+//                }
+//                Spacer(modifier = Modifier.height(5.dp))
+//
+//                Text(
+//                    text = listMovies1[page].name.uppercase(),
+//                    style = MaterialTheme.typography.titleMedium,
+//                    fontWeight = FontWeight.Bold, letterSpacing = 1.sp, maxLines = 2,
+//                    color = MaterialTheme.colorScheme.surface, modifier = Modifier.wrapContentSize()
+//                )
+//
+//                Row(
+//                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Row(
+//                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Icon(
+//                            modifier = Modifier
+//                                .size(10.dp),
+//                            painter = painterResource(id = R.drawable.star_fill),
+//                            tint = Color.Yellow,
+//                            contentDescription = null
+//                        )
+//                        Text(
+//                            text = "9.6",
+//                            color = MaterialTheme.colorScheme.surface,
+//                            style = MaterialTheme.typography.titleSmall
+//                        )
+//                    }
+//                    Row(
+//                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Image(
+//                            modifier = Modifier
+//                                .size(16.dp),
+//                            painter = painterResource(id = R.drawable.timemanagement),
+//                            contentDescription = null
+//                        )
+//                        Text(
+////                        text = "${listViewMoviesNowing[page].totalTime} phut",
+//                            text = "115 phút",
+//
+//                            color = MaterialTheme.colorScheme.surface,
+//                            style = MaterialTheme.typography.titleSmall
+//                        )
+//                    }
+//                    Row(
+//                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//
+//                        Text(
+////                        text = "${listViewMoviesNowing[page].releaseDate} ",\
+//                            text = "31/05/2024 ",
+//
+//                            color = MaterialTheme.colorScheme.surface,
+//                            style = MaterialTheme.typography.titleSmall
+//                        )
+//                    }
+//
+//                }
+//                Row(
+//                    modifier = Modifier
+//                        .padding(top = 10.dp)
+//                        .fillMaxWidth()
+//                ) {
+//                    val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+//                    Canvas(
+//                        Modifier
+//                            .fillMaxWidth()
+//                            .height(1.dp)
+//                    ) {
+//
+//                        drawLine(
+//                            color = Color.White,
+//                            start = Offset(0f, 0f),
+//                            end = Offset(size.width, 0f),
+//                            pathEffect = pathEffect
+//                        )
+//                    }
+//                }
+//                Row(
+//                    modifier = Modifier
+//                        .padding(vertical = 5.dp)
+//                        .fillMaxWidth()
+//                ) {
+//                    Button(
+//                        onClick = { }, colors = ButtonDefaults.buttonColors(
+//                            containerColor = Color(0x4FCECECE)
+//                        ), modifier = Modifier
+//                            .padding(horizontal = 15.dp)
+//                            .fillMaxWidth()
+//                    ) {
+//                        Text(text = "Đặt vé")
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
+//}
+//
+//val listMovies1 = listOf(
+//    Movie(
+//        name = "Lật Mật 6",
+//        releaseDate = "24/3/2003",
+//        totalTime = 162,
+//        description = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
+//        trailer = "OobBWy3avUo",
+//        avatar = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE8-BC84GcTHqpPmer61cugKcZYGYot_O76Q&s"
+//
+//    ),
+//    Movie(
+//        name = "Lật Mật 6",
+//        releaseDate = "24/3/2003",
+//        totalTime = 162,
+//        description = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
+//        trailer = "OobBWy3avUo",
+//        avatar = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE8-BC84GcTHqpPmer61cugKcZYGYot_O76Q&s"
+//
+//    ),
+//    Movie(
+//        name = "Lật Mật 6",
+//        releaseDate = "24/3/2003",
+//        totalTime = 162,
+//        description = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
+//        trailer = "OobBWy3avUo",
+//        avatar = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE8-BC84GcTHqpPmer61cugKcZYGYot_O76Q&s"
+//
+//    ),
+//)
 
 
 
