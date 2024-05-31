@@ -11,6 +11,7 @@ public static class Extensions
         {
             options.Authority = config.GetSection("Identity:Url").Value;
             options.RequireHttpsMetadata = false;
+            options.Audience = "api";
             options.TokenValidationParameters.ValidateAudience = false;
             options.TokenValidationParameters.ValidateIssuer = false;
 

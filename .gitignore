@@ -26,3 +26,4 @@ riderModule.iml
 /.idea/
 
 ./tools
+src/client/mobile/.idea/deploymentTargetSelector.xml
