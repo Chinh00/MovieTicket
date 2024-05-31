@@ -11,11 +11,10 @@ public static class Extensions
         {
             options.Authority = config.GetSection("Identity:Url").Value;
             options.RequireHttpsMetadata = false;
-            
-            options.TokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidateAudience = false
-            };
+            options.TokenValidationParameters.ValidateAudience = false;
+            options.TokenValidationParameters.ValidateIssuer = false;
+
+
         });
         action?.Invoke(services);
         return services;
