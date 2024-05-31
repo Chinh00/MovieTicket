@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -34,6 +35,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +55,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -61,40 +66,44 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.R
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.components.CustomButton
+import com.superman.movieticket.ui.detail.control.DetailActivityViewModel
 import com.superman.movieticket.ui.home.control.HomeScreenViewModel
 import com.superman.movieticket.ui.theme.MyAppTheme
 import com.superman.movieticket.ui.theme.YoutubePlayer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.format.TextStyle
 
 class DetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val homeScreenViewModel = HomeScreenViewModel()
 
-        val imageUri = intent.getIntExtra("imageUri", 0) // Retrieve the image URI from intent
+
+
         setContent {
+            val idMovie = intent.getIntExtra("idMovie", 0) // Retrieve the image URI from intent
+
+            val detailActivityViewModel = DetailActivityViewModel()
+            detailActivityViewModel.setMovie(idMovie)
+            val movie by detailActivityViewModel.movie.observeAsState()
+
             MyAppTheme {
-                DetailScreen(homeScreenViewModel.listMoviesNowing.value[0])
+                movie?.let { DetailScreen(it) }
 
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(m: Movie) {
-    val context = LocalContext.current
-    val sheetState = rememberModalBottomSheetState()
-    var isOpenBottomSheet = rememberSaveable {
-        mutableStateOf(false)
 
-    }
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -106,133 +115,18 @@ fun DetailScreen(m: Movie) {
             top.linkTo(parent.top)
         }) {
 
-            Image(
-                painter = painterResource(id = R.drawable.moi),
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .height(250.dp)
-                    .fillMaxWidth()
-                    .blur(5.dp)
-                    .scale(1.3f)
-                    .offset(0.dp, -30.dp),
-                contentDescription = null
-            )
+            YoutubePlayer(youtubeId = m.trailer, lifecycleOwner = LocalLifecycleOwner.current)
         }
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-            .padding(top = 60.dp, bottom = 5.dp)
+        Row(modifier = Modifier
+            .padding(horizontal = 5.dp)
+            .fillMaxHeight()
             .constrainAs(e) {
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
-                start.linkTo(parent.start)
-                bottom.linkTo(parent.bottom)
+                top.linkTo(s.bottom)
+
             }) {
-            ConstraintLayout {
-                val (c1, c2) = createRefs()
-                Image(
-                    painter = painterResource(id = R.drawable.kingkong2024),
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .size(250.dp, 330.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                        .shadow(
-                            8.dp, shape = MaterialTheme.shapes.medium, spotColor = Color(
-                                0xFF1B1B83
-                            ), ambientColor = Color(0xFF1B1B83)
-                        )
-                        .constrainAs(c1) {
-                            top.linkTo(parent.top)
-                        },
-                    contentDescription = null
-                )
-                Row(modifier = Modifier
-                    .constrainAs(c2) {
-                        top.linkTo(c1.top)
-                        bottom.linkTo(c1.bottom)
-                        start.linkTo(c1.start)
-                        end.linkTo(c1.end)
-                    }) {
-                    IconButton(
-                        onClick = { isOpenBottomSheet.value =true },
-                        modifier = Modifier
-                            .size(100.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.play_icon),
-                            contentDescription = null
-                        )
-                    }
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Text(
-                    text = "Turning Red",
-                    color = MaterialTheme.colorScheme.surface,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                    Icon(
-                        modifier = Modifier
-                            .size(22.dp),
-                        painter = painterResource(id = R.drawable.star_fill),
-                        tint = Color.Yellow,
-                        contentDescription = null
-                    )
-                    Icon(
-                        modifier = Modifier
-                            .size(22.dp),
-                        painter = painterResource(id = R.drawable.star_fill),
-                        tint = Color.Yellow,
-                        contentDescription = null
-                    )
-                    Icon(
-                        modifier = Modifier
-                            .size(22.dp),
-                        painter = painterResource(id = R.drawable.star_fill),
-                        tint = Color.Yellow,
-                        contentDescription = null
-                    )
-                    Icon(
-                        modifier = Modifier
-                            .size(22.dp),
-                        painter = painterResource(id = R.drawable.star_fill),
-                        tint = Color.Yellow,
-                        contentDescription = null
-                    )
-                    Icon(
-                        modifier = Modifier
-                            .size(22.dp),
-                        painter = painterResource(id = R.drawable.star_fill),
-                        tint = Color.Gray,
-                        contentDescription = null
-                    )
-
-                }
-                Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                    Text(
-                        text = "2022  |  100 minutes  |  13+",
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-            val scrollDesc = rememberScrollState()
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                DescriptionText(text = m.description, verticalScroll = scrollDesc)
-            }
+            DetailItemScreen(m = m, rememberScrollState())
         }
+
 
         Row(modifier = Modifier
             .padding(bottom = 20.dp, end = 10.dp, start = 10.dp)
@@ -251,19 +145,7 @@ fun DetailScreen(m: Movie) {
 
 
     }
-val videotrailer = rememberSaveable {
-    mutableStateOf(m.trailer)
-}
-    if (isOpenBottomSheet.value) {
-        ModalBottomSheet(
 
-            onDismissRequest = {isOpenBottomSheet.value=false}, sheetState = sheetState, modifier = Modifier
-                .padding(top = 40.dp)
-                .fillMaxSize()
-        , shape = MaterialTheme.shapes.medium) {
-            YoutubePlayer(videotrailer.value, LocalLifecycleOwner.current)
-        }
-    }
 }
 
 @Composable
@@ -271,33 +153,34 @@ fun DescriptionText(text: String, verticalScroll: ScrollState) {
     val seeMore = remember { mutableStateOf(true) }
     Column(
         Modifier
+            .verticalScroll(verticalScroll)
             .fillMaxSize()
             .fillMaxHeight()
-            .padding(end = 15.dp, start = 15.dp)
-            .verticalScroll(verticalScroll)
+            .padding(end = 15.dp, start = 15.dp, bottom = 50.dp)
     ) {
-        val gradientColors = listOf(Color.White, Color.Gray, Color.DarkGray)
+        val gradientColors = listOf(Color.White, Color.LightGray, Color.DarkGray)
         Text(
-            text = text + text + text + text,
+            text = text,
             style = androidx.compose.ui.text.TextStyle(
                 brush = Brush.verticalGradient(gradientColors),
-                textAlign = TextAlign.Justify
+                textAlign = TextAlign.Justify, fontSize = 16.sp, fontWeight = FontWeight.Bold
             ),
             maxLines = if (seeMore.value) 2 else Int.MAX_VALUE,
-            fontSize = 20.sp,
+            fontFamily = FontFamily.Default,
             overflow = if (seeMore.value) TextOverflow.Ellipsis else TextOverflow.Clip,
-            color = Color.White, modifier = Modifier.clickable { seeMore.value = !seeMore.value }
+            color = Color.White, modifier = Modifier
+                .clickable { seeMore.value = !seeMore.value }
         )
-        Text(
-            modifier = Modifier.clickable { seeMore.value = !seeMore.value },
-            text = if (seeMore.value) "Xem thêm" else "Thu gọn",
-            style = androidx.compose.ui.text.TextStyle(
-                textAlign = TextAlign.Justify,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                color = Color(0xFF1459D1)
-            )
-        )
+//        Text(
+//            modifier = Modifier.clickable { seeMore.value = !seeMore.value },
+//            text = if (seeMore.value) "Xem thêm" else "Thu gọn",
+//            style = androidx.compose.ui.text.TextStyle(
+//                textAlign = TextAlign.Justify,
+//                fontWeight = FontWeight.Bold,
+//                fontSize = 20.sp,
+//                color = Color(0xFF1459D1)
+//            )
+//        )
     }
 }
 
@@ -305,52 +188,163 @@ fun DescriptionText(text: String, verticalScroll: ScrollState) {
 @Preview(showSystemUi = true)
 
 fun DetailScreenPre() {
-    val homeScreenViewModel = HomeScreenViewModel()
+    val detailActivityViewModel = DetailActivityViewModel()
 
-    DetailScreen(homeScreenViewModel.listMoviesNowing.value[0])
+val movie by detailActivityViewModel.movie.observeAsState()
+    MyAppTheme {
+        detailActivityViewModel.setMovie(1)
+        movie?.let { DetailScreen(it) }
+    }
 }
 
-@SuppressLint("RememberReturnType")
-@Composable
-fun ListScreen(context1: Context) {
-    val homeScreenViewModel = HomeScreenViewModel()
-    var data = remember { mutableStateOf<List<Movie>>(emptyList()) }
-
-//    LaunchedEffect(key1 = data) {
-//        data = homeScreenViewModel.listMoviesNowing as MutableState<List<Movie>>
+//@SuppressLint("RememberReturnType")
+//@Composable
+//fun ListScreen(context1: Context) {
+//    val homeScreenViewModel = HomeScreenViewModel()
+//    var data = remember { mutableStateOf<List<Movie>>(emptyList()) }
+//
+////    LaunchedEffect(key1 = data) {
+////        data = homeScreenViewModel.listMoviesNowing as MutableState<List<Movie>>
+////    }
+//
+//    Column(modifier = Modifier.wrapContentSize()) {
+//        if (!data.value.isEmpty()) {
+//            LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+//                itemsIndexed(data.value) { index, movie ->
+//                    Text(text = "Item $index")
+//                }
+//            }
+//        } else {
+//            CircularProgressIndicator(modifier = Modifier.size(50.dp))
+//        }
+//        val scope = rememberCoroutineScope()
+//
+//        Button(onClick = {
+//            scope.launch {
+//                delay(3000L)
+//                data.value = homeScreenViewModel.listMoviesNowing.value
+//
+//            }
+//        }, modifier = Modifier.size(100.dp)) {
+//            Text(text = "Get Data")
+//        }
 //    }
+//
+//
+//}
 
-    Column(modifier = Modifier.wrapContentSize()) {
-        if (!data.value.isEmpty()) {
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                itemsIndexed(data.value) { index, movie ->
-                    Text(text = "Item $index")
+@Composable
+fun DetailItemScreen(m: Movie, scroll: ScrollState) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.padding(vertical = 5.dp)) {
+            Text(
+                text = m.name.uppercase(),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.surface
+            )
+        }
+        Row() {
+            Column {
+                Image(
+                    painter = rememberAsyncImagePainter(
+                        m.avatar,
+                        error = painterResource(id = R.drawable.moi)
+                    ),
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .size(120.dp, 180.dp), contentScale = ContentScale.FillHeight,
+                    contentDescription = m.name
+                )
+            }
+            Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.padding(start = 10.dp)
+            ) {
+                Row {
+                    Text(
+                        text = "Thời lượng: ", modifier = Modifier.width(80.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Text(
+                        text = " ${m.totalTime} phút",
+                        color = MaterialTheme.colorScheme.surface,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                }
+                Row {
+                    Text(
+                        text = "Khởi chiếu: ", modifier = Modifier.width(80.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Text(
+                        text = "${SimpleDateFormat("dd/MM/yyyy").format(m.releaseDate)}",
+                        color = MaterialTheme.colorScheme.surface,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                }
+                Row {
+                    Text(
+                        text = "Thể loại: ", modifier = Modifier.width(80.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Text(
+                        text = "Dramma",
+                        color = MaterialTheme.colorScheme.surface,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                }
+                Row {
+                    Text(
+                        text = "Loại: ", modifier = Modifier.width(80.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Text(
+                        text = "2D | Normal| Normal sound",
+                        color = MaterialTheme.colorScheme.surface,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+
+                }
+                Row {
+                    Text(
+                        text = "Xếp hạng:",
+                        color = MaterialTheme.colorScheme.surface,
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.width(80.dp)
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .size(22.dp),
+                            painter = painterResource(id = R.drawable.star_fill),
+                            tint = Color.Yellow,
+                            contentDescription = null
+                        )
+                        Text(
+                            text = "9.6",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    }
                 }
             }
-        } else {
-            CircularProgressIndicator(modifier = Modifier.size(50.dp))
         }
-        val scope = rememberCoroutineScope()
-
-        Button(onClick = {
-            scope.launch {
-                delay(3000L)
-                data.value = homeScreenViewModel.listMoviesNowing.value
-
-            }
-        }, modifier = Modifier.size(100.dp)) {
-            Text(text = "Get Data")
+        Column(
+            modifier = Modifier
+                .padding(top = 5.dp)
+                .fillMaxHeight()
+        ) {
+            DescriptionText(text = m.description, verticalScroll = scroll)
         }
+
     }
-
-
 }
 
-
-@Composable
-fun ListScreenPre() {
-    val context = LocalContext.current
-    ListScreen(
-        context
-    )
-}

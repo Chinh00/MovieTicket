@@ -127,51 +127,53 @@ fun HomeContent() {
 //                valueSearch = s
 //            }
 //        }
-        Column(modifier = Modifier
-            .padding(vertical = 10.dp)
-            .fillMaxWidth()
-            .constrainAs(e) {
-                top.linkTo(parent.top)
-            }) {
-            TabRow(
-                selectedTabIndex = searchScreen,
-                containerColor = Color.White,
-                contentColor = Color.Blue
-            ) {
-                tabsList.forEachIndexed { index, item ->
-                    Tab(
-                        selected = index == searchScreen,
-                        onClick = { searchScreen = index },
-                        text = {
-                            Text(
-                                text = "${item.title}"
-                            )
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = if (index == searchScreen) item.selectIcon else item.unSelectIcon,
-                                contentDescription = item.title
-                            )
-                        })
-                }
-            }
-        }
+//        Column(modifier = Modifier
+//            .padding(vertical = 10.dp)
+//            .fillMaxWidth()
+//            .constrainAs(e) {
+//                top.linkTo(parent.top)
+//            }) {
+//            TabRow(
+//                selectedTabIndex = searchScreen,
+//                containerColor = Color.White,
+//                contentColor = Color.Blue
+//            ) {
+//                tabsList.forEachIndexed { index, item ->
+//                    Tab(
+//                        selected = index == searchScreen,
+//                        onClick = { searchScreen = index },
+//                        text = {
+//                            Text(
+//                                text = "${item.title}"
+//                            )
+//                        },
+//                        icon = {
+//                            Icon(
+//                                imageVector = if (index == searchScreen) item.selectIcon else item.unSelectIcon,
+//                                contentDescription = item.title
+//                            )
+//                        })
+//                }
+//            }
+//        }
         Column(modifier = Modifier
             .constrainAs(t) {
-                top.linkTo(e.bottom)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
             }
             .verticalScroll(scrollVertical)
             .fillMaxSize()) {
-            when (searchScreen) {
-                0 -> {
-                    HomePage(homeViewModel)
-                }
-
-                1 -> {
-                    Log.d("Screen", "Search Scereen")
-                    ComingPage(homeViewModel)
-                }
-            }
+            HomePage(homeViewModel)
+//            when (searchScreen) {
+//                0 -> {
+//                    HomePage(homeViewModel)
+//                }
+//
+//                1 -> {
+//                    Log.d("Screen", "Search Scereen")
+//                    ComingPage(homeViewModel)
+//                }
+//            }
 
 
         }
@@ -495,7 +497,7 @@ fun PopularMovies(
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth().height(150.dp)
                     .padding(20.dp)
                     .clickable { onMovieClicked(item) }
             ) {
@@ -508,7 +510,7 @@ fun PopularMovies(
                         .clip(RoundedCornerShape(13.dp))
                         .height(170.dp)
                         .border(1.dp, Color.Gray, shape = RoundedCornerShape(6.dp)),
-                    contentScale = ContentScale.FillBounds
+                    contentScale = ContentScale.Fit
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Column(
@@ -518,7 +520,7 @@ fun PopularMovies(
                     Box {
                         Text(
                             text = item.name.uppercase(),
-                            fontSize = 20.sp,
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.fillMaxWidth(), color = Color.White
                         )
@@ -1024,7 +1026,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                     painter = painterResource(id = R.drawable.poster_payoff_aquaman_6_1_),
                     contentDescription = "", contentScale = ContentScale.FillBounds,
                     modifier = Modifier
-                        .wrapContentSize()
+                        .size(200.dp,260.dp)
                 )
 
             }
@@ -1036,7 +1038,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                 fontWeight = FontWeight.Bold, style = TextStyle(
                     letterSpacing = 2.sp,
                 ),
-                color = Color.White, modifier = Modifier.wrapContentSize()
+                color = MaterialTheme.colorScheme.surface, modifier = Modifier.wrapContentSize()
             )
         }
 

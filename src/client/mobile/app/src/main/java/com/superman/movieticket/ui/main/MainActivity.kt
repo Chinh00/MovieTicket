@@ -26,7 +26,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.detail.view.DetailScreen
-import com.superman.movieticket.ui.detail.view.ListScreen
 import com.superman.movieticket.ui.home.HomeScreen
 import com.superman.movieticket.ui.main.model.NavigationBarItemConfig
 
@@ -86,9 +85,9 @@ fun MainScreen () {
         Surface (modifier = Modifier
             .padding(it)
             .fillMaxSize()) {
-            NavHost(navController = navController, startDestination = "list" ) {
+            NavHost(navController = navController, startDestination = "home" ) {
                 composable("home") { HomeScreen()}
-                composable("list") { ListScreen (context) }
+//                composable("list") { ListScreen (context) }
 //                composable("detail/{id}/{s}", arguments = listOf(
 //                    navArgument("id"){
 //                        type = NavType.IntType

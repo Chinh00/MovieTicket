@@ -64,6 +64,7 @@ dependencies {
 
     //di
     implementation(libs.hilt.android)
+    implementation(libs.androidx.runtime.livedata)
     ksp(libs.hilt.compiler)
 
 
@@ -119,6 +120,6 @@ dependencies {
 
     //ViedeoYoutubetrailer
     implementation( "com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
-
+    implementation ("androidx.webkit:webkit:1.4.0")
 
 }
