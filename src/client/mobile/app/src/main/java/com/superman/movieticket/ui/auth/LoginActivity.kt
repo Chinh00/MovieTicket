@@ -74,7 +74,6 @@ public class LoginActivity : BaseActivity<LoginActivityModelImpl>() {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-@Preview
 fun HomeScreen(
     model: LoginActivityModel,
     lifecycleScope: LifecycleCoroutineScope

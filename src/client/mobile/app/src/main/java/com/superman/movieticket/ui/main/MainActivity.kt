@@ -9,6 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -62,13 +64,14 @@ val navigationBarItems = listOf<NavigationBarItemConfig>(
 
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun MainScreen () {
     val navController = rememberNavController()
     Scaffold (
         topBar = {
-
+             CenterAlignedTopAppBar(title = { Text(text = "Home") })
         },
         bottomBar = {
             NavigationBar {

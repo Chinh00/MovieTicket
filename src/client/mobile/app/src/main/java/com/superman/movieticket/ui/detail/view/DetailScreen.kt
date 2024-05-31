@@ -197,41 +197,6 @@ val movie by detailActivityViewModel.movie.observeAsState()
     }
 }
 
-//@SuppressLint("RememberReturnType")
-//@Composable
-//fun ListScreen(context1: Context) {
-//    val homeScreenViewModel = HomeScreenViewModel()
-//    var data = remember { mutableStateOf<List<Movie>>(emptyList()) }
-//
-////    LaunchedEffect(key1 = data) {
-////        data = homeScreenViewModel.listMoviesNowing as MutableState<List<Movie>>
-////    }
-//
-//    Column(modifier = Modifier.wrapContentSize()) {
-//        if (!data.value.isEmpty()) {
-//            LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-//                itemsIndexed(data.value) { index, movie ->
-//                    Text(text = "Item $index")
-//                }
-//            }
-//        } else {
-//            CircularProgressIndicator(modifier = Modifier.size(50.dp))
-//        }
-//        val scope = rememberCoroutineScope()
-//
-//        Button(onClick = {
-//            scope.launch {
-//                delay(3000L)
-//                data.value = homeScreenViewModel.listMoviesNowing.value
-//
-//            }
-//        }, modifier = Modifier.size(100.dp)) {
-//            Text(text = "Get Data")
-//        }
-//    }
-//
-//
-//}
 
 @Composable
 fun DetailItemScreen(m: Movie, scroll: ScrollState) {

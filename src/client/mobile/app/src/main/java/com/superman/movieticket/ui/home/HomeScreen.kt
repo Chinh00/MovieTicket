@@ -95,15 +95,38 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.superman.movieticket.infrastructure.utils.ApiState
 
 import com.superman.movieticket.ui.theme.MyAppTheme
+import kotlinx.coroutines.flow.collect
+
+@Preview
 @Composable
 fun HomeScreen() {
-    MyAppTheme {
-        HomeContent()
+    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+    val isLoading = homeScreenViewModel.apiState.collectAsState()
 
+
+
+    if (isLoading.value == ApiState.LOADING) {
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            CircularProgressIndicator(modifier = Modifier.width(64.dp),
+                color = MaterialTheme.colorScheme.secondary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,)
+        }
+    } else {
+        MyAppTheme {
+           HomeContent()
+
+        }
     }
 }
+
 
 @Composable
 @Preview(showSystemUi = true)
