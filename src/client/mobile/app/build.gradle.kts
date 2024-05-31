@@ -64,7 +64,6 @@ dependencies {
 
     //di
     implementation(libs.hilt.android)
-    implementation(libs.androidx.runtime.livedata)
     ksp(libs.hilt.compiler)
 
 
@@ -109,17 +108,22 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+
 
 
     implementation("io.coil-kt:coil-compose:2.1.0")
 
 
 
-      implementation ("com.makeramen:roundedimageview:2.3.0")
+  implementation ("com.makeramen:roundedimageview:2.3.0")
 
 
     //ViedeoYoutubetrailer
     implementation( "com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
     implementation ("androidx.webkit:webkit:1.4.0")
+
+    implementation(libs.androidx.runtime.livedata)
+
 
 }

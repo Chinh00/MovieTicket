@@ -1,6 +1,7 @@
 package com.superman.movieticket.infrastructure.di
 
 import com.superman.movieticket.domain.services.AuthService
+import com.superman.movieticket.domain.services.MovieService
 import com.superman.movieticket.domain.services.RoomService
 import com.superman.movieticket.domain.services.ScreeningService
 import dagger.Module
@@ -14,16 +15,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 
 object ServiceProvider {
-
-
-
-
-
-
-
-//    Authenticate
     @Provides
     @Singleton
     fun AddAuthService(retrofit: Retrofit) = retrofit.create(AuthService::class.java)
+
+    @Provides
+    @Singleton
+    fun AddMovieService(retrofit: Retrofit) = retrofit.create(MovieService::class.java)
 
 }

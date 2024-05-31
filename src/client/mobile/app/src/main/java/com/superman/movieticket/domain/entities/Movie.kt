@@ -6,7 +6,7 @@ import java.util.Date
 
 data class Movie (
     var name: String,
-    var releaseDate: Date,
+    var releaseDate: String,
     val totalTime: Number,
     val description: String,
     val avatar: String,

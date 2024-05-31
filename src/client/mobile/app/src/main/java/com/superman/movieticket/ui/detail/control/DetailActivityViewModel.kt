@@ -14,7 +14,7 @@ class DetailActivityViewModel : ViewModel() {
     fun setMovie(id:Int) {
         val m = Movie(
             name = "Lật Mật 6",
-            releaseDate = Date(),
+            releaseDate = "",
             totalTime = 162,
             description = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home. Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier Modifier",
             trailer = "OobBWy3avUo",

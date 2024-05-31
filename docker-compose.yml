@@ -42,33 +42,7 @@ services:
     networks:
       movie-network:
 
-  movieticketmanagement:
-    build:
-      context: .
-      dockerfile: src/server/Management/MovieTicketManagement.Api/Dockerfile
-    environment:
-      - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
-      - Identity__Url=http://identityservermanagement:8094
-    ports:
-      - "8093:80"
-    depends_on:
-      - db
-      - identityservermanagement
-    networks:
-      movie-network:
-
-  identityservermanagement:
-    build:
-      context: .
-      dockerfile: src/server/Management/MovieTicketManagement.IndentityServer/Dockerfile
-    environment:
-      - ConnectionStrings__db=Server=db;Database=movie_admin;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
-    ports:
-      - "8094:80"
-    depends_on:
-      - db
-    networks:
-      movie-network:
+ 
 
   appgateway:
     build:
@@ -111,8 +85,6 @@ services:
     depends_on:
       - movieticketclient
       - identityserverclient
-      - movieticketmanagement
-      - identityservermanagement
     networks:
       movie-network:
 

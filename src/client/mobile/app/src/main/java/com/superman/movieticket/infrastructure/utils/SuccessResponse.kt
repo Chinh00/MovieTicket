@@ -1,16 +1,8 @@
 package com.superman.movieticket.infrastructure.utils
 
 import com.superman.movieticket.core.entity.BaseEntity
+import com.superman.movieticket.domain.entities.Movie
 
-interface SuccessResponse<TData> {
-    public val data: TData
-    public val isError: Boolean
-    public val message: String
-}
+data class SuccessResponse<TData> ( val data: TData, val isError: Boolean, val message: String)
 
-interface ListResponse<TData> {
-    public val items: Array<TData>
-    public val totalItems: Number
-    public val page: Number
-    public val pageSize: Number
-}
+data class ListResponse<TData> (val items: List<TData>, val totalItems: Number, val page: Number, val pageSize: Number)
