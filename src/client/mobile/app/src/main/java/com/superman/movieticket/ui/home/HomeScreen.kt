@@ -98,20 +98,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.superman.movieticket.infrastructure.utils.ApiState
+import com.superman.movieticket.ui.components.ScreenLoading
 
 import com.superman.movieticket.ui.theme.MyAppTheme
 import java.util.Date
 
 @Composable
 fun HomeScreen() {
-    MyAppTheme {
-        HomeContent()
+    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
 
+
+
+    ScreenLoading(isLoading = homeScreenViewModel.apiState.collectAsState()) {
+        MyAppTheme {
+            HomeContent()
+
+        }
     }
+
 }
 
 @Composable
-//@Preview(showSystemUi = true)
 fun HomeContent() {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         HomePage()
@@ -455,7 +463,8 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
-                    modifier = Modifier.padding(5.dp)
+                    modifier = Modifier
+                        .padding(5.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .wrapContentSize()
                 ) {
