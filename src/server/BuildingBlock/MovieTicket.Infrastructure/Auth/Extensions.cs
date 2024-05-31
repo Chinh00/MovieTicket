@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace MovieTicket.Infrastructure.Auth;
 
@@ -15,6 +15,7 @@ public static class Extensions
             options.Audience = "api";
             options.TokenValidationParameters.ValidateAudience = false;
             options.TokenValidationParameters.ValidateIssuer = false;
+            options.TokenValidationParameters.SignatureValidator = (token, parameters) => new JsonWebToken(token);
 
 
         });
