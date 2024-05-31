@@ -324,7 +324,7 @@ fun PopularMovies(
                         .width(100.dp)
                         .clip(RoundedCornerShape(13.dp))
                         .height(170.dp)
-                        .border(1.dp, Color.Gray, shape = RoundedCornerShape(6.dp)),
+                       ,
                     contentScale = ContentScale.FillBounds
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -455,7 +455,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
-                    modifier = Modifier
+                    modifier = Modifier.padding(5.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .wrapContentSize()
                 ) {
