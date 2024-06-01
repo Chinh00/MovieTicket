@@ -312,8 +312,8 @@ fun PopularMovies(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(20.dp)
+                    .height(200.dp)
+                    .padding(10.dp)
                     .clickable { onMovieClicked(item) }
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
@@ -321,7 +321,7 @@ fun PopularMovies(
                     painter = rememberAsyncImagePainter(model = item.avatar),
                     contentDescription = null,
                     modifier = Modifier
-                        .width(100.dp)
+                        .width(150.dp)
                         .clip(RoundedCornerShape(13.dp))
                         .height(170.dp)
                        ,
@@ -337,7 +337,7 @@ fun PopularMovies(
                             text = item.name.uppercase(),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.surface
+                            modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.onSurface
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.bookmark),
@@ -350,45 +350,71 @@ fun PopularMovies(
                         )
                     }
                     Text(
-                        text = item.description,
-                        fontSize = 18.sp,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        color = Color.Gray,
-                        fontWeight = FontWeight.Normal,
+                        text = item.description, color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                       style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(SpanStyle(color = Color.White)) {
+                            withStyle(SpanStyle(color = MaterialTheme.colorScheme.surface)) {
                                 append("${item.totalTime} | Khoa hoc vien tuong")
                             }
                         }
                     )
-                    Row {
-                        Text(
-                            text = "CGV",
-                            color = Color.White,
-                            modifier = Modifier
-                                .background(Color.Gray, RoundedCornerShape(20.dp))
-                                .padding(5.dp)
-                        )
-                        Spacer(modifier = Modifier.width(13.dp))
-                        Text(
-                            text = "Cinema",
-                            color = Color.White,
-                            modifier = Modifier
-                                .background(Color.Gray, RoundedCornerShape(20.dp))
-                                .padding(5.dp)
-                        )
-                        Spacer(modifier = Modifier.width(13.dp))
-                        Text(
-                            text = "BHD Star",
-                            color = Color.White,
-                            modifier = Modifier
-                                .background(Color.Gray, RoundedCornerShape(20.dp))
-                                .padding(5.dp)
-                        )
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(10.dp),
+                                painter = painterResource(id = R.drawable.star_fill),
+                                tint = Color.Yellow,
+                                contentDescription = null
+                            )
+                            Text(
+                                text = "9.6",
+                                color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier
+                                    .size(16.dp),
+                                painter = painterResource(id = R.drawable.timemanagement),
+                                contentDescription = null
+                            )
+                            Text(
+//                        text = "${listViewMoviesNowing[page].totalTime} phut",
+                                text = "115 phút",
+
+                                color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            Text(
+//                        text = "${listViewMoviesNowing[page].releaseDate} ",\
+                                text = "31/05/2024 ",
+
+                                color = MaterialTheme.colorScheme.surface,
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                        }
+
                     }
                 }
             }
@@ -455,7 +481,8 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
-                    modifier = Modifier.padding(5.dp)
+                    modifier = Modifier
+                        .padding(5.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .wrapContentSize()
                 ) {
