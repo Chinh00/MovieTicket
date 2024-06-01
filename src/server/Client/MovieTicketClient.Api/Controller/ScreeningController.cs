@@ -8,6 +8,12 @@ namespace MovieTicketClient.Api.Controller;
 
 public class ScreeningController : BaseController
 {
+    /// <summary>
+    /// Get Screenings
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> HandleGetScreeningsAsync([FromHeader(Name = "x-query")] string query, CancellationToken cancellationToken = new ())
     {

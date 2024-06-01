@@ -1,6 +1,6 @@
+using EFCoreSecondLevelCacheInterceptor;
 using Microsoft.EntityFrameworkCore;
 using MovieTicket.Core.Repository;
-using MovieTicket.Domain.Entities;
 using MovieTicket.Infrastructure.EfCore.Internal;
 
 namespace MovieTicket.Infrastructure.EfCore;
@@ -13,7 +13,9 @@ public static class Extensions
 
         services.AddDbContext<TDbContext>((provider, builder) =>
         {
-            builder.UseSqlServer(conn, optionsBuilder =>
+            builder
+                .AddInterceptors(provider.GetRequiredService<SecondLevelCacheInterceptor>())
+                .UseSqlServer(conn, optionsBuilder =>
             {
                 optionsBuilder.EnableRetryOnFailure();
                 optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);

@@ -1,6 +1,7 @@
 
 
 using MovieTicket.Infrastructure.Auth;
+using MovieTicket.Infrastructure.Caching;
 using MovieTicket.Infrastructure.EfCore;
 using MovieTicket.Infrastructure.Files;
 using MovieTicket.Infrastructure.Logger;
@@ -30,12 +31,15 @@ builder.Services.AddControllers();
 
 builder.Services.AddCustomSwagger(typeof(MovieTicketClient.Api.Controller.Anchor));
 
+builder.Services.AddCachingService(builder.Configuration);
 builder.Services.AddMssqlDbContext<AppBaseContext>(builder.Configuration.GetConnectionString("db")!).AddRepository(typeof(Repository<>));
 builder.Services.AddAutoMapper(typeof(Anchor).Assembly);
 
 builder.Services.AddMediatR(e => e.RegisterServicesFromAssemblies(typeof(Anchor).Assembly));
 
 builder.Services.AddSignalR();
+
+
 var app = builder.Build();
 
 
@@ -47,6 +51,7 @@ app.MapControllers();
 app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseWebSockets();
 app.MapHub<RoomTicketHub>("/room");
 
 app.Run();

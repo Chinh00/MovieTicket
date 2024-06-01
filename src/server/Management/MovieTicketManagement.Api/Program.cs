@@ -1,6 +1,7 @@
 
 using Microsoft.OpenApi.Models;
 using MovieTicket.Infrastructure.Auth;
+using MovieTicket.Infrastructure.Caching;
 using MovieTicket.Infrastructure.EfCore;
 using MovieTicket.Infrastructure.Files;
 using MovieTicket.Infrastructure.Logger;
@@ -18,6 +19,9 @@ builder.Services.AddCors(options =>
         policyBuilder.AllowAnyHeader().AllowAnyOrigin();
     });
 });
+
+builder.Services.AddCachingService(builder.Configuration);
+
 builder.Services.AddMssqlDbContext<AppBaseContext>(builder.Configuration.GetConnectionString("db")).AddRepository(typeof(Repository<>));
 
 builder.Services.AddHttpContextAccessor();

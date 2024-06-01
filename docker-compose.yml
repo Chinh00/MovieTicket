@@ -1,10 +1,18 @@
 ﻿version: "3.7"
 
 services:
+  redis:
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    restart: always
+    networks:
+      movie-network:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
-      - "1433:1433"
+      - "1435:1433"
     environment:
       SA_PASSWORD: "@P@ssw0rd02"
       ACCEPT_EULA: "Y"
@@ -13,7 +21,7 @@ services:
       - data:/var/opt/mssql
     networks:
       movie-network:
-
+        
   movieticketclient:
     build:
       context: .
@@ -21,10 +29,15 @@ services:
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
       - Identity__Url=http://identityserverclient:8091
+      - CacheOption__Option=Redis
+      - Redis__Host=redis
+      - Redis__Port=6379
+      - Redis__SerializerName=Pack
     ports:
       - "8090:80"
     depends_on:
       - db
+      - redis
       - identityserverclient
     networks:
       movie-network:
@@ -72,6 +85,8 @@ services:
       - ReverseProxy__Routes__assets__Match__Path=/assets/{**remainder}
       - ReverseProxy__Routes__assets__Transforms_0__PathRemovePrefix=/assets
       - ReverseProxy__Routes__assets__Transforms_1__PathPrefix=/assets
+      - ReverseProxy__Routes__signalr__ClusterId=client-api
+      - ReverseProxy__Routes__signalr__Match__Path=/room/{**remainder}
       - ReverseProxy__Routes__adminidentity__ClusterId=admin-identity
       - ReverseProxy__Routes__adminidentity__Match__Path=/admin-identity/{**remainder}
       - ReverseProxy__Routes__adminidentity__Transforms_0__PathRemovePrefix=/admin-identity
