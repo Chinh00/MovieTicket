@@ -25,6 +25,7 @@ services:
 
   movieticketclient:
     image: chinhval/movieticketclientapi
+    container_name: movieticketclient
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
       - Identity__Url=http://identityserverclient:8091
@@ -45,6 +46,7 @@ services:
 
   identityserverclient:
     image: chinhval/movieticketmanagementidentity
+    container_name: identityserverclient
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
     ports:
@@ -59,6 +61,7 @@ services:
 
   movieticketmanagement:
     image: chinhval/movieticketmanagementapi
+    container_name: movieticketmanagement
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
       - Identity__Url=http://identityservermanagement:8094
@@ -80,6 +83,7 @@ services:
 
   identityservermanagement:
     image: chinhval/movieticketmanagementidentity
+    container_name: identityservermanagement
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_admin;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
     ports:
@@ -94,6 +98,7 @@ services:
 
   appgateway:
     image: chinhval/movieticketappgateway
+    container_name: appgateway
     ports:
       - "9000:80"
     environment:
