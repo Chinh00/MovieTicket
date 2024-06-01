@@ -1,6 +1,7 @@
 package com.superman.movieticket.ui.home
 
 
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 
@@ -100,6 +101,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.infrastructure.utils.ApiState
 import com.superman.movieticket.ui.components.ScreenLoading
+import com.superman.movieticket.ui.detail.view.DetailActivity
 
 import com.superman.movieticket.ui.theme.MyAppTheme
 import java.util.Date
@@ -295,9 +297,11 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
 
 @Composable
 fun PopularMovieComp(listMovies: List<Movie>? = null) {
+    val context = LocalContext.current
     PopularMovies(listMovies,
         onMovieClicked = {
-
+            val intent = Intent(context, DetailActivity::class.java)
+            context.startActivity(intent)
         },
         onMovieFavouriteClicked = {
 
@@ -326,9 +330,9 @@ fun PopularMovies(
                     painter = rememberAsyncImagePainter(model = item.avatar),
                     contentDescription = null,
                     modifier = Modifier
-                        .width(150.dp)
+                        .width(130.dp)
                         .clip(RoundedCornerShape(13.dp))
-                        .height(170.dp)
+                        .height(240.dp)
                        ,
                     contentScale = ContentScale.FillBounds
                 )
@@ -487,7 +491,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
             ) {
                 Box(
                     modifier = Modifier
-                        .padding(5.dp)
+                        .padding(9.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .wrapContentSize()
                 ) {
@@ -497,7 +501,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                         painter = rememberAsyncImagePainter(model = listViewMoviesNowing[page].avatar),
                         contentDescription = "", contentScale = ContentScale.FillBounds,
                         modifier = Modifier
-                            .size(330.dp, 300.dp)
+                            .size(300.dp, 270.dp)
                     )
 
                 }

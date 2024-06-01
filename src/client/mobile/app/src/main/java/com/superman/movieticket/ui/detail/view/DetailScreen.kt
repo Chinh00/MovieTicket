@@ -280,7 +280,8 @@ fun DetailItemScreen(m: Movie, scroll: ScrollState) {
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
-                        text = "${SimpleDateFormat("dd/MM/yyyy").format(m.releaseDate)}",
+                        //text = "${SimpleDateFormat("dd/MM/yyyy").format(m.releaseDate)}",
+                        text = "__",
                         color = MaterialTheme.colorScheme.surface,
                         style = MaterialTheme.typography.titleSmall
                     )
