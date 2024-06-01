@@ -6,6 +6,7 @@ using MovieTicket.Infrastructure.Files;
 using MovieTicket.Infrastructure.Logger;
 using MovieTicket.Infrastructure.Security;
 using MovieTicket.Infrastructure.Swagger;
+using MovieTicketClient.Api.Extensions;
 using MovieTicketClient.Application;
 
 
@@ -34,7 +35,7 @@ builder.Services.AddAutoMapper(typeof(Anchor).Assembly);
 
 builder.Services.AddMediatR(e => e.RegisterServicesFromAssemblies(typeof(Anchor).Assembly));
 
-
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 
@@ -46,7 +47,7 @@ app.MapControllers();
 app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
-
+app.MapHub<RoomTicketHub>("/room");
 
 app.Run();
 

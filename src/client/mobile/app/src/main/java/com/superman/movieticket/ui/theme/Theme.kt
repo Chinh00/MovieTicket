@@ -44,6 +44,8 @@ fun MyAppTheme(
         LightColorPalette
     }
 
+
+
     MaterialTheme(
         colorScheme = colors,
         typography = CustomTypography,
