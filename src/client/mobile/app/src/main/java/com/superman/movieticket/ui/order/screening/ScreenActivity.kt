@@ -1,5 +1,6 @@
-package com.superman.movieticket.ui.order
+package com.superman.movieticket.ui.order.screening
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,18 +10,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,19 +31,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.superman.movieticket.domain.entities.Screening
+import com.superman.movieticket.ui.order.ticket.TicketBookActivity
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
 class ScreenActivity : ComponentActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                ScreensComp()
+            }
         }
     }
 
@@ -58,10 +62,12 @@ class ScreenActivity : ComponentActivity() {
 @Preview(showSystemUi = true)
 fun ScreensComp() {
     val dateScrollState = rememberScrollState()
-    val selectedDate = remember {
-        mutableStateOf<LocalDate?>(null)
-    }
+    val context = LocalContext.current
     val today = LocalDate.now()
+
+    val selectedDate = remember {
+        mutableStateOf<LocalDate?>(today)
+    }
     Column {
         Row(
             modifier = Modifier
@@ -83,7 +89,11 @@ fun ScreensComp() {
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(100) { index ->
-                ScreenItemComp("SCREEN$index")
+                ScreenItemComp(null,index){
+                    val intent=Intent(context.applicationContext, TicketBookActivity::class.java)
+                    intent.putExtra("roomId",it.roomId)
+                    context.startActivity(intent)
+                }
             }
         }
     }
@@ -91,27 +101,34 @@ fun ScreensComp() {
 //        ScreenItemComp()
 //    }
 }
-
 @Composable
 //@Preview(showSystemUi = true)
-fun ScreenItemComp(nameScreen: String) {
+fun ScreenItemPre() {
+
+
+}
+@Composable
+//@Preview(showSystemUi = true)
+fun ScreenItemComp(screening: Screening?=null,index:Int,onClick: (Screening) -> Unit) {
     Column(
         modifier = Modifier
-            .padding(horizontal = 5.dp)
+            .padding(horizontal = 10.dp)
             .shadow(4.dp, spotColor = Color.Green)
 
             .clip(MaterialTheme.shapes.small)
+            .clickable { screening?.let { onClick(it) } }
             .background(MaterialTheme.colorScheme.onBackground),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
             modifier = Modifier
-                .size(90.dp, 110.dp)
-                .padding(3.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+                .height(110.dp)
+                .width(95.dp)
+                .padding(5.dp),
+            verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "$nameScreen".uppercase(),
+                text = "${"Screen $index"}".uppercase(),
                 color = MaterialTheme.colorScheme.background,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
