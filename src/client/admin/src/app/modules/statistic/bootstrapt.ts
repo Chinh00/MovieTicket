@@ -8,7 +8,7 @@ const moduleConfig: ModuleConfig = {
             name: "Home",
             path: "",
             page: "Home",
-            authenticate: "any"
+            authenticate: true
         }
     ],
     authenticate: true,
