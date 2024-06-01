@@ -16,12 +16,12 @@ public class DbMigrationHostedService : IHostedService
         using var scope = _serviceProvider.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
         var dbContext = scope.ServiceProvider.GetRequiredService<IFacadeResolver>();
-        /*await dbContext.Database.MigrateAsync(cancellationToken: cancellationToken);
+        await dbContext.Database.MigrateAsync(cancellationToken: cancellationToken);
         await userManager.CreateAsync(new User()
         {
             UserName = "admin",
             Email = "hanvipno9@gmail.com"
-        }, "P@ssw0rd02");*/
+        }, "P@ssw0rd02");
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

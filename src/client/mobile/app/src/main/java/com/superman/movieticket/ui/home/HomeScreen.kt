@@ -107,9 +107,6 @@ import java.util.Date
 @Composable
 fun HomeScreen() {
     val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
-
-
-
     ScreenLoading(isLoading = homeScreenViewModel.apiState.collectAsState()) {
         MyAppTheme {
             HomeContent()

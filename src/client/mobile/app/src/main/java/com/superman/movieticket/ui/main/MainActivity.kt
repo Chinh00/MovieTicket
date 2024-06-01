@@ -6,9 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmergencyRecording
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -48,10 +51,10 @@ val navigationBarItems = listOf<NavigationBarItemConfig>(
         path = "home"
     ),
     NavigationBarItemConfig(
-        Icons.Filled.Search,
+        Icons.Filled.EmergencyRecording,
         onClick = {},
-        title = " Tìm kiếm",
-        path = "search"
+        title = "Phim",
+        path = "film"
     ),
     NavigationBarItemConfig(
         Icons.Filled.Settings,
@@ -62,21 +65,22 @@ val navigationBarItems = listOf<NavigationBarItemConfig>(
 
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun MainScreen () {
     val navController = rememberNavController()
     Scaffold (
         topBar = {
-
+            CenterAlignedTopAppBar(title = { Text(text = "Movie Ticket") })
         },
         bottomBar = {
             NavigationBar {
                 navigationBarItems.forEach {
                     item ->
-                    NavigationBarItem(selected = 1 == 1, onClick = { navController.navigate(item.path) }, icon = { Icon(
+                    NavigationBarItem(selected = 1 == 1, label = { Text(text = item.title)}, onClick = { navController.navigate(item.path) }, icon = { Icon(
                         imageVector = item.icon,
-                        contentDescription = item.title
+                        contentDescription = item.title,
                     ) })
                 }
             }

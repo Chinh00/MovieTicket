@@ -34,7 +34,6 @@ class HomeScreenViewModel @Inject constructor(private val movieService: MovieSer
 
         viewModelScope.launch {
             _apiState.emit(ApiState.LOADING)
-            delay(2000)
             movieService.HandleGetMoviesAsync("").enqueue(object: Callback<SuccessResponse<ListResponse<Movie>>> {
                 override fun onResponse(
                     call: Call<SuccessResponse<ListResponse<Movie>>>,

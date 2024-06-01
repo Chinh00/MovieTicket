@@ -125,8 +125,9 @@ dependencies {
 
     implementation(libs.androidx.runtime.livedata)
 
-
+    // Signalr
     implementation(libs.signalr)
 
-
+    // Datastore
+    implementation(libs.datastore)
 }

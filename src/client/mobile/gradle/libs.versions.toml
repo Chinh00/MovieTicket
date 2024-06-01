@@ -26,6 +26,7 @@ runtimeLivedata = "1.6.7"
 signalr = "5.0.11"
 
 
+datastore = "1.0.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -62,6 +63,7 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 signalr = { module = "com.microsoft.signalr:signalr", version.ref = "signalr" }
 
 
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 
 [plugins]

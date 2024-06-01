@@ -9,6 +9,7 @@ services:
     restart: always
     networks:
       movie-network:
+  
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
@@ -21,46 +22,98 @@ services:
       - data:/var/opt/mssql
     networks:
       movie-network:
-        
+
   movieticketclient:
+    #image: chinhval/movieticketclientapi
     build:
       context: .
       dockerfile: src/server/Client/MovieTicketClient.Api/Dockerfile
+    container_name: movieticketclient
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
       - Identity__Url=http://identityserverclient:8091
-      - CacheOption__Option=Redis
+      - CacheOption=Redis
       - Redis__Host=redis
-      - Redis__Port=6379
-      - Redis__SerializerName=Pack
+      - Redis_Port=6379
+      - Redis_SerializerName=Pack
     ports:
       - "8090:80"
     depends_on:
       - db
       - redis
       - identityserverclient
+    labels:
+      - "com.centurylinklabs.watchtower.enbale=true"
     networks:
       movie-network:
 
   identityserverclient:
+    #image: chinhval/movieticketmanagementidentity
     build:
       context: .
       dockerfile: src/server/Client/MovieTicketClient.IdentityServer/Dockerfile
+    container_name: identityserverclient
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
     ports:
       - "8091:80"
     depends_on:
       - db
+    
+    labels:
+      - "com.centurylinklabs.watchtower.enbale=true"
     networks:
       movie-network:
 
- 
+  movieticketmanagement:
+    #image: chinhval/movieticketmanagementapi
+    build:
+      context: .
+      dockerfile: src/server/Management/MovieTicketManagement.Api/Dockerfile
+    container_name: movieticketmanagement
+    environment:
+      - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
+      - Identity__Url=http://identityservermanagement:8094
+      - CacheOption=Redis
+      - Redis__Host=redis
+      - Redis_Port=6379
+      - Redis_SerializerName=Pack
+    ports:
+      - "8093:80"
+    depends_on:
+      - db
+      - redis
+      - identityservermanagement
+    
+    labels:
+      - "com.centurylinklabs.watchtower.enbale=true"
+    networks:
+      movie-network:
+
+  identityservermanagement:
+    #image: chinhval/movieticketmanagementidentity
+    build:
+      context: .
+      dockerfile: src/server/Management/MovieTicketManagement.IdentityServer/Dockerfile
+    container_name: identityservermanagement
+    environment:
+      - ConnectionStrings__db=Server=db;Database=movie_admin;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
+    ports:
+      - "8094:80"
+    depends_on:
+      - db
+    
+    labels:
+      - "com.centurylinklabs.watchtower.enbale=true"
+    networks:
+      movie-network:
 
   appgateway:
+    #image: chinhval/movieticketappgateway
     build:
       context: .
       dockerfile: src/server/Proxy/MovieTicket.AppGateway/Dockerfile
+    container_name: appgateway
     ports:
       - "9000:80"
     environment:
@@ -79,14 +132,14 @@ services:
       - ReverseProxy__Routes__adminapi__Transforms_1__PathPrefix=/api
       - ReverseProxy__Routes__adminui__ClusterId=admin-api
       - ReverseProxy__Routes__adminui__Match__Path=/{**catch-all}
+      - ReverseProxy__Routes__signalr__ClusterId=client-api
+      - ReverseProxy__Routes__signalr__Match__Path=/room/{**catch-all}
       #- ReverseProxy__Routes__adminui__Transforms_0__PathRemovePrefix=/admin
       - ReverseProxy__Routes__adminui__Transforms_1__PathPrefix=/
       - ReverseProxy__Routes__assets__ClusterId=admin-api
       - ReverseProxy__Routes__assets__Match__Path=/assets/{**remainder}
       - ReverseProxy__Routes__assets__Transforms_0__PathRemovePrefix=/assets
       - ReverseProxy__Routes__assets__Transforms_1__PathPrefix=/assets
-      - ReverseProxy__Routes__signalr__ClusterId=client-api
-      - ReverseProxy__Routes__signalr__Match__Path=/room/{**remainder}
       - ReverseProxy__Routes__adminidentity__ClusterId=admin-identity
       - ReverseProxy__Routes__adminidentity__Match__Path=/admin-identity/{**remainder}
       - ReverseProxy__Routes__adminidentity__Transforms_0__PathRemovePrefix=/admin-identity
@@ -95,11 +148,15 @@ services:
       - ReverseProxy__Clusters__client-identity__Destinations__destination1__Address=http://identityserverclient
       - ReverseProxy__Clusters__admin-api__Destinations__destination1__Address=http://movieticketmanagement:80
       - ReverseProxy__Clusters__admin-identity__Destinations__destination1__Address=http://identityservermanagement
-      
-        
+    
+    labels:
+      - "com.centurylinklabs.watchtower.enbale=true"
+    
     depends_on:
       - movieticketclient
       - identityserverclient
+      - movieticketmanagement
+      - identityservermanagement
     networks:
       movie-network:
 
