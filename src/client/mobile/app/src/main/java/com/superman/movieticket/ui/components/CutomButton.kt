@@ -12,13 +12,13 @@ import androidx.compose.ui.text.font.FontWeight
 
 
 @Composable
-fun CustomButton(onClick: () -> Unit, text: String, modifier: Modifier = Modifier) {
+fun CustomButton(onClick: () -> Unit, text: String, modifier: Modifier = Modifier,color:Color) {
     Button(
         onClick = onClick,
         shape = MaterialTheme.shapes.medium,
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-        containerColor = Color(0xFFFFEB3B)
+        containerColor = color
         )
     ) {
         Text(

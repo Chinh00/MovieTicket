@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.detail.view.DetailScreen
+import com.superman.movieticket.ui.film.FilmScreen
 import com.superman.movieticket.ui.home.HomeScreen
 import com.superman.movieticket.ui.main.model.NavigationBarItemConfig
 import com.superman.movieticket.ui.profile.ProfileScreen
@@ -92,6 +93,7 @@ fun MainScreen () {
             .fillMaxSize()) {
             NavHost(navController = navController, startDestination = "home" ) {
                 composable("home") { HomeScreen()}
+                composable("film") { FilmScreen() }
                 composable("profile") { ProfileScreen() }
             }
         }

@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.superman.movieticket.ui.components.CustomButton
+import com.superman.movieticket.ui.theme.CustomColor4
 import java.time.LocalDate
 
 class TicketBookActivity : ComponentActivity() {
@@ -282,7 +283,7 @@ fun TicketActivityComp() {
             CustomButton(
                 onClick = { /*TODO*/ }, text = "PAYMENT TICKET", modifier = Modifier
                     .padding(bottom = 15.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(), CustomColor4
             )
         }
     }
