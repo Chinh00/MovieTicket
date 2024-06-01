@@ -73,6 +73,7 @@ import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.detail.control.DetailActivityViewModel
 import com.superman.movieticket.ui.home.control.HomeScreenViewModel
+import com.superman.movieticket.ui.theme.CustomColor4
 import com.superman.movieticket.ui.theme.MyAppTheme
 import com.superman.movieticket.ui.theme.YoutubePlayer
 import kotlinx.coroutines.delay
@@ -138,7 +139,7 @@ fun DetailScreen(m: Movie) {
                 text = "Booking Tiket",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .height(50.dp), CustomColor4
             )
 
         }
