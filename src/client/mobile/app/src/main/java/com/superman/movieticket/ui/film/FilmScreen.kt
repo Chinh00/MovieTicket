@@ -54,13 +54,14 @@ import com.superman.movieticket.R
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.film.control.FilmScreenViewModel
+import com.superman.movieticket.ui.film.control.FilmScreenViewModelImpl
 import com.superman.movieticket.ui.theme.CustomColor4
 import kotlinx.coroutines.delay
 
 
 @Composable
 fun FilmScreen() {
-    val filmScreenViewModel: FilmScreenViewModel = hiltViewModel()
+    val filmScreenViewModel: FilmScreenViewModelImpl = hiltViewModel()
 
     //list film showing
     val listFilmShowing = filmScreenViewModel.listFilmShowing.collectAsState()

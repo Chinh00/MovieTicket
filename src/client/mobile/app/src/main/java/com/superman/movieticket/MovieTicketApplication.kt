@@ -15,6 +15,7 @@ class MovieTicketApplication : Application() {
             val bundle = Bundle()
             bundle.putString("error", e.message)
             intent.putExtras(bundle)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
         }
     }
