@@ -26,10 +26,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(private val movieService: MovieService) : ViewModel(){
-    val _apiState = MutableStateFlow(ApiState.LOADING)
+   private  val _apiState = MutableStateFlow(ApiState.LOADING)
     val apiState = _apiState.asStateFlow()
 
-    val _listMovies = MutableStateFlow(emptyList<Movie>())
+    private val _listMovies = MutableStateFlow(emptyList<Movie>())
     val listMovies = _listMovies.asStateFlow()
 
 

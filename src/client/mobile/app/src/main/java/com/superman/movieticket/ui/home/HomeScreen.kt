@@ -1,6 +1,7 @@
 package com.superman.movieticket.ui.home
 
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
@@ -256,6 +257,7 @@ fun ComingPagePre() {
 }
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun HomePage() {
     val homeViewModel: HomeScreenViewModel = hiltViewModel()
@@ -268,8 +270,16 @@ fun HomePage() {
             .verticalScroll(rememberScrollState()),
 
         ) {
-        NowingMovieComp(movies.value)
-        PopularMovieComp(movies.value)
+        if(homeViewModel.apiState.collectAsState().value==ApiState.FAIL || homeViewModel.apiState.collectAsState().value==ApiState.NONE){
+            Column(modifier=Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "Dang load",color=Color.Black)
+                CircularProgressIndicator()
+            }
+        }else if (homeViewModel.apiState.collectAsState().value==ApiState.SUCCESS){
+            NowingMovieComp(movies.value)
+            PopularMovieComp(movies.value)
+        }
+
     }
 }
 
