@@ -57,6 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.theme.CustomColor4
 import java.time.LocalDate
@@ -67,9 +68,7 @@ class TicketBookActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                TicketActivityComp()
-            }
+            BaseScreen(content = { TicketActivityComp() }, title = "Chọn ghế ")
         }
     }
 }

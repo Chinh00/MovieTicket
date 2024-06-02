@@ -20,7 +20,9 @@ dayjs.locale(vi)
 const AddScreeningModel = ({roomId, retry}: AddScreeningModelProps) => {
     const [openModal, setOpenModal] = useState(false)
     const {mutate, isLoading} = useCreateScreening()
-    const {data} = useGetMovies()
+    const {data} = useGetMovies({
+        sortBy: ["releaseDateDesc"]
+    })
     const [selectModel, setSelectModel] = useState<SelectModel>({
         movieId: "",
         startDate: new Date()
@@ -68,8 +70,8 @@ const AddScreeningModel = ({roomId, retry}: AddScreeningModelProps) => {
                                 <div className={"text-blue-600 text-xl"}>
                                     {value?.name}
                                 </div>
-                                <div>
-                                    {value?.description}
+                                <div className={"flex flex-wrap w-full"}>
+                                    {value?.description.split(" ").slice(0, 7) + "..."}
                                 </div>
                                 <div>
                                     Ngày phát hành {dayjs(value?.releaseDate).format("DD/MM/YYYY")}

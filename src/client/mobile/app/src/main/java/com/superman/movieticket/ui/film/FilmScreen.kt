@@ -1,6 +1,8 @@
 package com.superman.movieticket.ui.film
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -46,6 +49,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,46 +57,45 @@ import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.R
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.components.CustomButton
+import com.superman.movieticket.ui.components.ScreenLoading
+import com.superman.movieticket.ui.film.components.Banners
+import com.superman.movieticket.ui.film.components.ItemMovie
 import com.superman.movieticket.ui.film.control.FilmScreenViewModel
 import com.superman.movieticket.ui.film.control.FilmScreenViewModelImpl
+import com.superman.movieticket.ui.film.model.TabItem
 import com.superman.movieticket.ui.theme.CustomColor4
 import kotlinx.coroutines.delay
 
 
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview
 @Composable
 fun FilmScreen() {
-    val filmScreenViewModel: FilmScreenViewModelImpl = hiltViewModel()
-
-    //list film showing
-    val listFilmShowing = filmScreenViewModel.listFilmShowing.collectAsState()
-    // list film ComingSoon
-    val listFilmComingSoon = filmScreenViewModel.listFilmComingSoon.collectAsState()
 
 
-    TabItemComp(listFilmShowing.value,listFilmComingSoon.value)
+
+    TabItemComp()
 
 }
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TabItemComp(listMovieNowing: List<Movie>,listMovieComing: List<Movie>) {
+fun TabItemComp() {
     var selectedTabIndex by remember {
         mutableStateOf(0)
     }
     val pager = rememberPagerState(pageCount = { tabItems.size })
     LaunchedEffect(selectedTabIndex) {
         pager.animateScrollToPage(selectedTabIndex)
-
-
     }
 
     LaunchedEffect(pager.currentPage, pager.isScrollInProgress) {
         if (!pager.isScrollInProgress) {
             selectedTabIndex = pager.currentPage
         }
-
-
     }
 
     Column {
@@ -119,11 +122,12 @@ fun TabItemComp(listMovieNowing: List<Movie>,listMovieComing: List<Movie>) {
             }
         }
         Banners()
-        HorizontalPager(state = pager, modifier = Modifier.fillMaxWidth()) {
+        HorizontalPager(state = pager, modifier = Modifier.apply {
+                                                                 fillMaxWidth().align(Alignment.CenterHorizontally)
+        }) {
             when (selectedTabIndex) {
-                0 -> NowingMovieComp(listMovieNowing)
-                1 -> ComingMovieComp(listMovieComing)
-
+                0 -> ListMovieShowing()
+                1 -> ListMovieComingSoon()
             }
         }
     }
@@ -134,160 +138,65 @@ fun TabItemComp(listMovieNowing: List<Movie>,listMovieComing: List<Movie>) {
 val tabItems = listOf(
     TabItem("Đang chiếu", Icons.Default.PlayArrow, Icons.Default.ConnectedTv),
     TabItem("Sắp chiếu", Icons.Default.ChangeCircle, Icons.Filled.PlaylistAdd)
-
 )
 
-data class TabItem(
-    val name: String,
-    val iconSelected: ImageVector,
-    val iconUnSelected: ImageVector,
-
-    )
 
 
+
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
+fun ListMovieShowing(
 
-fun ItemMovie(m:Movie,onClick:(Movie)->Unit) {
-    Row(modifier = Modifier
-        .padding(horizontal = 10.dp, vertical = 8.dp)
-        .clickable { }
-        .fillMaxWidth()) {
-        Column(modifier = Modifier.size(140.dp, 180.dp)) {
-            ConstraintLayout {
-                val t = createRef()
+) {
+    val filmScreenViewModel: FilmScreenViewModelImpl = hiltViewModel()
 
-                Image(painter = rememberAsyncImagePainter(model = m.avatar),
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .clip(
-                            RoundedCornerShape(10.dp)
-                        )
-                        .constrainAs(t) {
-                            top.linkTo(parent.top)
-                            end.linkTo(parent.end)
-                            start.linkTo(parent.start)
-                        },
-                    contentDescription = null
-                )
-
-                Text(
-                    text = "T16", color = MaterialTheme.colorScheme.background, modifier = Modifier
-                        .background(
-                            Color.Blue,
-                            RoundedCornerShape(topStart = 10.dp, bottomEnd = 10.dp)
-                        )
-                        .padding(7.dp)
-                )
-
-
-            }
-        }
-        Column(
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-            modifier = Modifier.padding(horizontal = 10.dp)
-        ) {
-            Text(
-                text = m.name.uppercase(),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Text(text = "Thời lượng: 126 phút", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Khởi chiếu: D-6", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Thể loại: gia đình", style = MaterialTheme.typography.bodyMedium)
-            CustomButton(
-                onClick = { onClick(m) }, text = "Đặt vé", modifier = Modifier.fillMaxWidth(),
-                CustomColor4
-            )
-
-        }
+    LaunchedEffect(key1 = Unit) {
+        filmScreenViewModel.getListFilmShowing()
     }
-}
 
-@Composable
-fun NowingMovieComp(listMovieNowing:List<Movie>) {
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        itemsIndexed(listMovieNowing) {idnex,item->
-            ItemMovie(item){
 
-            }
-        }
-    }
-}
-@Composable
-fun ComingMovieComp(listMovieComing:List<Movie>) {
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        itemsIndexed(listMovieComing) {idnex,item->
-            ItemMovie(item){
+    val listMovies = filmScreenViewModel.listFilmShowing.collectAsState()
 
-            }
-        }
-    }
-}
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun Banners() {
-    val list_banner = listOf(
-        R.drawable.kungfu,
-        R.drawable.doremon,
-        R.drawable.coba,
-
-        )
-
-    val pagerState = rememberPagerState(
-
-        initialPage = 0, initialPageOffsetFraction = 0f, pageCount = { list_banner.size }
-    )
-    var bannerIndex by remember {
-        mutableStateOf(0)
-    }
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect { page ->
-            bannerIndex = page
-        }
-    }
-    //tự động kéo
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(2_000)
-            tween<Float>(1500)
-            pagerState.animateScrollToPage(
-                page = (pagerState.currentPage + 1) % pagerState.pageCount
-            )
-        }
-    }
     Box(
-        modifier = Modifier
-            .padding(horizontal = 10.dp, vertical = 8.dp)
-            .fillMaxWidth()
-
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        HorizontalPager(
-            modifier = Modifier
-                .height(150.dp)
-                , state = pagerState
-        ) { index ->
-            Image(painter = painterResource(id =list_banner[index]), modifier = Modifier.fillMaxWidth(), contentDescription = null, contentScale = ContentScale.FillBounds)
-        }
-
-        Row(modifier = Modifier.align(Alignment.BottomCenter)) {
-            repeat(list_banner.size) {
-                val h = 12.dp
-                val w = if (it == bannerIndex) 28.dp else 12.dp
-                val c = if (it == bannerIndex) Color.Yellow else Color.Gray
-
-                Surface(
-                    modifier = Modifier
-                        .padding(end = 6.dp)
-                        .size(w, h)
-                        .clip(RoundedCornerShape(20.dp)), color = c
-                ) {
-
-
+        ScreenLoading(isLoading = filmScreenViewModel.apiState.collectAsState()) {
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                itemsIndexed(listMovies.value) {idnex,item->
+                    ItemMovie(item)
                 }
             }
         }
     }
-
-
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun ListMovieComingSoon(
+) {
+    val filmScreenViewModel: FilmScreenViewModelImpl = hiltViewModel()
+    LaunchedEffect(key1 = Unit) {
+        filmScreenViewModel.getListFilmComingSoon()
+    }
+
+
+    val listMovies = filmScreenViewModel.listFilmComingSoon.collectAsState()
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        ScreenLoading(isLoading = filmScreenViewModel.apiState.collectAsState()) {
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                itemsIndexed(listMovies.value) {idnex,item->
+                    ItemMovie(item)
+                }
+            }
+        }
+    }
+}
+
+
+

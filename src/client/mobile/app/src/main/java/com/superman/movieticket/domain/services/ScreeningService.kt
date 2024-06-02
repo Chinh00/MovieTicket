@@ -6,8 +6,9 @@ import com.superman.movieticket.infrastructure.utils.SuccessResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Header
 
 interface ScreeningService {
-    @GET("/screening")
-    fun HandleGetScreeningsAsync(): Call<Response<SuccessResponse<ListResponse<Screening>>>>
+    @GET("/client-api/Screening")
+    fun HandleGetScreeningsAsync(@Header("x-query") xQuery: String): Call<SuccessResponse<ListResponse<Screening>>>
 }

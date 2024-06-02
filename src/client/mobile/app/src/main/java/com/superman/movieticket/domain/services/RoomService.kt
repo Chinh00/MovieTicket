@@ -8,6 +8,6 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 
 interface RoomService {
-    @GET("/Room")
+    @GET("/client-api/Room")
     fun HandleGetRoomsAsync(@Header("x-query") query: String): Call<SuccessResponse<ListResponse<Room>>>
 }

@@ -47,7 +47,6 @@ public class GetMovies
         public List<FilterModel> Filters { get; init; } = [];
         public List<string> Includes { get; init; } = [];
         public List<string> SortBy { get; init; } = [];
-        public List<string> SortByDescending { get; init; } 
         public int Page { get; init; } = 1;
         public int PageSize { get; init; } = 20;
     }

@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.domain.services.MovieService
+import com.superman.movieticket.infrastructure.networks.FilterModel
+import com.superman.movieticket.infrastructure.networks.XQueryHeader
+import com.superman.movieticket.infrastructure.networks.defaultXQueryHeader
 import com.superman.movieticket.infrastructure.utils.ApiState
 import com.superman.movieticket.infrastructure.utils.ListResponse
 import com.superman.movieticket.infrastructure.utils.SuccessResponse
@@ -34,6 +37,9 @@ class HomeScreenViewModel @Inject constructor(private val movieService: MovieSer
 
         viewModelScope.launch {
             _apiState.emit(ApiState.LOADING)
+            val getMovie = defaultXQueryHeader.copy()
+
+
             movieService.HandleGetMoviesAsync("").enqueue(object: Callback<SuccessResponse<ListResponse<Movie>>> {
                 override fun onResponse(
                     call: Call<SuccessResponse<ListResponse<Movie>>>,
@@ -56,5 +62,8 @@ class HomeScreenViewModel @Inject constructor(private val movieService: MovieSer
             _apiState.emit(ApiState.NONE)
         }
     }
+
+
+
 
 }
