@@ -52,9 +52,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.order.food.control.MovieFood
 import com.superman.movieticket.ui.order.food.control.OrderFoodActivityModel
 //import com.superman.movieticket.ui.order.payment.PaymentActivity
@@ -66,23 +68,23 @@ class OrderFoodActivity : ComponentActivity() {
         actionBar?.hide()
 
         setContent {
-
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .safeDrawingPadding()
-            ) {
-                val viewModel: OrderFoodActivityModel =
-                    ViewModelProvider(this).get(OrderFoodActivityModel::class.java)
-                OrderFoodScreen(viewModel)
-            }
+            BaseScreen(content = {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .safeDrawingPadding()
+                ) {
+                    OrderFoodScreen()
+                }
+            }, title = "Chọn đồ")
         }
     }
 }
 
 @Composable
-fun OrderFoodScreen(viewModel: OrderFoodActivityModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
-    var totalAmount = viewModel.totalPriceFood.collectAsState()
+fun OrderFoodScreen() {
+    val orderFoodActivityModel: OrderFoodActivityModel = hiltViewModel()
+    val totalAmount = orderFoodActivityModel.totalPriceFood.collectAsState()
     val context = LocalContext.current
 
 
@@ -246,13 +248,13 @@ fun OrderFoodScreen(viewModel: OrderFoodActivityModel = androidx.lifecycle.viewm
 
             }
             val selectFoodPrice = remember { mutableStateOf(0f) }
-            val listFood = viewModel.loadingListFood()
+            val listFood = orderFoodActivityModel.loadingListFood()
             val c = LocalContext.current
             listFood.forEach {
                 ItemFood(it,
                     onClickedMinimusQuantity = { quantity, it ->
                         if (quantity > 0) {
-                            viewModel.setTotalPrice(totalAmount.value - (it.price.toInt()))
+                            orderFoodActivityModel.setTotalPrice(totalAmount.value - (it.price.toInt()))
 
                         }
 
@@ -267,7 +269,7 @@ fun OrderFoodScreen(viewModel: OrderFoodActivityModel = androidx.lifecycle.viewm
 //                        Log.e("Total trừ","quantity minus ${quantity.toInt()*it.price.toInt()}")
                     },
                     onClickedAddQuantity = { quantity, it ->
-                        viewModel.setTotalPrice(totalAmount.value + (it.price.toInt()))
+                        orderFoodActivityModel.setTotalPrice(totalAmount.value + (it.price.toInt()))
                         Toast.makeText(
                             c,
                             "Ban cong  ${totalAmount.value} + ${(it.price.toInt())}",

@@ -23,20 +23,21 @@ export const GetToken = async (data: UserLoginModel) => {
     }), {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
-        }
+        },
     });
 }
+
+
 export const RevocationToken = async () => {
     const token: AuthSuccessResponse = CookieHelper.GetToken()
     return await http.post<AuthSuccessResponse>(`/admin-identity/connect/revocation`, new URLSearchParams({
-        client_id: 'react_client',
         token: token.access_token,
-        token_type_hint: "access_token"
+        token_type_hint: "access_token",
+        client_id: 'react_client',
     }), {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        withCredentials: true
     });
 }
 
@@ -59,4 +60,18 @@ const useLoginDefault = () => {
         }
     })
 }
-export {useLoginDefault}
+
+const useLogoutDefault = () => {
+    return useMutation({
+        mutationKey: "logout",
+        mutationFn: RevocationToken,
+        onSuccess: () => {
+            CookieHelper.ClearToken()
+        },
+        onError: () => {
+            CookieHelper.ClearToken()
+        }
+    })
+}
+
+export {useLoginDefault, useLogoutDefault}

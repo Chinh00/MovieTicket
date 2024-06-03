@@ -29,7 +29,7 @@ public class ServiceController : BaseController
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> HandleCreateServiceAsync(ServiceCreateModel model, CancellationToken cancellationToken = new ())
+    public async Task<IActionResult> HandleCreateServiceAsync([FromForm] ServiceCreateModel model, CancellationToken cancellationToken = new ())
     {
         return Ok(await Mediator.Send(new CreateService.Command() {CreateModel = model}, cancellationToken));
     }

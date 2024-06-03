@@ -8,6 +8,10 @@ class CookieHelper {
     public static GetToken() {
         return JSON.parse(Cookies.get("auth") || "{}") as AuthSuccessResponse
     }
+    public static ClearToken () {
+        Cookies.remove("auth")
+    }
+    
 }
 
 export default CookieHelper

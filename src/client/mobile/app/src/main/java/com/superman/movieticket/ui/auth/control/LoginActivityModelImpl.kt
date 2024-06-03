@@ -32,21 +32,16 @@ class LoginActivityModelImpl @Inject constructor(
     private val authService: AuthService,
     private val dataStore: DataStore<Preferences>,
     @CoroutineScopeDefault private val coroutineScope: CoroutineScope
-) : ViewModel(), LoginActivityModel {
-    lateinit var username: MutableStateFlow<String>
-    lateinit var password: MutableStateFlow<String>
+) : ViewModel() {
     var apiState: MutableStateFlow<ApiState> = MutableStateFlow(ApiState.NONE)
-    override val _username: MutableStateFlow<String>
-        get() = username
-    override val _password: MutableSharedFlow<String>
-        get() = password
+
     val _apiState: StateFlow<ApiState> = apiState.asStateFlow()
 
 
-    override suspend fun HandleLoginAction(userLoginModel: UserLoginModel) {
+    suspend fun HandleLoginAction(userLoginModel: UserLoginModel) {
 
         viewModelScope.launch {
-            apiState.emit(ApiState.LOADING)
+            apiState.value = ApiState.LOADING
 
             authService.getToken(grantType = "password", username = userLoginModel.username, password = userLoginModel.password, clientId = "react_client", scope = "openid profile api").enqueue(object: Callback<TokenResponse> {
                 override fun onResponse(
@@ -60,19 +55,16 @@ class LoginActivityModelImpl @Inject constructor(
                             it[PreferenceKey.ACCESS_TOKEN] = response.body()?.access_token.toString()
                         }
                     }
-
-
                 }
 
                 override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
                     apiState.value = ApiState.FAIL
                     Log.d("Login", t.toString())
-
                 }
 
             })
 
-            apiState.emit(ApiState.NONE)
+            apiState.value = ApiState.NONE
         }
     }
 
