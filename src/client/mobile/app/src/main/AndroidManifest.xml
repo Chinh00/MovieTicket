@@ -22,11 +22,11 @@
         <activity android:name=".ui.systems.ErrorActivity" android:exported="true" />
         <activity android:name=".ui.detail.view.DetailActivity"/>
         <activity android:name=".ui.order.screening.ScreenActivity"/>
-        <activity android:name=".ui.order.ticket.TicketBookActivity"/>
+<!--        <activity android:name=".ui.order.ticket.TicketBookActivity"/>-->
         <activity android:name=".ui.order.food.OrderFoodActivity"/>
 
 
-        <activity android:name=".ui.main.MainActivity" android:exported="true">
+        <activity android:name=".ui.order.ticket.TicketBookActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
