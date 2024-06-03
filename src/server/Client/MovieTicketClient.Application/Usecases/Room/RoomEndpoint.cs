@@ -19,7 +19,17 @@ public class GetRooms
     }
 }
 
-public class RoomEndpoint : IRequestHandler<GetRooms.Query, ResultModel<ListResultModel<RoomDto>>>
+public class GetRoomById
+{
+    public struct Query : IItemQuery<Guid, RoomDto>
+    {
+        public Guid Id { get; init; }
+    }
+}
+
+
+
+public class RoomEndpoint : IRequestHandler<GetRooms.Query, ResultModel<ListResultModel<RoomDto>>>, IRequestHandler<GetRoomById.Query, ResultModel<RoomDto>>
 {
     private readonly IRepository<MovieTicket.Domain.Entities.Room> _repository;
     private readonly IGridRepository<MovieTicket.Domain.Entities.Room> _gridRepository;
@@ -38,6 +48,13 @@ public class RoomEndpoint : IRequestHandler<GetRooms.Query, ResultModel<ListResu
         var totalRooms = await _gridRepository.CountAsync(spec);
         var listResultModel = ListResultModel<RoomDto>.Create(_mapper.Map<List<RoomDto>>(rooms), totalRooms, request.Page, request.PageSize);
         return ResultModel<ListResultModel<RoomDto>>.Create(listResultModel);
+    }
+
+    public async Task<ResultModel<RoomDto>> Handle(GetRoomById.Query request, CancellationToken cancellationToken)
+    {
+        var spec = new GetRoomByIdSpec(request.Id);
+        var room = await _repository.FindOneAsync(spec);
+        return ResultModel<RoomDto>.Create(_mapper.Map<RoomDto>(room));
     }
 }
 

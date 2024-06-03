@@ -2,10 +2,15 @@ package com.superman.movieticket.ui.auth.control
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.superman.movieticket.domain.services.AuthService
+import com.superman.movieticket.infrastructure.di.CoroutineScopeDefault
 import com.superman.movieticket.infrastructure.utils.ApiState
+import com.superman.movieticket.infrastructure.utils.PreferenceKey
 import com.superman.movieticket.ui.auth.model.TokenResponse
 import com.superman.movieticket.ui.auth.model.UserLoginModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +28,11 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginActivityModelImpl @Inject constructor(private val authService: AuthService) : ViewModel(), LoginActivityModel {
+class LoginActivityModelImpl @Inject constructor(
+    private val authService: AuthService,
+    private val dataStore: DataStore<Preferences>,
+    @CoroutineScopeDefault private val coroutineScope: CoroutineScope
+) : ViewModel(), LoginActivityModel {
     lateinit var username: MutableStateFlow<String>
     lateinit var password: MutableStateFlow<String>
     var apiState: MutableStateFlow<ApiState> = MutableStateFlow(ApiState.NONE)
@@ -45,7 +54,14 @@ class LoginActivityModelImpl @Inject constructor(private val authService: AuthSe
                     response: Response<TokenResponse>
                 ) {
                     apiState.value = ApiState.SUCCESS
-                    Log.d("Login", response.body()?.access_token.toString())
+                    coroutineScope.launch {
+                        dataStore.edit {
+                            it[PreferenceKey.IS_AUTHENTICATE] = "true"
+                            it[PreferenceKey.ACCESS_TOKEN] = response.body()?.access_token.toString()
+                        }
+                    }
+
+
                 }
 
                 override fun onFailure(call: Call<TokenResponse>, t: Throwable) {

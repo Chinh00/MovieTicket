@@ -28,4 +28,9 @@ object ServiceProvider {
     @Singleton
     fun AddScreeningService(retrofit: Retrofit) = retrofit.create(ScreeningService::class.java)
 
+
+    @Provides
+    @Singleton
+    fun AddRoomService(retrofit: Retrofit) = retrofit.create(RoomService::class.java)
+
 }

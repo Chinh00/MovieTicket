@@ -148,7 +148,7 @@ fun ScreenItemComp(
             .shadow(4.dp, spotColor = Color.Green)
             .clip(MaterialTheme.shapes.small)
             .clickable { screening?.let {
-                NavigateBookTicket(context, it.id)
+                NavigateBookTicket(context, it)
             } }
             .background(MaterialTheme.colorScheme.onBackground),
         horizontalAlignment = Alignment.CenterHorizontally

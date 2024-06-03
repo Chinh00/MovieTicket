@@ -26,7 +26,7 @@
         <activity android:name=".ui.order.food.OrderFoodActivity"/>
 
 
-        <activity android:name=".ui.order.payment.PaymentActivity" android:exported="true">
+        <activity android:name=".ui.main.MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

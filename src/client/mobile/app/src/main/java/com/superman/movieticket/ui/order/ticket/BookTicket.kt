@@ -4,6 +4,7 @@ package com.superman.movieticket.ui.order.ticket
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -34,6 +35,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -57,18 +60,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.gson.Gson
+import com.superman.movieticket.domain.entities.Screening
+import com.superman.movieticket.domain.entities.Seat
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.components.CustomButton
+import com.superman.movieticket.ui.order.ticket.control.BookTicketViewModel
 import com.superman.movieticket.ui.theme.CustomColor4
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
-
+@AndroidEntryPoint
 class TicketBookActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            BaseScreen(content = { TicketActivityComp() }, title = "Chọn ghế ")
+            BaseScreen(content = { TicketActivityComp(
+                Gson().fromJson(intent.getStringExtra("screening"),Screening::class.java)
+            ) }, title = "Chọn ghế ")
         }
     }
 }
@@ -76,7 +87,12 @@ class TicketBookActivity : ComponentActivity() {
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TicketActivityComp() {
+fun TicketActivityComp(
+    screening: Screening
+
+) {
+    val bookTicketViewModel: BookTicketViewModel = hiltViewModel()
+
     val context = LocalContext.current
     val selectedSeat = remember {
 
@@ -98,6 +114,14 @@ fun TicketActivityComp() {
         mutableStateOf(180)
 
     }
+    val seats = bookTicketViewModel.roomState.collectAsState()
+
+    LaunchedEffect(key1 = Unit) {
+        bookTicketViewModel.GetAllSeatsOfRoomAsync(screening.roomId)
+    }
+
+
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -108,25 +132,6 @@ fun TicketActivityComp() {
         val (s, e, b, t) = createRefs()
 
 
-//        val timeCre = createRef()
-//
-//
-//        Row(modifier = Modifier
-//            .padding(top = 5.dp, start = 5.dp)
-//            .constrainAs(timeCre) {
-//                start.linkTo(parent.start)
-//                end.linkTo(parent.end)
-//                top.linkTo(dateCre.bottom)
-//            }
-//            .horizontalScroll(timeScrollState),
-//            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-//            (10..22 step 2).forEach { i ->
-//                val time = "$i:00"
-//                TimeComp(time = time, isSelected = selectedTime.value == time) {
-//                    selectedTime.value = it
-//                }
-//            }
-//        }
         val btn_bottom = createRef()
 
         Row(modifier = Modifier.constrainAs(e) {
@@ -162,6 +167,8 @@ fun TicketActivityComp() {
                     y = (offSet.y + scale * panChange.y).coerceIn(-maxY, maxY)
                 )
             }
+
+
             Column(
                 modifier = Modifier
                     .padding(vertical = 10.dp)
@@ -176,13 +183,13 @@ fun TicketActivityComp() {
                     }
                     .transformable(state), horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                //Seat Mapping
-                (1..11).forEach { i ->
+
+                seats.value.seats.sortedBy { it.rowNumber.toString() }.groupBy { it.rowNumber }.forEach { i ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        (1..8).forEach { j ->
-                            val seatNumber = "${(64 + i).toChar()}$j"
+                        i.value.sortedBy { it.colNumber.toString() }.forEach { j ->
+                            val seatNumber = "${(64 + j.rowNumber.toInt()).toChar()}$j"
                             val isBooked = bookedSeats.contains(seatNumber)
-                            if (j == 1) {
+                          /*  if (j == 1) {
                                 Row {
                                     Text(
                                         text = "${(64 + i).toChar()}",
@@ -192,7 +199,7 @@ fun TicketActivityComp() {
                                         modifier = Modifier.padding(end = 15.dp)
                                     )
                                 }
-                            }
+                            }*/
                             SeatComp(
                                 seatNumber = seatNumber,
                                 isEnable = !isBooked,
@@ -201,7 +208,7 @@ fun TicketActivityComp() {
                                 if (selected) selectedSeat.remove(seat)
                                 else selectedSeat.add(seat)
                             }
-                            if (j == 8) {
+                           /* if (j == 8) {
                                 Row {
                                     Text(
                                         text = "${(64 + i).toChar()}",
@@ -211,17 +218,20 @@ fun TicketActivityComp() {
                                         modifier = Modifier.padding(start = 15.dp)
                                     )
                                 }
-                            }
-                            if (j != 8) Spacer(modifier = Modifier.width(if (j == 4) 25.dp else 8.dp))
+                            }*/
+                            //if (j != 8) Spacer(modifier = Modifier.width(if (j == 4) 25.dp else 8.dp))
 
                         }
 
                     }
-                    Spacer(modifier = Modifier.height(if (i != 6) 8.dp else 25.dp))
+                    //Spacer(modifier = Modifier.height(if (i != 6) 8.dp else 25.dp))
 
                 }
             }
         }
+
+
+
         Row(modifier = Modifier
             .padding(vertical = 10.dp)
             .constrainAs(b) {
@@ -380,15 +390,7 @@ fun TimeComp(
     }
 }
 
-@SuppressLint("NewApi")
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-@Preview(showSystemUi = true)
-fun TicketActivityPre() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        TicketActivityComp()
-    }
-}
+
 
 @Composable
 @Preview(showBackground = true)
@@ -420,7 +422,8 @@ fun SeatComp(
     isEnable: Boolean = false,
     isSelected: Boolean = false,
     seatNumber: String,
-    onClick: (Boolean, String) -> Unit = { _, _ -> }
+    onClick: (Boolean, String) -> Unit = { _, _ -> },
+    //seat: Seat
 ) {
     val seatColor = when {
         !isEnable -> Color.Gray

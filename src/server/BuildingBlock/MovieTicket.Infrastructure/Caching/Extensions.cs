@@ -72,9 +72,7 @@ public static class Extensions
             }
         });
 
-        var cachedTimeSpan = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Production
-            ? TimeSpan.FromMinutes(90)
-            : TimeSpan.FromMinutes(5);
+        var cachedTimeSpan = TimeSpan.FromDays(1);
 
         services.AddEFSecondLevelCache(options =>
             options

@@ -4,5 +4,5 @@ import com.superman.movieticket.core.entity.BaseEntity
 
 data class Room (
     val roomNumber: Number,
-    val seats: Array<Seat>
+    val seats: List<Seat>
 ) : BaseEntity()

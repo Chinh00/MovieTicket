@@ -14,6 +14,11 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
     public DbSet<Screening> Screenings { get; init; }
     public DbSet<Room> Rooms { get; init; } 
     
+   public DbSet<Service> Services { get; init; }
+   public DbSet<ServiceReservation> ServiceReservations { get; init; }
+    
+    
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -76,30 +81,52 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
         modelBuilder.Entity<SeatReservation>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
         
         
+        /*Service*/
+        modelBuilder.Entity<Service>().ToTable("Services", Schema).HasKey(e => e.Id);
+        modelBuilder.Entity<Service>().Property(e => e.Id)
+            .HasDefaultValueSql("(newsequentialid())");
+        modelBuilder.Entity<Service>().HasIndex(e => e.Id).IsUnique();
+
+        modelBuilder.Entity<Service>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
+
+        /*ServiceReservation*/
+        modelBuilder.Entity<ServiceReservation>().ToTable("ServiceReservations", Schema).HasKey(e => e.Id);
+        modelBuilder.Entity<ServiceReservation>().Property(e => e.Id)
+            .HasDefaultValueSql("(newsequentialid())");
+        modelBuilder.Entity<ServiceReservation>().HasIndex(e => e.Id).IsUnique();
+
+        modelBuilder.Entity<ServiceReservation>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
+
+        
         
         /*Relationships*/
-        modelBuilder.Entity<Category>().HasMany(e => e.Movies);
         
         
         
-        modelBuilder.Entity<Movie>().HasMany(e => e.Screenings);
-        modelBuilder.Entity<Movie>().HasMany(e => e.Categories);
+        modelBuilder.Entity<Movie>().HasMany(e => e.Screenings).WithOne(e => e.Movie).HasForeignKey(e => e.MovieId);
+        modelBuilder.Entity<Movie>().HasMany(e => e.Categories).WithMany(e => e.Movies);
 
         modelBuilder.Entity<Reservation>().HasMany(e => e.SeatReservations);
         modelBuilder.Entity<Reservation>().HasOne(e => e.Screening).WithMany(e => e.Reservations)
             .HasForeignKey(e => e.ScreeningId);
         
 
-        modelBuilder.Entity<Room>().HasMany(e => e.Screenings);
-        modelBuilder.Entity<Room>().HasMany(e => e.Seats);
+        modelBuilder.Entity<Room>().HasMany(e => e.Screenings).WithOne(e => e.Room).HasForeignKey(e => e.RoomId);
+        modelBuilder.Entity<Room>().HasMany(e => e.Seats).WithOne(e => e.Room).HasForeignKey(e => e.RoomId);
 
-        modelBuilder.Entity<Seat>().HasMany(e => e.SeatReservations);
+        modelBuilder.Entity<Seat>().HasMany(e => e.SeatReservations).WithOne(e => e.Seat).HasForeignKey(e => e.SeatId);
 
 
         modelBuilder.Entity<SeatReservation>().HasOne(e => e.Seat).WithMany(e => e.SeatReservations)
             .HasForeignKey(e => e.SeatId).OnDelete(DeleteBehavior.NoAction);
-        modelBuilder.Entity<SeatReservation>().HasOne(e => e.Reservation).WithMany(e => e.SeatReservations).HasForeignKey(e => e.ReservationId).OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<SeatReservation>().HasOne(e => e.Reservation).WithMany(e => e.SeatReservations).HasForeignKey(e => e.ReservationId)
+            .OnDelete(DeleteBehavior.NoAction);
 
 
+
+        modelBuilder.Entity<ServiceReservation>().HasOne(e => e.Service).WithMany(e => e.ServiceReservations)
+            .HasForeignKey(e => e.ServiceId);
+        modelBuilder.Entity<ServiceReservation>().HasOne(e => e.Reservation).WithMany(e => e.ServiceReservations)
+            .HasForeignKey(e => e.ReservationId);
     }
 }

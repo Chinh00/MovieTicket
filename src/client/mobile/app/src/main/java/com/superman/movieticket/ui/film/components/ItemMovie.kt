@@ -77,7 +77,6 @@ fun ItemMovie(
                         .padding(7.dp)
                 )
 
-
             }
         }
         Column(
