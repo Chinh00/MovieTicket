@@ -29,10 +29,10 @@ const RoomList = () => {
                 <TableHead>
                     <TableRow>
                         <TableCell>Tên phòng  </TableCell>
-                        <TableCell >Tổng số ghế  </TableCell>
+                        <TableCell >Tổng số ghế (ghế ) </TableCell>
                         <TableCell >Hành động  </TableCell>
                     </TableRow> 
-                </TableHead>/
+                </TableHead>
                 <TableBody>
                     {!!data && data?.data?.data?.items.map((row) => (
                         <TableRow
@@ -42,7 +42,9 @@ const RoomList = () => {
                             <TableCell component="th" scope="row">
                                 {row.roomNumber}
                             </TableCell>
-                            <TableCell >{dayjs(row?.seats?.length).format("ll")}</TableCell>
+                            <TableCell component="th" scope="row">
+                                {row?.seats?.length}
+                            </TableCell>
                             <TableCell>
                                 <IconButton onClick={() => {}} type={"button"}><RiEditBoxLine size={30} /></IconButton>
                             </TableCell>
