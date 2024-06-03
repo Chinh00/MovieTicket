@@ -138,10 +138,10 @@ fun TicketActivityComp(
             top.linkTo(parent.top)
         }) {
 
-            ScreenShape()
+
         }
         var scale by remember {
-            mutableStateOf(1f)
+            mutableStateOf(1.5f)
         }
         var offSet by remember {
             mutableStateOf(Offset.Zero)
@@ -155,7 +155,7 @@ fun TicketActivityComp(
                 bottom.linkTo(b.top)
 
             }) {
-            val state = rememberTransformableState { zoomChange, panChange, rotationChange ->
+            val state = rememberTransformableState { zoomChange, panChange, _ ->
                 scale = (scale * zoomChange).coerceIn(1f, 1.5f)
                 val extraWidth = (scale - 1) * constraints.maxWidth
                 val extraHeight = (scale - 1) * constraints.maxHeight
@@ -183,7 +183,9 @@ fun TicketActivityComp(
                     }
                     .transformable(state), horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
+                Column {
+                    ScreenShape()
+                }
                 seats.value.seats.sortedBy { it.rowNumber.toString() }.groupBy { it.rowNumber }.forEach { i ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         i.value.sortedBy { it.colNumber.toString() }.forEach { j ->
