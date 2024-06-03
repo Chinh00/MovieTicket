@@ -232,12 +232,13 @@ fun TicketActivityComp(
             }
         }
 
+        val t1 = createRef()
 
 
         Row(modifier = Modifier
             .padding(vertical = 10.dp)
             .constrainAs(b) {
-                top.linkTo(t.bottom)
+                bottom.linkTo(t1.top)
 
             }
             .fillMaxWidth(),
@@ -278,7 +279,6 @@ fun TicketActivityComp(
             }
 
         }
-        val t1 = createRef()
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
