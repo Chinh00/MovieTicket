@@ -12,6 +12,8 @@ import {
 import {useGetScreenings} from "@/app/usecases/screening.usecase.ts";
 import {Box} from "@mui/material";
 import AddScreeningModel from "@/app/modules/screening/components/AddScreeningModel.tsx";
+import {AppConfig} from "@/core/config/AppConfig.ts";
+import utc from "dayjs/plugin/utc"
 
 export type TabCustomProps = {
     _date: dayjs.Dayjs,
@@ -40,19 +42,22 @@ const TabCustom = ({_date, ...props}: TabCustomProps) => {
                 comparision: ">=",
                 fieldValue: `${_date?.startOf("day").toISOString()}`
             }
-        ]
+        ],
+        sortBy: ["startDateDesc"]
     }, !!props.roomId && !!_date)
     //
+    {dayjs.extend(utc)}
+    
     return <TabPanel value={props?.value}>
         <AddScreeningModel retry={refetch} roomId={props?.roomId} />
-        {_date?.get("day")}
         
         <Timeline position={"alternate"} >
             {!!data &&  data?.data?.data?.items?.map((value, index) => {
+                console.log(value?.startDate)
                 return <div key={index}>
                     <TimelineItem>
                         <TimelineOppositeContent color="text.secondary">
-                            {dayjs(value?.startDate).format("DD/MM/YYYY HH:mm:ss")}
+                            {dayjs(value?.startDate).format("L LT")}
                         </TimelineOppositeContent>
                         <TimelineSeparator>
                             <TimelineDot />
@@ -60,7 +65,7 @@ const TabCustom = ({_date, ...props}: TabCustomProps) => {
                         </TimelineSeparator>
                         <TimelineContent>
                             <Box display={"flex"} gap={5}>
-                                <img src={value?.movie?.avatar} width={150} height={200}/> 
+                                <img src={`${AppConfig.BASE_URL}/admin-api/image${value?.movie?.avatar}`} width={150} height={200}/> 
                                 <p className={"text-xl"}>{value?.movie?.name}</p>
                             </Box>
                         </TimelineContent>

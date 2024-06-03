@@ -2,6 +2,7 @@ package com.superman.movieticket.ui.film
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -184,6 +185,7 @@ fun ListMovieComingSoon(
 
 
     val listMovies = filmScreenViewModel.listFilmComingSoon.collectAsState()
+    Log.d("Chinh", listMovies.toString())
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

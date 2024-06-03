@@ -100,6 +100,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.infrastructure.utils.ApiState
 import com.superman.movieticket.ui.components.ScreenLoading
 import com.superman.movieticket.ui.detail.view.DetailActivity
@@ -337,7 +338,7 @@ fun PopularMovies(
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Image(
-                    painter = rememberAsyncImagePainter(model = item.avatar),
+                    painter = rememberAsyncImagePainter(model = AppOptions.BASE_URL + "/admin-api/image" + item.avatar),
                     contentDescription = null,
                     modifier = Modifier
                         .width(130.dp)
@@ -508,7 +509,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                     Log.d("ImageURL", "Loading image from URL: ${listViewMoviesNowing[page].avatar}")
                     Image(
 
-                        painter = rememberAsyncImagePainter(model = listViewMoviesNowing[page].avatar),
+                        painter = rememberAsyncImagePainter(model = AppOptions.BASE_URL + "/admin-api/image" + listViewMoviesNowing[page].avatar),
                         contentDescription = "", contentScale = ContentScale.FillBounds,
                         modifier = Modifier
                             .size(300.dp, 270.dp)

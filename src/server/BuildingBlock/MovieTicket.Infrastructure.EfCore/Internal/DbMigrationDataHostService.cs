@@ -52,8 +52,8 @@ public class DbMigrationDataHostService : IHostedService
                 {
                     await dbContext.Seats.AddAsync(new Seat()
                     {
-                        RowNumber = i,
-                        ColNumber = j,
+                        RowNumber = Convert.ToChar(64 + i),
+                        ColNumber = Convert.ToChar(64 + j),
                         RoomId = rooms[0].Id
                     }, cancellationToken);
                 }
@@ -64,8 +64,8 @@ public class DbMigrationDataHostService : IHostedService
                 {
                     await dbContext.Seats.AddAsync(new Seat()
                     {
-                        RowNumber = i,
-                        ColNumber = j,
+                        RowNumber = Convert.ToChar(64 + i),
+                        ColNumber = Convert.ToChar(64 + j),
                         RoomId = rooms[1].Id
                     }, cancellationToken);
                 }
@@ -76,8 +76,8 @@ public class DbMigrationDataHostService : IHostedService
                 {
                     await dbContext.Seats.AddAsync(new Seat()
                     {
-                        RowNumber = i,
-                        ColNumber = j,
+                        RowNumber = Convert.ToChar(64 + i),
+                        ColNumber = Convert.ToChar(64 + j),
                         RoomId = rooms[2].Id
                     }, cancellationToken);
                 }

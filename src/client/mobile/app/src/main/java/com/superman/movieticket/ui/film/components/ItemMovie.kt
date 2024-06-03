@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberAsyncImagePainter
+import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.order.screening.ScreenActivity
@@ -50,11 +52,11 @@ fun ItemMovie(
         .padding(horizontal = 10.dp, vertical = 8.dp)
         .clickable { }
         .fillMaxWidth()) {
-        Column(modifier = Modifier.size(140.dp, 180.dp)) {
+        Column(modifier = Modifier.size(170.dp, 270.dp)) {
             ConstraintLayout {
                 val t = createRef()
 
-                Image(painter = rememberAsyncImagePainter(model = m.avatar),
+                Image(painter = rememberAsyncImagePainter(model = AppOptions.BASE_URL + "/admin-api/image" + m.avatar),
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
                         .clip(
@@ -64,7 +66,7 @@ fun ItemMovie(
                             top.linkTo(parent.top)
                             end.linkTo(parent.end)
                             start.linkTo(parent.start)
-                        },
+                        }.fillMaxSize(),
                     contentDescription = null
                 )
 
@@ -88,7 +90,7 @@ fun ItemMovie(
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
-            Text(text = "Thời lượng: 126 phút", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Thời lượng: ${m.totalTime} phút", style = MaterialTheme.typography.bodyMedium)
             Text(text = "Khởi chiếu: D-6", style = MaterialTheme.typography.bodyMedium)
             Text(text = "Thể loại: gia đình", style = MaterialTheme.typography.bodyMedium)
             CustomButton(

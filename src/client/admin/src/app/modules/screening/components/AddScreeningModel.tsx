@@ -7,6 +7,7 @@ import {DateTimePicker, MobileDateTimePicker} from "@mui/x-date-pickers";
 import vi from "dayjs/locale/vi"
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import {LoadingButton} from "@mui/lab";
+import {AppConfig} from "@/core/config/AppConfig.ts";
 export type AddScreeningModelProps = {
     roomId: string,
     retry: any
@@ -65,7 +66,7 @@ const AddScreeningModel = ({roomId, retry}: AddScreeningModelProps) => {
                                 }))
                             }}
                             key={index} className={`flex ${selectModel?.movieId === value?.id && "bg-gray-300"} cursor-pointer w-full justify-start items-start gap-5 border-2 p-3`}>
-                            <img src={value?.avatar}  alt={value?.name} width={100}/>
+                            <img src={`${AppConfig.BASE_URL}/admin-api/image${value?.avatar}`} alt={value?.name} width={100}/>
                             <div className={" font-bold  flex flex-col"}>
                                 <div className={"text-blue-600 text-xl"}>
                                     {value?.name}

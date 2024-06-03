@@ -9,6 +9,7 @@ import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.domain.services.MovieService
 import com.superman.movieticket.infrastructure.networks.FilterModel
 import com.superman.movieticket.infrastructure.networks.XQueryHeader
+import com.superman.movieticket.infrastructure.networks.defaultXQueryHeader
 import com.superman.movieticket.infrastructure.utils.ApiState
 import com.superman.movieticket.infrastructure.utils.ListResponse
 import com.superman.movieticket.infrastructure.utils.SuccessResponse
@@ -95,13 +96,7 @@ class FilmScreenViewModelImpl
     override suspend fun getListFilmComingSoon() {
         viewModelScope.launch {
             _apiState.value = ApiState.LOADING
-            val xQueryHeader = XQueryHeader(
-                includes = mutableListOf(),
-                filters = mutableListOf(),
-                sortBy = mutableListOf(),
-                page = 1,
-                pageSize = 20
-            )
+            val xQueryHeader = defaultXQueryHeader.copy()
             val currentDateTime = LocalDateTime.now()
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
             val filterModel = FilterModel(
@@ -109,14 +104,14 @@ class FilmScreenViewModelImpl
                 comparision = ">",
                 fieldValue = formatter.format(currentDateTime)
             )
-            xQueryHeader.sortBy.add("createdDate")
             xQueryHeader.filters.add(filterModel)
+
             movieService.HandleGetMoviesAsync(xQueryHeader.JsonSerializer()).enqueue(object: Callback<SuccessResponse<ListResponse<Movie>>> {
                 override fun onResponse(
                     call: Call<SuccessResponse<ListResponse<Movie>>>,
                     response: Response<SuccessResponse<ListResponse<Movie>>>
                 ) {
-                    _listFilmShowing.value = response.body()?.data?.items!!
+                    _listFilmComingSoon.value = response.body()?.data?.items!!
                     _apiState.value = ApiState.SUCCESS
                 }
 

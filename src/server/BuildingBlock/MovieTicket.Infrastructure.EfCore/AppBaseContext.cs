@@ -27,7 +27,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
         modelBuilder.Entity<Movie>().Property(e => e.Id).HasDefaultValueSql("(newsequentialid())");
         modelBuilder.Entity<Movie>().HasIndex(e => e.Id).IsUnique();
 
-        modelBuilder.Entity<Movie>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
+        modelBuilder.Entity<Movie>().Property(e => e.CreatedDate).HasDefaultValueSql("(getutcdate())");
 
         /*Category*/
         modelBuilder.Entity<Category>().ToTable("Categories", Schema).HasKey(e => e.Id);
@@ -35,7 +35,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
             .HasDefaultValueSql("(newsequentialid())");
         modelBuilder.Entity<Category>().HasIndex(e => e.Id).IsUnique();
 
-        modelBuilder.Entity<Category>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
+        modelBuilder.Entity<Category>().Property(e => e.CreatedDate).HasDefaultValueSql("(getutcdate())");
 
 
         
@@ -45,7 +45,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
             .HasDefaultValueSql("(newsequentialid())");
         modelBuilder.Entity<Room>().HasIndex(e => e.Id).IsUnique();
 
-        modelBuilder.Entity<Room>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
+        modelBuilder.Entity<Room>().Property(e => e.CreatedDate).HasDefaultValueSql("(getutcdate())");
         
         /*Seat*/
         modelBuilder.Entity<Seat>().ToTable("Seats", Schema).HasKey(e => e.Id);
@@ -53,7 +53,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
             .HasDefaultValueSql("(newsequentialid())");
         modelBuilder.Entity<Seat>().HasIndex(e => e.Id).IsUnique();
 
-        modelBuilder.Entity<Seat>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
+        modelBuilder.Entity<Seat>().Property(e => e.CreatedDate).HasDefaultValueSql("(getutcdate())");
         
         /*Screening*/
         modelBuilder.Entity<Screening>().ToTable("Screenings", Schema).HasKey(e => e.Id);
@@ -61,7 +61,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
             .HasDefaultValueSql("(newsequentialid())");
         modelBuilder.Entity<Screening>().HasIndex(e => e.Id).IsUnique();
 
-        modelBuilder.Entity<Screening>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
+        modelBuilder.Entity<Screening>().Property(e => e.CreatedDate).HasDefaultValueSql("(getutcdate())");
         
         
         /*Reservation*/
@@ -70,7 +70,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
             .HasDefaultValueSql("(newsequentialid())");
         modelBuilder.Entity<Reservation>().HasIndex(e => e.Id).IsUnique();
 
-        modelBuilder.Entity<Reservation>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
+        modelBuilder.Entity<Reservation>().Property(e => e.CreatedDate).HasDefaultValueSql("(getutcdate())");
         
         /*Seat Reservation*/
         modelBuilder.Entity<SeatReservation>().ToTable("SeatReservations", Schema).HasKey(e => e.Id);
@@ -78,7 +78,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
             .HasDefaultValueSql("(newsequentialid())");
         modelBuilder.Entity<SeatReservation>().HasIndex(e => e.Id).IsUnique();
 
-        modelBuilder.Entity<SeatReservation>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
+        modelBuilder.Entity<SeatReservation>().Property(e => e.CreatedDate).HasDefaultValueSql("(getutcdate())");
         
         
         /*Service*/
@@ -87,7 +87,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
             .HasDefaultValueSql("(newsequentialid())");
         modelBuilder.Entity<Service>().HasIndex(e => e.Id).IsUnique();
 
-        modelBuilder.Entity<Service>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
+        modelBuilder.Entity<Service>().Property(e => e.CreatedDate).HasDefaultValueSql("(getutcdate())");
 
         /*ServiceReservation*/
         modelBuilder.Entity<ServiceReservation>().ToTable("ServiceReservations", Schema).HasKey(e => e.Id);
@@ -95,7 +95,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
             .HasDefaultValueSql("(newsequentialid())");
         modelBuilder.Entity<ServiceReservation>().HasIndex(e => e.Id).IsUnique();
 
-        modelBuilder.Entity<ServiceReservation>().Property(e => e.CreatedDate).HasDefaultValueSql("getDate()");
+        modelBuilder.Entity<ServiceReservation>().Property(e => e.CreatedDate).HasDefaultValueSql("(getutcdate())");
 
         
         
