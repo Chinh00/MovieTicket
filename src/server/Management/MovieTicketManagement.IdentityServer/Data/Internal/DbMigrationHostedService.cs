@@ -17,7 +17,7 @@ public class DbMigrationHostedService : IHostedService
         using var scope = _serviceProvider.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Admin>>();
         var dbContext = scope.ServiceProvider.GetRequiredService<IFacadeResolver>();
-        await dbContext.Database.EnsureDeletedAsync(cancellationToken);
+        //await dbContext.Database.EnsureDeletedAsync(cancellationToken);
         await dbContext.Database.MigrateAsync(cancellationToken: cancellationToken);
         await userManager.CreateAsync(new Admin()
         {

@@ -11,11 +11,15 @@ import {
     Typography,
     useTheme
 } from "@mui/material";
-import { MdMenuOpen } from "react-icons/md";
+import {MdMenuOpen, MdOutlineLogout} from "react-icons/md";
 import { CgCloseR } from "react-icons/cg";
 import {useNavigate} from "react-router-dom";
 import {AppbarRouteConfig} from "@/app/layouts/interface/AppbarRouteConfig.ts";
-import {useAppSelector} from "@/app/stores/hook.ts";
+import {useAppDispatch, useAppSelector} from "@/app/stores/hook.ts";
+import {IoCloseCircleOutline, IoLogOutSharp} from "react-icons/io5";
+import {useLogoutDefault} from "@/app/usecases/auth.usecase.ts";
+import {LoadingButton} from "@mui/lab";
+import {ChangeAuthenticate} from "@/app/stores/app/AppSlice.ts";
 
 const appbarRouteConfig: AppbarRouteConfig[] = [
     {
@@ -29,6 +33,10 @@ const appbarRouteConfig: AppbarRouteConfig[] = [
     {
         title: "Cấu hình phòng ",
         path: "/room"
+    },
+    {
+        title: "Cấu hình dịch vụ  ",
+        path: "/service"
     },
     
     
@@ -45,11 +53,16 @@ const AppBarCustom = () => {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+    const {mutate, isLoading} = useLogoutDefault()  
+    const dispatch = useAppDispatch()
+    
+    
+    
     const nav = useNavigate()
     const {authenticate} = useAppSelector(e => e.app)
     return <>
         <AppBar color={"default"} position={"sticky"} >
-            <Toolbar>
+            <Toolbar className={"w-full flex justify-between"}>
                 {authenticate && <IconButton
                     color="inherit"
                     aria-label="open drawer"
@@ -62,6 +75,12 @@ const AppBarCustom = () => {
                 <Typography variant="h6" noWrap component="div" align={"center"}>
                     Quản lý rạp phim 
                 </Typography>
+                <LoadingButton loading={isLoading}
+                               onClick={() => {
+                                   mutate()
+                                   dispatch(ChangeAuthenticate(false))
+                               }}
+                               variant={"outlined"} className={"float-right"}><MdOutlineLogout color={"red"} size={30} /></LoadingButton>
             </Toolbar>
         </AppBar>
         <Drawer

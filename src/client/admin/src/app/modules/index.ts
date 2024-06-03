@@ -8,7 +8,8 @@ const Modules = [
     "statistic",
     "room",
     "movie",
-    "auth"
+    "auth",
+    "service"
 ]
 
 export default Modules

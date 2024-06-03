@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.superman.movieticket.ui.systems.ErrorActivity
 import dagger.hilt.android.HiltAndroidApp
@@ -18,7 +19,8 @@ class MovieTicketApplication : Application() {
         Thread.setDefaultUncaughtExceptionHandler { _, e ->
             val intent = Intent(this, ErrorActivity::class.java)
             val bundle = Bundle()
-            bundle.putString("error", e.message)
+            Log.d("error", e.toString())
+            bundle.putString("error", e.toString())
             intent.putExtras(bundle)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)

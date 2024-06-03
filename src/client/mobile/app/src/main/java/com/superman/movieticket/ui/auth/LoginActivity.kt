@@ -1,7 +1,9 @@
 package com.superman.movieticket.ui.auth
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,10 +39,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -56,15 +61,19 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.superman.movieticket.R
 import com.superman.movieticket.ui.components.ButtonLoading
+import com.superman.movieticket.ui.main.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 @AndroidEntryPoint
-public class LoginActivity : BaseActivity<LoginActivityModelImpl>() {
-    override fun getViewModel(): Class<LoginActivityModelImpl> = LoginActivityModelImpl::class.java
+public class LoginActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LoginScreen(_model, lifecycleScope)
+            com.superman.movieticket.ui.components.BaseScreen(content = {
+                LoginScreen()
+            }, title = "")
         }
     }
 
@@ -75,9 +84,10 @@ public class LoginActivity : BaseActivity<LoginActivityModelImpl>() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LoginScreen(
-    model: LoginActivityModel,
-    lifecycleScope: LifecycleCoroutineScope
 ) {
+    val loginActivityModelImpl: LoginActivityModelImpl = hiltViewModel()
+    val coroutineScope = CoroutineScope(Dispatchers.IO)
+    val context = LocalContext.current
     val username = remember {
         mutableStateOf("")
     }
@@ -85,12 +95,28 @@ fun LoginScreen(
         mutableStateOf("")
     }
     fun HandleLogin () {
-        lifecycleScope.launch {
-            val userLoginModel = UserLoginModel()
-            userLoginModel.username = username.value
-            userLoginModel.password = password.value
-            model.HandleLoginAction(userLoginModel)
+        val userLoginModel = UserLoginModel()
+        userLoginModel.username = username.value
+        userLoginModel.password = password.value
+        coroutineScope.launch {
+            loginActivityModelImpl.HandleLoginAction(userLoginModel)
+            loginActivityModelImpl._apiState.collect {
+                when(it) {
+                    ApiState.SUCCESS -> {
+                        val intent = Intent(context, MainActivity::class.java)
+                        context.startActivity(intent)
+                    }
+                    ApiState.FAIL -> {}
+                    ApiState.LOADING -> {
+
+                    }
+                    ApiState.NONE -> {
+
+                    }
+                }
+            }
         }
+
     }
 
 

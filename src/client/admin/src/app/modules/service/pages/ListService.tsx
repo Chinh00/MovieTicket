@@ -10,28 +10,34 @@ import {
     TableHead,
     TableRow
 } from "@mui/material";
-import {useGetRooms} from "@/app/usecases/room.usecase.ts";
 import dayjs from "dayjs";
 import {RiEditBoxLine} from "react-icons/ri";
-import {useState} from "react";
 import CreateRoom from "@/app/modules/room/components/CreateRoom.tsx";
-import { IoIosNotificationsOutline } from "react-icons/io";
-const RoomList = () => {
-    const {data} = useGetRooms()
+import {useGetServices} from "@/app/usecases/service.usecase.ts";
+import {useState} from "react";
+import CreateService from "@/app/modules/service/components/CreateService.tsx";
+import {AppConfig} from "@/core/config/AppConfig.ts";
+
+const ListService = () => {
+    const {data, refetch} = useGetServices()
     const [onCreate, setOnCreate] = useState(false)
+    
+    
     return <Box
         padding={10}>
         <TableContainer component={Paper} sx={{
             marginTop: "10px"
         }}>
-            <Button variant={"contained"} onClick={() => setOnCreate(true)}>Thêm phòng </Button>
+            <Button variant={"contained"} onClick={() => setOnCreate(true)}>Thêm dịch vụ  </Button>
             <Table border={2} className={"border-2"} sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Tên phòng  </TableCell>
-                        <TableCell >Tổng số ghế (ghế ) </TableCell>
-                        <TableCell >Hành động  </TableCell>
-                    </TableRow> 
+                        <TableCell align={"center"}>Hình ảnh </TableCell>
+                        <TableCell>Tên dịch vụ </TableCell>
+                        <TableCell > Đơn vị </TableCell>
+                        <TableCell >Đơn giá</TableCell>
+                        <TableCell >Hành động</TableCell>
+                    </TableRow>
                 </TableHead>
                 <TableBody>
                     {!!data && data?.data?.data?.items.map((row) => (
@@ -39,12 +45,12 @@ const RoomList = () => {
                             key={row.id}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <TableCell component="th" scope="row">
-                                {row.roomNumber}
+                            <TableCell align={"center"}>
+                                <img className={"w-[200px] mx-auto h-[200px] object-cover"} src={`${AppConfig.BASE_URL}/admin-api/image${row?.avatar}`}/>
                             </TableCell>
-                            <TableCell component="th" scope="row">
-                                {row?.seats?.length}
-                            </TableCell>
+                            <TableCell >{row?.name}</TableCell>
+                            <TableCell >{row?.unit}</TableCell>
+                            <TableCell >{row?.priceUnit}</TableCell>
                             <TableCell>
                                 <IconButton onClick={() => {}} type={"button"}><RiEditBoxLine size={30} /></IconButton>
                             </TableCell>
@@ -53,8 +59,8 @@ const RoomList = () => {
                 </TableBody>
             </Table>
         </TableContainer>
-        <CreateRoom onCreate={onCreate} setOnCreate={setOnCreate} />
+        <CreateService onCreate={onCreate} setOnCreate={setOnCreate} refetch={refetch} />
     </Box>
 }
 
-export default RoomList
+export default ListService

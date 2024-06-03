@@ -12,7 +12,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Cors", policyBuilder =>
     {
-        policyBuilder.AllowAnyOrigin();
+        policyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
 });
 builder.Services.AddDbContext<AppDbContext>((provider, optionsBuilder) =>
