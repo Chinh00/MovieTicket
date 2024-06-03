@@ -71,7 +71,6 @@ public class ServiceCrud : IRequestHandler<GetServices.Query, ResultModel<ListRe
             Unit = request.CreateModel.Unit,
             PriceUnit = request.CreateModel.PriceUnit
         });
-        await _repository.AddAsync(service);
         return ResultModel<ServiceDto>.Create(_mapper.Map<ServiceDto>(service));
     }
 }
@@ -81,5 +80,6 @@ class ServiceMapperConfig : Profile
     public ServiceMapperConfig()
     {
         CreateMap<Service, ServiceDto>();
+        CreateMap<ServiceReservation, ServiceReservationDto>();
     }
 }

@@ -16,6 +16,7 @@ import CreateRoom from "@/app/modules/room/components/CreateRoom.tsx";
 import {useGetServices} from "@/app/usecases/service.usecase.ts";
 import {useState} from "react";
 import CreateService from "@/app/modules/service/components/CreateService.tsx";
+import {AppConfig} from "@/core/config/AppConfig.ts";
 
 const ListService = () => {
     const {data, refetch} = useGetServices()
@@ -31,7 +32,7 @@ const ListService = () => {
             <Table border={2} className={"border-2"} sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell >Hình ảnh </TableCell>
+                        <TableCell align={"center"}>Hình ảnh </TableCell>
                         <TableCell>Tên dịch vụ </TableCell>
                         <TableCell > Đơn vị </TableCell>
                         <TableCell >Đơn giá</TableCell>
@@ -44,7 +45,9 @@ const ListService = () => {
                             key={row.id}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <TableCell >{row?.avatar}</TableCell>
+                            <TableCell align={"center"}>
+                                <img className={"w-[200px] mx-auto h-[200px] object-cover"} src={`${AppConfig.BASE_URL}/admin-api/image${row?.avatar}`}/>
+                            </TableCell>
                             <TableCell >{row?.name}</TableCell>
                             <TableCell >{row?.unit}</TableCell>
                             <TableCell >{row?.priceUnit}</TableCell>

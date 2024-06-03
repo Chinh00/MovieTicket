@@ -26,7 +26,7 @@ const CreateService = ({onCreate, setOnCreate, refetch}: {onCreate: boolean, set
                     formData.append("name", data?.name)
                     formData.append("unit", data?.unit)
                     formData.append("priceUnit", data?.priceUnit.toString())
-                    formData.append("priceUnit", data?.avatar[0])
+                    formData.append("avatar", data?.avatar[0])
                     mutate(formData, {
                         onSuccess: () => {
                             setOnCreate(false)
