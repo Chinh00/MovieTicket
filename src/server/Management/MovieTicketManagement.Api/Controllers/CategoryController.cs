@@ -24,4 +24,16 @@ public class CategoryController : BaseController
         var model = HttpContext.SafeGetListQuery<GetCategories.Query, ListResultModel<CategoryDto>>(query);
         return Ok(await Mediator.Send(model, cancellationToken ));
     }
+
+    /// <summary>
+    /// Create category
+    /// </summary>
+    /// <param name="model"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    public async Task<IActionResult> HandleCreateCategoryAsync(CreateCategoryModel model, CancellationToken cancellationToken = new ())
+    {
+        return Ok(await Mediator.Send(new CategoryCreate.Command() { CreateModel = model }, cancellationToken));
+    }
 }
