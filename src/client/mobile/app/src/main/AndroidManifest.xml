@@ -22,6 +22,7 @@
         <activity android:name=".ui.order.screening.ScreenActivity"/>
         <activity android:name=".ui.order.food.OrderFoodActivity"/>
         <activity android:name=".ui.order.ticket.TicketBookActivity"/>
+        <activity android:name=".ui.auth.LoginActivity"/>
 
 
         <activity android:name=".ui.main.MainActivity" android:exported="true">

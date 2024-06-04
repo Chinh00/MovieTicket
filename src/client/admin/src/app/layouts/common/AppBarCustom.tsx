@@ -38,6 +38,10 @@ const appbarRouteConfig: AppbarRouteConfig[] = [
         title: "Cấu hình dịch vụ  ",
         path: "/service"
     },
+    {
+        title: "Cấu hình danh mục  ",
+        path: "/category"
+    },
     
     
 ]

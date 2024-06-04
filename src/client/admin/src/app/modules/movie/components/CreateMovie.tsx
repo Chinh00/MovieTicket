@@ -15,7 +15,7 @@ type MovieCreateModel = {
 const CreateMovie = ({onCreate, setOnCreate}: {onCreate: boolean, setOnCreate: Dispatch<SetStateAction<boolean>>}) => {
     const {mutate, isLoading} = useCreateMovie()
     const {handleSubmit, register, getValues, setValue} = useForm<MovieCreateModel>()
-    const {data} = useGetCategories()
+    const {data} = useGetCategories({})
     const [onSelectCategory, setOnSelectCategory] = useState<string[]>([])
     return <>
         <Drawer

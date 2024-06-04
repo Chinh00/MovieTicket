@@ -3,6 +3,7 @@ package com.superman.movieticket.ui.auth
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -106,7 +107,9 @@ fun LoginScreen(
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)
                     }
-                    ApiState.FAIL -> {}
+                    ApiState.FAIL -> {
+                        Toast.makeText(context, "Tài khoản mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                    }
                     ApiState.LOADING -> {
 
                     }
