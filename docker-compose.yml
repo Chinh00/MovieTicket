@@ -18,6 +18,7 @@ services:
       SA_PASSWORD: "@P@ssw0rd02"
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Express"
+    restart: always
     volumes:
       - data:/var/opt/mssql
     networks:
@@ -29,6 +30,7 @@ services:
       context: .
       dockerfile: src/server/Client/MovieTicketClient.Api/Dockerfile
     container_name: movieticketclient
+    restart: always
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
       - Identity__Url=http://identityserverclient:8091
@@ -48,10 +50,11 @@ services:
       movie-network:
 
   identityserverclient:
-    #image: chinhval/movieticketmanagementidentity
+    #image: chinhval/movieticketclientidentity
     build:
       context: .
       dockerfile: src/server/Client/MovieTicketClient.IdentityServer/Dockerfile
+    restart: always
     container_name: identityserverclient
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
@@ -67,6 +70,7 @@ services:
 
   movieticketmanagement:
     #image: chinhval/movieticketmanagementapi
+    restart: always
     build:
       context: .
       dockerfile: src/server/Management/MovieTicketManagement.Api/Dockerfile
@@ -92,6 +96,7 @@ services:
 
   identityservermanagement:
     #image: chinhval/movieticketmanagementidentity
+    restart: always
     build:
       context: .
       dockerfile: src/server/Management/MovieTicketManagement.IdentityServer/Dockerfile
@@ -109,6 +114,7 @@ services:
       movie-network:
 
   appgateway:
+    restart: always
     #image: chinhval/movieticketappgateway
     build:
       context: .
