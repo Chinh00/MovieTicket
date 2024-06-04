@@ -20,7 +20,7 @@ const MovieList = () => {
 
     const [onEdit, setOnEdit] = useState<string>("")
     const [onCreate, setOnCreate] = useState(false)
-    const {data} = useGetMovies()
+    const {data} = useGetMovies({})
     return <Box padding={10}>
         <Button variant={"contained"} onClick={() => setOnCreate(true)}>Thêm phim mới </Button>
         <TableContainer component={Paper} sx={{
