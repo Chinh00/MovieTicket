@@ -44,16 +44,10 @@ import javax.inject.Inject
 class ScreenActivityViewModel @Inject constructor(
     private val screeningService: ScreeningService,
     private val dataStore: DataStore<Preferences>,
-    context: Context
 ) : ViewModel() {
 
     init {
-        viewModelScope.launch {
-            if (dataStore.data.first()[PreferenceKey.IS_AUTHENTICATE] != "true") {
-                val intent = Intent(context, LoginActivity::class.java)
-                context.startActivity(intent)
-            }
-        }
+
     }
 
 
