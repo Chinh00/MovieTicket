@@ -29,6 +29,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "BASE_URL", "\"https://ce17-113-190-242-151.ngrok-free.app\"")
+
         }
     }
     compileOptions {
