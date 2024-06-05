@@ -50,8 +50,7 @@ class FilmScreenViewModelImpl
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun getListFilmShowing() {
+    override fun getListFilmShowing() {
         viewModelScope.launch {
             val xQueryHeader = XQueryHeader(
                 includes = mutableListOf(),
@@ -93,7 +92,7 @@ class FilmScreenViewModelImpl
         }
     }
 
-    override suspend fun getListFilmComingSoon() {
+    override fun getListFilmComingSoon() {
         viewModelScope.launch {
             _apiState.value = ApiState.LOADING
             val xQueryHeader = defaultXQueryHeader.copy()

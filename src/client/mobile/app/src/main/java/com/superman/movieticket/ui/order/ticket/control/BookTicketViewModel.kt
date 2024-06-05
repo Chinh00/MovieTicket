@@ -49,7 +49,7 @@ class BookTicketViewModel @Inject constructor(
 
 
 
-    suspend fun GetAllSeatsOfRoomAsync(
+    fun GetAllSeatsOfRoomAsync(
         roomId: String
     ) {
         coroutineScope.launch {

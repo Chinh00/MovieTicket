@@ -56,7 +56,7 @@ fun ItemMovie(
             ConstraintLayout {
                 val t = createRef()
 
-                Image(painter = rememberAsyncImagePainter(model = AppOptions.BASE_URL + "/admin-api/image" + m.avatar),
+                Image(painter = rememberAsyncImagePainter(model = (AppOptions.BASE_URL + m.avatar)),
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
                         .clip(

@@ -327,6 +327,7 @@ fun PopularMovies(
     onMovieClicked: (Movie) -> Unit, onMovieFavouriteClicked: (Movie) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
+        Log.d("aaa", listMovies.toString())
         (listMovies)?.forEachIndexed { index, item ->
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -338,7 +339,7 @@ fun PopularMovies(
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Image(
-                    painter = rememberAsyncImagePainter(model = AppOptions.BASE_URL + "/admin-api/image" + item.avatar),
+                    painter = rememberAsyncImagePainter(model = AppOptions.BASE_URL + item.avatar),
                     contentDescription = null,
                     modifier = Modifier
                         .width(130.dp)
@@ -509,7 +510,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                     Log.d("ImageURL", "Loading image from URL: ${listViewMoviesNowing[page].avatar}")
                     Image(
 
-                        painter = rememberAsyncImagePainter(model = AppOptions.BASE_URL + "/admin-api/image" + listViewMoviesNowing[page].avatar),
+                        painter = rememberAsyncImagePainter(model = AppOptions.BASE_URL + listViewMoviesNowing[page].avatar),
                         contentDescription = "", contentScale = ContentScale.FillBounds,
                         modifier = Modifier
                             .size(300.dp, 270.dp)
