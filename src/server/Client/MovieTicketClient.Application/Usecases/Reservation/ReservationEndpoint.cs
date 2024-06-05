@@ -98,5 +98,6 @@ public class ReservationMapperConfig : Profile
     {
         CreateMap<MovieTicket.Domain.Entities.Reservation, ReservationDto>();
         CreateMap<SeatReservation, SeatReservationDto>();
+        CreateMap<ServiceReservation, ServiceReservationDto>();
     }
 }

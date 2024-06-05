@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieTicket.Core.Domain;
 using MovieTicket.Infrastructure;
 using MovieTicket.Infrastructure.Controller;
-using MovieTicketClient.Application.Usecases.Screening;
+using MovieTicketClient.Application.Usecases.Service;
 
 namespace MovieTicketClient.Api.Controller;
 
 /// <inheritdoc />
-public class ScreeningController : BaseController
+public class ServiceController : BaseController
 {
     /// <summary>
     /// Get Screenings
@@ -16,9 +16,9 @@ public class ScreeningController : BaseController
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> HandleGetScreeningsAsync([FromHeader(Name = "x-query")] string query, CancellationToken cancellationToken = new ())
+    public async Task<IActionResult> HandleGetServicesAsync([FromHeader(Name = "x-query")] string query, CancellationToken cancellationToken = new ())
     {
-        var model = HttpContext.SafeGetListQuery<GetScreenings.Query, ListResultModel<ScreeningDto>>(query);
+        var model = HttpContext.SafeGetListQuery<GetServices.Query, ListResultModel<ServiceDto>>(query);
         return Ok(await Mediator.Send(model, cancellationToken));
     }
 }
