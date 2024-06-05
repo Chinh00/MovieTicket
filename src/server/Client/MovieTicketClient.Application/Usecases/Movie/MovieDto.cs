@@ -9,5 +9,6 @@ public class MovieDto
     public string Description { get; init; }
     public string Avatar { get; init; }
     public string Trailer { get; init; }
-    public ICollection<Guid> CategoryId { get; } = [];
+    public virtual ICollection<CategoryDto> Categories { get; init; }
+
 }

@@ -110,6 +110,7 @@ public class MovieMapperConfig : Profile
     public MovieMapperConfig()
     {
         CreateMap<MovieTicket.Domain.Entities.Movie, MovieDto>();
+        CreateMap<MovieTicket.Domain.Entities.Category, CategoryDto>();
     }
 }
 

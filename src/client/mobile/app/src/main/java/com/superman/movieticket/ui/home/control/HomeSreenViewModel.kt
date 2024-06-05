@@ -42,14 +42,16 @@ class HomeScreenViewModel @Inject constructor(private val movieService: MovieSer
         viewModelScope.launch {
             _apiState.emit(ApiState.LOADING)
             val getMovie = defaultXQueryHeader.copy()
-
+            getMovie.apply {
+                includes.add("Categories")
+            }
 
             movieService.HandleGetMoviesAsync(getMovie.JsonSerializer()).enqueue(object: Callback<SuccessResponse<ListResponse<Movie>>> {
                 override fun onResponse(
                     call: Call<SuccessResponse<ListResponse<Movie>>>,
                     response: Response<SuccessResponse<ListResponse<Movie>>>
                 ) {
-                    _listMovies.value = response.body()?.data?.items ?: emptyList()
+                    _listMovies.value = response.body()?.data?.items!!
                     _apiState.value = ApiState.SUCCESS
                 }
 
