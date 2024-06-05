@@ -69,7 +69,7 @@ public class RoomCrud : IRequestHandler<GetRooms.Query, ResultModel<ListResultMo
             {
                 RoomId = room.Id,
                 RowNumber = Convert.ToChar(seatCreateModel.RowNumber + 64),
-                ColNumber = Convert.ToChar(seatCreateModel.ColNumber + 64)
+                ColNumber = Char.Parse($"{seatCreateModel.ColNumber}")
             });
         }
         return ResultModel<RoomDto>.Create(_mapper.Map<RoomDto>(room));
