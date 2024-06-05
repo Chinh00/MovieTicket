@@ -3,13 +3,13 @@ package com.superman.movieticket.ui.home
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,36 +27,22 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.HdrOnSelect
-import androidx.compose.material.icons.filled.PlayArrow
 
 
 import androidx.compose.material3.Icon
 
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.lerp
@@ -66,38 +52,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.superman.movieticket.R
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.home.control.HomeScreenViewModel
-import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material3.*
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.core.config.AppOptions
@@ -106,22 +79,41 @@ import com.superman.movieticket.ui.components.ScreenLoading
 import com.superman.movieticket.ui.detail.view.DetailActivity
 
 import com.superman.movieticket.ui.theme.MyAppTheme
-import java.util.Date
+import com.superman.movieticket.ui.theme.balooFont
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
+private val _imgBg = MutableStateFlow("")
+val imgBg: StateFlow<String> get() = _imgBg
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen() {
+
+
     val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
     ScreenLoading(isLoading = homeScreenViewModel.apiState.collectAsState()) {
         MyAppTheme {
-            HomeContent()
+            Surface(
+                modifier = Modifier.paint(
+                    rememberAsyncImagePainter(model = imgBg, error = painterResource(id = R.drawable.error_img)),
+                    contentScale = ContentScale.FillBounds
+                )
+            ) {
+                HomeContent()
+            }
 
         }
     }
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeContent() {
+
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         HomePage()
     }
@@ -258,12 +250,15 @@ fun ComingPagePre() {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun HomePage() {
     val homeViewModel: HomeScreenViewModel = hiltViewModel()
     val movies = homeViewModel.listMovies.collectAsState()
-
+    val imageBg = remember {
+        mutableStateOf("")
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -271,12 +266,16 @@ fun HomePage() {
             .verticalScroll(rememberScrollState()),
 
         ) {
-        if(homeViewModel.apiState.collectAsState().value==ApiState.FAIL || homeViewModel.apiState.collectAsState().value==ApiState.NONE){
-            Column(modifier=Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Dang load",color=Color.Black)
+        if (homeViewModel.apiState.collectAsState().value == ApiState.FAIL || homeViewModel.apiState.collectAsState().value == ApiState.NONE) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "Dang load", color = Color.Black)
                 CircularProgressIndicator()
             }
-        }else if (homeViewModel.apiState.collectAsState().value==ApiState.SUCCESS){
+        } else if (homeViewModel.apiState.collectAsState().value == ApiState.SUCCESS) {
             NowingMovieComp(movies.value)
             PopularMovieComp(movies.value)
         }
@@ -284,6 +283,7 @@ fun HomePage() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
     Column(modifier = Modifier.padding(start = 10.dp)) {
@@ -292,7 +292,7 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Now in Cinema", color = MaterialTheme.colorScheme.surface)
+            Text(text = "Now in Cinema", color = MaterialTheme.colorScheme.onBackground)
             TextButton(onClick = {}) {
                 Text(text = "See all", color = Color.Red)
             }
@@ -306,6 +306,7 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PopularMovieComp(listMovies: List<Movie>? = null) {
     val context = LocalContext.current
@@ -321,6 +322,7 @@ fun PopularMovieComp(listMovies: List<Movie>? = null) {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PopularMovies(
     listMovies: List<Movie>? = null,
@@ -338,13 +340,17 @@ fun PopularMovies(
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Image(
-                    painter = rememberAsyncImagePainter(model = AppOptions.BASE_URL + "/admin-api/image" + item.avatar),
+                    painter = rememberAsyncImagePainter(
+                        model = AppOptions.BASE_URL + "/admin-api/image" + item.avatar,
+                        error = painterResource(
+                            id = R.drawable.error_img
+                        )
+                    ),
                     contentDescription = null,
                     modifier = Modifier
                         .width(130.dp)
                         .clip(RoundedCornerShape(13.dp))
-                        .height(240.dp)
-                       ,
+                        .height(240.dp),
                     contentScale = ContentScale.FillBounds
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -357,7 +363,10 @@ fun PopularMovies(
                             text = item.name.uppercase(),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.onSurface
+                            fontFamily = balooFont,
+                            modifier = Modifier
+                                .padding(end = 5.dp)
+                                .fillMaxWidth(), color = MaterialTheme.colorScheme.onSurface
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.bookmark),
@@ -370,13 +379,16 @@ fun PopularMovies(
                         )
                     }
                     Text(
-                        text = item.description, color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                       style = MaterialTheme.typography.bodySmall,
+                        text = item.description,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(SpanStyle(color = MaterialTheme.colorScheme.surface)) {
+                            withStyle(SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
                                 append("${item.totalTime} | Khoa hoc vien tuong")
                             }
                         }
@@ -414,8 +426,8 @@ fun PopularMovies(
                                 contentDescription = null
                             )
                             Text(
-//                        text = "${listViewMoviesNowing[page].totalTime} phut",
-                                text = "115 phút",
+                                text = "${item.totalTime} phút",
+//                                text = "115 phút",
 
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleSmall
@@ -425,12 +437,19 @@ fun PopularMovies(
                             horizontalArrangement = Arrangement.spacedBy(5.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            val dateString = item.releaseDate
+                            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
+                            // Parse the ISO 8601 string to ZonedDateTime
+                            val zonedDateTime = ZonedDateTime.parse(dateString)
+
+                            // Format the ZonedDateTime to a different format
+                            val formattedDate = zonedDateTime.format(formatter)
                             Text(
 //                        text = "${listViewMoviesNowing[page].releaseDate} ",\
-                                text = "31/05/2024 ",
+                                text = formattedDate,
 
-                                color = MaterialTheme.colorScheme.surface,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleSmall
                             )
                         }
@@ -438,12 +457,16 @@ fun PopularMovies(
                     }
                 }
             }
+            Divider()
+
         }
 
     }
 }
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 
@@ -461,6 +484,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
         contentPadding = PaddingValues(horizontal = 60.dp),
         pageSpacing = 20.dp
     ) { page ->
+        _imgBg.value=listViewMoviesNowing[page].avatar
         Column(
             modifier = Modifier
                 .width(360.dp)
@@ -487,9 +511,9 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
 
 //                rememberAsyncImagePainter(model = listMovies[page].avatar)
             val rotation = when {
-                pagerState.currentPage == page + 1 -> -2f // Trang trước đó
+                pagerState.currentPage == page + 1 -> -4f // Trang trước đó
                 pagerState.currentPage == page -> 0f // Trang hiện tại
-                else -> 2f // Các trang khác
+                else -> 4f // Các trang khác
             }
             Column(
                 modifier = Modifier
@@ -506,10 +530,18 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                         .clip(RoundedCornerShape(16.dp))
                         .wrapContentSize()
                 ) {
-                    Log.d("ImageURL", "Loading image from URL: ${listViewMoviesNowing[page].avatar}")
+                    Log.d(
+                        "ImageURL",
+                        "Loading image from URL: ${listViewMoviesNowing[page].avatar}"
+                    )
                     Image(
 
-                        painter = rememberAsyncImagePainter(model = AppOptions.BASE_URL + "/admin-api/image" + listViewMoviesNowing[page].avatar),
+                        painter = rememberAsyncImagePainter(
+                            model = AppOptions.BASE_URL + "/admin-api/image" + listViewMoviesNowing[page].avatar,
+                            error = painterResource(
+                                id = R.drawable.error_img
+                            )
+                        ),
                         contentDescription = "", contentScale = ContentScale.FillBounds,
                         modifier = Modifier
                             .size(300.dp, 270.dp)
@@ -520,9 +552,14 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
 
                 Text(
                     text = listViewMoviesNowing[page].name.uppercase(),
+                    textAlign = TextAlign.Justify,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold, letterSpacing = 1.sp, maxLines = 2,
-                    color = MaterialTheme.colorScheme.surface, modifier = Modifier.wrapContentSize()
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = balooFont,
+                    letterSpacing = 1.sp,
+                    maxLines = 2,
+                    color = MaterialTheme.colorScheme.surface,
+                    modifier = Modifier.wrapContentSize()
                 )
 
                 Row(
@@ -557,8 +594,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                             contentDescription = null
                         )
                         Text(
-//                        text = "${listViewMoviesNowing[page].totalTime} phut",
-                            text = "115 phút",
+                            text = "${listViewMoviesNowing[page].totalTime} phút",
 
                             color = MaterialTheme.colorScheme.surface,
                             style = MaterialTheme.typography.titleSmall
@@ -568,10 +604,17 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                         horizontalArrangement = Arrangement.spacedBy(5.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        val dateString = listViewMoviesNowing[page].releaseDate
+                        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
+                        // Parse the ISO 8601 string to ZonedDateTime
+                        val zonedDateTime = ZonedDateTime.parse(dateString)
+
+                        // Format the ZonedDateTime to a different format
+                        val formattedDate = zonedDateTime.format(formatter)
                         Text(
-//                        text = "${listViewMoviesNowing[page].releaseDate} ",\
-                            text = "31/05/2024 ",
+                            text = formattedDate,
+
 
                             color = MaterialTheme.colorScheme.surface,
                             style = MaterialTheme.typography.titleSmall
@@ -605,13 +648,15 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                         .fillMaxWidth()
                 ) {
                     Button(
-                        onClick = { onMovieClicked(listViewMoviesNowing[page])}, colors = ButtonDefaults.buttonColors(
+                        onClick = { onMovieClicked(listViewMoviesNowing[page]) },
+                        colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0x4FCECECE)
-                        ), modifier = Modifier
+                        ),
+                        modifier = Modifier
                             .padding(horizontal = 15.dp)
                             .fillMaxWidth()
                     ) {
-                        Text(text = "Đặt vé")
+                        Text(text = "Đặt vé", color = MaterialTheme.colorScheme.onSurface)
                     }
                 }
             }
