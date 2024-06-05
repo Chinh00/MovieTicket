@@ -65,7 +65,7 @@ public class DbMigrationDataHostService : IHostedService
                     await dbContext.Seats.AddAsync(new Seat()
                     {
                         RowNumber = Convert.ToChar(64 + i),
-                        ColNumber = char.Parse($"{j}"),
+                        ColNumber = Convert.ToChar(64 + j),
                         RoomId = rooms[1].Id
                     }, cancellationToken);
                 }

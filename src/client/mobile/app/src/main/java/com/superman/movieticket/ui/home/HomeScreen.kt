@@ -98,14 +98,8 @@ fun HomeScreen() {
 
     ScreenLoading(isLoading = homeScreenViewModel.apiState.collectAsState()) {
         MyAppTheme {
-            Surface(
-                modifier = Modifier.paint(
-                    rememberAsyncImagePainter(model = imgBg, error = painterResource(id = R.drawable.error_img)),
-                    contentScale = ContentScale.FillBounds
-                )
-            ) {
-                HomeContent()
-            }
+
+            HomeContent()
 
         }
     }
@@ -475,7 +469,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
         contentPadding = PaddingValues(horizontal = 60.dp),
         pageSpacing = 20.dp
     ) { page ->
-        _imgBg.value=listViewMoviesNowing[page].avatar
+        _imgBg.value = listViewMoviesNowing[page].avatar
         Column(
             modifier = Modifier
                 .width(360.dp)

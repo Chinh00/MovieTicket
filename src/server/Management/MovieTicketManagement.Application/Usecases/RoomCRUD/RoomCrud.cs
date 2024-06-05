@@ -72,6 +72,7 @@ public class RoomCrud : IRequestHandler<GetRooms.Query, ResultModel<ListResultMo
             {
                 RowNumber = (char)('A' + (seatCreateModel.RowNumber - 1) % 26) + "",
                 ColNumber = seatCreateModel.ColNumber.ToString()
+
             });
             
         }
