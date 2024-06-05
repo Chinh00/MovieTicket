@@ -6,6 +6,8 @@ using MovieTicket.Domain.Entities;
 using MovieTicket.Infrastructure.Auth;
 using MovieTicketClient.Application.Usecases.Movie;
 using MovieTicketClient.Application.Usecases.Reservation.Specs;
+using MovieTicketClient.Application.Usecases.Service;
+using MovieTicketClient.Application.Usecases.Service.Specs;
 
 namespace MovieTicketClient.Application.Usecases.Reservation;
 
@@ -16,7 +18,16 @@ public class ReservationCreateModel
 {
     public Guid ScreeningId { get; set; }
     public ICollection<SeatReservationDto> SeatReservations { get; set; }
+    public ICollection<ServiceReservationModel> ServiceReservations { get; set; }
 
+}
+
+public class ServiceReservationModel
+{
+    
+    public Guid ServiceId { get; set; }
+    public int Quantity { get; set; }
+    
 }
 
 
@@ -46,17 +57,21 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
 {
     private readonly IRepository<MovieTicket.Domain.Entities.Reservation> _repository;
     private readonly IRepository<SeatReservation> _repositorySeatReservation;
+    private readonly IRepository<MovieTicket.Domain.Entities.Service> _repositoryService;
+    private readonly IGridRepository<MovieTicket.Domain.Entities.Service> _gridRepositoryService;
     private readonly IGridRepository<MovieTicket.Domain.Entities.Reservation> _gridRepository;
     private readonly IMapper _mapper;
     private readonly ISecurityContextAccessor _securityContextAccessor;
     
-    public ReservationEndpoint(IRepository<MovieTicket.Domain.Entities.Reservation> repository, IMapper mapper, IRepository<SeatReservation> repositorySeatReservation, ISecurityContextAccessor securityContextAccessor, IGridRepository<MovieTicket.Domain.Entities.Reservation> gridRepository)
+    public ReservationEndpoint(IRepository<MovieTicket.Domain.Entities.Reservation> repository, IMapper mapper, IRepository<SeatReservation> repositorySeatReservation, ISecurityContextAccessor securityContextAccessor, IGridRepository<MovieTicket.Domain.Entities.Reservation> gridRepository, IRepository<MovieTicket.Domain.Entities.Service> repositoryService, IGridRepository<MovieTicket.Domain.Entities.Service> gridRepositoryService)
     {
         _repository = repository;
         _mapper = mapper;
         _repositorySeatReservation = repositorySeatReservation;
         _securityContextAccessor = securityContextAccessor;
         _gridRepository = gridRepository;
+        _repositoryService = repositoryService;
+        _gridRepositoryService = gridRepositoryService;
     }
 
     public async Task<ResultModel<ReservationDto>> Handle(ReservationCreate.Command request, CancellationToken cancellationToken)
@@ -66,19 +81,31 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
             UserId = Guid.Parse(_securityContextAccessor.GetUserId().ToString() ?? throw new Exception("Unauthorize .")),
             ScreeningId = request.CreateModel.ScreeningId
         };
-        await _repository.AddAsync(reservation);
-        foreach (var modelSeatReservation in request.CreateModel.SeatReservations)
+        reservation.SeatReservations.ToList().AddRange(request.CreateModel.SeatReservations.Select(e => new SeatReservation()
         {
-            var seatReservation = new SeatReservation()
+            SeatId = e.SeatId
+        }));
+        var listServiceSpec =
+            new GetServiceByListIdSpecs(request.CreateModel.ServiceReservations.Select(e => e.ServiceId).ToList());
+        var serviceIncludes = await _gridRepositoryService.FindAsync(listServiceSpec);
+        var totalServices= await _gridRepositoryService.CountAsync(listServiceSpec);
+        if (totalServices > 0)
+        {
+            reservation.ServiceReservations.ToList().AddRange(request.CreateModel.ServiceReservations.Select(e => new ServiceReservation()
             {
-                ReservationId = reservation.Id,
-                SeatId = modelSeatReservation.SeatId
-            };
-            await _repositorySeatReservation.AddAsync(seatReservation);
+                ServiceId = e.ServiceId,
+                Quantity = e.Quantity,
+                Price = serviceIncludes.First(t => t.Id == e.ServiceId).PriceUnit
+            }));
         }
+        
+        await _repository.AddAsync(reservation);
 
         return ResultModel<ReservationDto>.Create(_mapper.Map<ReservationDto>(reservation));
     }
+
+    
+    
 
     public async Task<ResultModel<ListResultModel<ReservationDto>>> Handle(GetReservations.Query request, CancellationToken cancellationToken)
     {

@@ -64,6 +64,7 @@ import kotlin.math.absoluteValue
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -94,6 +95,7 @@ fun HomeScreen() {
 
 
     val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+
     ScreenLoading(isLoading = homeScreenViewModel.apiState.collectAsState()) {
         MyAppTheme {
             Surface(
@@ -266,19 +268,8 @@ fun HomePage() {
             .verticalScroll(rememberScrollState()),
 
         ) {
-        if (homeViewModel.apiState.collectAsState().value == ApiState.FAIL || homeViewModel.apiState.collectAsState().value == ApiState.NONE) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "Dang load", color = Color.Black)
-                CircularProgressIndicator()
-            }
-        } else if (homeViewModel.apiState.collectAsState().value == ApiState.SUCCESS) {
-            NowingMovieComp(movies.value)
-            PopularMovieComp(movies.value)
-        }
+        NowingMovieComp(movies.value)
+        PopularMovieComp(movies.value)
 
     }
 }
@@ -341,7 +332,7 @@ fun PopularMovies(
                 Spacer(modifier = Modifier.height(20.dp))
                 Image(
                     painter = rememberAsyncImagePainter(
-                        model = AppOptions.BASE_URL + "/admin-api/image" + item.avatar,
+                        model = AppOptions.BASE_URL + item.avatar,
                         error = painterResource(
                             id = R.drawable.error_img
                         )
@@ -537,7 +528,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                     Image(
 
                         painter = rememberAsyncImagePainter(
-                            model = AppOptions.BASE_URL + "/admin-api/image" + listViewMoviesNowing[page].avatar,
+                            model = AppOptions.BASE_URL + listViewMoviesNowing[page].avatar,
                             error = painterResource(
                                 id = R.drawable.error_img
                             )

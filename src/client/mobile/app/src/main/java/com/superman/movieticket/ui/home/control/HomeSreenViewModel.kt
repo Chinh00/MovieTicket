@@ -26,27 +26,30 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(private val movieService: MovieService) : ViewModel(){
-   private  val _apiState = MutableStateFlow(ApiState.LOADING)
+    val _apiState = MutableStateFlow(ApiState.LOADING)
     val apiState = _apiState.asStateFlow()
 
     private val _listMovies = MutableStateFlow(emptyList<Movie>())
     val listMovies = _listMovies.asStateFlow()
-
-
     init {
+        viewModelScope.launch {
+            HandleGetMovie()
+        }
+    }
 
+
+    fun HandleGetMovie () {
         viewModelScope.launch {
             _apiState.emit(ApiState.LOADING)
             val getMovie = defaultXQueryHeader.copy()
 
 
-            movieService.HandleGetMoviesAsync("").enqueue(object: Callback<SuccessResponse<ListResponse<Movie>>> {
+            movieService.HandleGetMoviesAsync(getMovie.JsonSerializer()).enqueue(object: Callback<SuccessResponse<ListResponse<Movie>>> {
                 override fun onResponse(
                     call: Call<SuccessResponse<ListResponse<Movie>>>,
                     response: Response<SuccessResponse<ListResponse<Movie>>>
                 ) {
-                    _listMovies.value = response.body()?.data?.items!!
-                    Log.d("Chinh", response.body()?.data?.items?.size.toString())
+                    _listMovies.value = response.body()?.data?.items ?: emptyList()
                     _apiState.value = ApiState.SUCCESS
                 }
 
@@ -62,7 +65,6 @@ class HomeScreenViewModel @Inject constructor(private val movieService: MovieSer
             _apiState.emit(ApiState.NONE)
         }
     }
-
 
 
 
