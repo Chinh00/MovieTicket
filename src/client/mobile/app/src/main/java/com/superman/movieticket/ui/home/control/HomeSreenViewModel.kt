@@ -44,6 +44,7 @@ class HomeScreenViewModel @Inject constructor(private val movieService: MovieSer
             val getMovie = defaultXQueryHeader.copy()
             getMovie.apply {
                 includes.add("Categories")
+                sortBy.add("Id")
             }
 
             movieService.HandleGetMoviesAsync(getMovie.JsonSerializer()).enqueue(object: Callback<SuccessResponse<ListResponse<Movie>>> {
