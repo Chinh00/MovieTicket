@@ -116,16 +116,16 @@ dependencies {
 
 
 
-    implementation(libs.coil.compose)
+    implementation("io.coil-kt:coil-compose:2.1.0")
 
 
 
-  implementation (libs.roundedimageview)
+  implementation ("com.makeramen:roundedimageview:2.3.0")
 
 
     //ViedeoYoutubetrailer
-    implementation( libs.chromecast.sender)
-    implementation (libs.androidx.webkit)
+    implementation( "com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
+    implementation ("androidx.webkit:webkit:1.4.0")
 
     implementation(libs.androidx.runtime.livedata)
 

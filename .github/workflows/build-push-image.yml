@@ -100,8 +100,8 @@ jobs:
         run: chmod +x src/client/mobile/gradlew
       - name: Build with Gradle
         run: cd src/client/mobile && ./gradlew assembleDebug
-      #- name: Upload APK
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: app-debug.apk
-      #    path: src/client/mobile/android/project/app/build/outputs/apk/debug/app-debug.apk
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-debug.apk
+          path: src/client/mobile/android/project/app/build/outputs/apk/debug/app-debug.apk
