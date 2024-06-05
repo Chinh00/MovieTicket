@@ -4,8 +4,8 @@ namespace MovieTicket.Domain.Entities;
 
 public class Room : EntityBase
 {
-    public int RoomNumber { get; init; }
+    public int RoomNumber { get; set; }
     
-    public virtual ICollection<Seat> Seats { get; init; }
-    public virtual ICollection<Screening> Screenings { get; init; }
+    public virtual ICollection<Seat> Seats { get; set; }
+    public virtual ICollection<Screening> Screenings { get; set; }
 }

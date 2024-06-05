@@ -44,7 +44,7 @@ public class DbMigrationDataHostService : IHostedService
 
         }
 
-        if (!dbContext.Rooms.Any())
+        /*if (!dbContext.Rooms.Any())
         {
             for (int i = 1; i <= 20; ++i)
             {
@@ -83,7 +83,7 @@ public class DbMigrationDataHostService : IHostedService
                 }
             }
 
-        }
+        }*/
         await dbContext.SaveChangesAsync(cancellationToken);
         
     }

@@ -62,16 +62,20 @@ public class RoomCrud : IRequestHandler<GetRooms.Query, ResultModel<ListResultMo
         {
             RoomNumber = request.CreateModel.RoomNumber,
         };
-        await _repository.AddAsync(room);
+
+        room.Seats = new List<Seat>();
+        
+        
         foreach (var seatCreateModel in request.CreateModel.Seats)
         {
-            await _repositorySeat.AddAsync(new Seat()
+            room.Seats.Add(new Seat()
             {
-                RoomId = room.Id,
-                RowNumber = Convert.ToChar(seatCreateModel.RowNumber + 64),
-                ColNumber = Char.Parse($"{seatCreateModel.ColNumber}")
+                RowNumber = (char)('A' + (seatCreateModel.RowNumber - 1) % 26) + "",
+                ColNumber = seatCreateModel.ColNumber.ToString()
             });
+            
         }
+        await _repository.AddAsync(room);
         return ResultModel<RoomDto>.Create(_mapper.Map<RoomDto>(room));
     }
 }
