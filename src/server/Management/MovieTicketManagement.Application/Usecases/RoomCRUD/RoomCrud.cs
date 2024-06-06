@@ -25,6 +25,14 @@ public class GetRooms
     }
 }
 
+public class GetRoomById
+{
+    public record Query : IItemQuery<Guid, RoomDto>
+    {
+        public Guid Id { get; init; }
+    }
+}
+
 public class CreateRoom
 {
     public record Command : ICreateCommand<RoomCreateModel, RoomDto>
@@ -33,7 +41,7 @@ public class CreateRoom
     }
 }
 
-public class RoomCrud : IRequestHandler<GetRooms.Query, ResultModel<ListResultModel<RoomDto>>>, IRequestHandler<CreateRoom.Command, ResultModel<RoomDto>>
+public class RoomCrud : IRequestHandler<GetRooms.Query, ResultModel<ListResultModel<RoomDto>>>, IRequestHandler<CreateRoom.Command, ResultModel<RoomDto>>, IRequestHandler<GetRoomById.Query, ResultModel<RoomDto>>
 {
     private readonly IGridRepository<Room> _gridRepository;
     private readonly IMapper _mapper;
@@ -78,6 +86,11 @@ public class RoomCrud : IRequestHandler<GetRooms.Query, ResultModel<ListResultMo
         }
         await _repository.AddAsync(room);
         return ResultModel<RoomDto>.Create(_mapper.Map<RoomDto>(room));
+    }
+
+    public async Task<ResultModel<RoomDto>> Handle(GetRoomById.Query request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }
 

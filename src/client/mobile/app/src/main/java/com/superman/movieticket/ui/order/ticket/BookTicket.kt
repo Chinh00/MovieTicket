@@ -114,7 +114,6 @@ fun TicketActivityComp(
         mutableStateOf(180)
 
     }
-    val seats = bookTicketViewModel.roomState.collectAsState()
 
     LaunchedEffect(key1 = Unit) {
         bookTicketViewModel.GetAllSeatsOfRoomAsync(screening.roomId)
@@ -186,12 +185,12 @@ fun TicketActivityComp(
                 Column {
                     ScreenShape()
                 }
-                seats.value.seats.sortedBy { it.rowNumber.toString() }.groupBy { it.rowNumber }.forEach { i ->
+                /*seats.value.seats.sortedBy { it.rowNumber.toString() }.groupBy { it.rowNumber }.forEach { i ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         i.value.sortedBy { it.colNumber.toString() }.forEach { j ->
                             val seatNumber = "${(64 + j.rowNumber.toInt()).toChar()}$j"
                             val isBooked = bookedSeats.contains(seatNumber)
-                          /*  if (j == 1) {
+                          *//*  if (j == 1) {
                                 Row {
                                     Text(
                                         text = "${(64 + i).toChar()}",
@@ -201,7 +200,7 @@ fun TicketActivityComp(
                                         modifier = Modifier.padding(end = 15.dp)
                                     )
                                 }
-                            }*/
+                            }*//*
                             SeatComp(
                                 seatNumber = seatNumber,
                                 isEnable = !isBooked,
@@ -210,7 +209,7 @@ fun TicketActivityComp(
                                 if (selected) selectedSeat.remove(seat)
                                 else selectedSeat.add(seat)
                             }
-                           /* if (j == 8) {
+                           *//* if (j == 8) {
                                 Row {
                                     Text(
                                         text = "${(64 + i).toChar()}",
@@ -220,7 +219,7 @@ fun TicketActivityComp(
                                         modifier = Modifier.padding(start = 15.dp)
                                     )
                                 }
-                            }*/
+                            }*//*
                             //if (j != 8) Spacer(modifier = Modifier.width(if (j == 4) 25.dp else 8.dp))
 
                         }
@@ -228,7 +227,7 @@ fun TicketActivityComp(
                     }
                     //Spacer(modifier = Modifier.height(if (i != 6) 8.dp else 25.dp))
 
-                }
+                }*/
             }
         }
 

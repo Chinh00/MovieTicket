@@ -41,35 +41,28 @@ class BookTicketViewModel @Inject constructor(
 
     }
 
-    suspend fun GetScreeningDetail (){
-        coroutineScope.launch {
-
-        }
-    }
-
 
 
     suspend fun GetAllSeatsOfRoomAsync(
         roomId: String
     ) {
-        coroutineScope.launch {
-            _apiState.value = ApiState.LOADING
-            roomService.HandleGetRoomByIdAsync(roomId).enqueue(object :
-                Callback<SuccessResponse<Room>> {
-                override fun onResponse(
-                    call: Call<SuccessResponse<Room>>,
-                    response: Response<SuccessResponse<Room>>
-                ) {
-                    _roomState.value = response.body()?.data!!
-                    _apiState.value = ApiState.SUCCESS
-                }
+        _apiState.value = ApiState.LOADING
+        roomService.HandleGetRoomByIdAsync(roomId).enqueue(object :
+            Callback<SuccessResponse<Room>> {
+            override fun onResponse(
+                call: Call<SuccessResponse<Room>>,
+                response: Response<SuccessResponse<Room>>
+            ) {
+                _roomState.value = response.body()?.data!!
+                Log.d("Chinh", response.body().toString())
+                _apiState.value = ApiState.SUCCESS
+            }
 
-                override fun onFailure(call: Call<SuccessResponse<Room>>, t: Throwable) {
-                    _apiState.value = ApiState.FAIL
-                    Log.d("Fail", t.message.toString())
-                }
-            })
-            _apiState.value = ApiState.NONE
-        }
+            override fun onFailure(call: Call<SuccessResponse<Room>>, t: Throwable) {
+                _apiState.value = ApiState.FAIL
+                Log.d("Fail", t.message.toString())
+            }
+        })
+        _apiState.value = ApiState.NONE
     }
 }
