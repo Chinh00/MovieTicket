@@ -6,6 +6,7 @@ using MovieTicket.Domain.Entities;
 using MovieTicket.Infrastructure.Auth;
 using MovieTicketClient.Application.Usecases.Movie;
 using MovieTicketClient.Application.Usecases.Reservation.Specs;
+using MovieTicketClient.Application.Usecases.Room.Specs;
 using MovieTicketClient.Application.Usecases.Service;
 using MovieTicketClient.Application.Usecases.Service.Specs;
 
@@ -60,10 +61,11 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
     private readonly IRepository<MovieTicket.Domain.Entities.Service> _repositoryService;
     private readonly IGridRepository<MovieTicket.Domain.Entities.Service> _gridRepositoryService;
     private readonly IGridRepository<MovieTicket.Domain.Entities.Reservation> _gridRepository;
+    private readonly IGridRepository<Seat> _gridRepositorySeat;
     private readonly IMapper _mapper;
     private readonly ISecurityContextAccessor _securityContextAccessor;
     
-    public ReservationEndpoint(IRepository<MovieTicket.Domain.Entities.Reservation> repository, IMapper mapper, IRepository<SeatReservation> repositorySeatReservation, ISecurityContextAccessor securityContextAccessor, IGridRepository<MovieTicket.Domain.Entities.Reservation> gridRepository, IRepository<MovieTicket.Domain.Entities.Service> repositoryService, IGridRepository<MovieTicket.Domain.Entities.Service> gridRepositoryService)
+    public ReservationEndpoint(IRepository<MovieTicket.Domain.Entities.Reservation> repository, IMapper mapper, IRepository<SeatReservation> repositorySeatReservation, ISecurityContextAccessor securityContextAccessor, IGridRepository<MovieTicket.Domain.Entities.Reservation> gridRepository, IRepository<MovieTicket.Domain.Entities.Service> repositoryService, IGridRepository<MovieTicket.Domain.Entities.Service> gridRepositoryService, IGridRepository<Seat> gridRepositorySeat)
     {
         _repository = repository;
         _mapper = mapper;
@@ -72,6 +74,7 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
         _gridRepository = gridRepository;
         _repositoryService = repositoryService;
         _gridRepositoryService = gridRepositoryService;
+        _gridRepositorySeat = gridRepositorySeat;
     }
 
     public async Task<ResultModel<ReservationDto>> Handle(ReservationCreate.Command request, CancellationToken cancellationToken)
@@ -81,11 +84,19 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
             UserId = Guid.Parse(_securityContextAccessor.GetUserId().ToString() ?? throw new Exception("Unauthorize .")),
             ScreeningId = request.CreateModel.ScreeningId
         };
-        reservation.SeatReservations.ToList().AddRange(request.CreateModel.SeatReservations.Select(e => new SeatReservation()
+        await _repository.AddAsync(reservation);
+
+        var seatsByIdSpec = new GetSeatsByIdSpec(request.CreateModel.SeatReservations.Select(e => e.SeatId).ToList());
+        var seatsInclude = await _gridRepositorySeat.FindAsync(seatsByIdSpec);
+        foreach (var seat in seatsInclude)
         {
-            SeatId = e.SeatId
-        }));
-        var listServiceSpec =
+            await _repositorySeatReservation.AddAsync(new SeatReservation()
+            {
+                SeatId = seat.Id,
+                ReservationId = reservation.Id
+            });
+        }
+        /*var listServiceSpec =
             new GetServiceByListIdSpecs(request.CreateModel.ServiceReservations.Select(e => e.ServiceId).ToList());
         var serviceIncludes = await _gridRepositoryService.FindAsync(listServiceSpec);
         var totalServices= await _gridRepositoryService.CountAsync(listServiceSpec);
@@ -97,9 +108,8 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
                 Quantity = e.Quantity,
                 Price = serviceIncludes.First(t => t.Id == e.ServiceId).PriceUnit
             }));
-        }
+        }*/
         
-        await _repository.AddAsync(reservation);
 
         return ResultModel<ReservationDto>.Create(_mapper.Map<ReservationDto>(reservation));
     }

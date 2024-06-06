@@ -98,7 +98,7 @@ fun TicketActivityComp(
 
         mutableStateListOf<String>()
     }
-    val bookedSeats = listOf("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8")
+    val bookedSeats = emptyList<String>()
     val today = LocalDate.now()
     val dateScrollState = rememberScrollState()
     val timeScrollState = rememberScrollState()
@@ -114,7 +114,7 @@ fun TicketActivityComp(
         mutableStateOf(180)
 
     }
-
+    val seats = bookTicketViewModel.roomState.collectAsState()
     LaunchedEffect(key1 = Unit) {
         bookTicketViewModel.GetAllSeatsOfRoomAsync(screening.roomId)
     }
@@ -185,49 +185,27 @@ fun TicketActivityComp(
                 Column {
                     ScreenShape()
                 }
-                /*seats.value.seats.sortedBy { it.rowNumber.toString() }.groupBy { it.rowNumber }.forEach { i ->
+                seats.value.seats.sortedBy { it.rowNumber.toString() }.groupBy { it.rowNumber }.forEach { i ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         i.value.sortedBy { it.colNumber.toString() }.forEach { j ->
-                            val seatNumber = "${(64 + j.rowNumber.toInt()).toChar()}$j"
-                            val isBooked = bookedSeats.contains(seatNumber)
-                          *//*  if (j == 1) {
-                                Row {
-                                    Text(
-                                        text = "${(64 + i).toChar()}",
-                                        style = MaterialTheme.typography.titleSmall,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.background,
-                                        modifier = Modifier.padding(end = 15.dp)
-                                    )
-                                }
-                            }*//*
                             SeatComp(
-                                seatNumber = seatNumber,
-                                isEnable = !isBooked,
-                                isSelected = selectedSeat.contains(seatNumber)
-                            ) { selected, seat ->
-                                if (selected) selectedSeat.remove(seat)
-                                else selectedSeat.add(seat)
-                            }
-                           *//* if (j == 8) {
-                                Row {
-                                    Text(
-                                        text = "${(64 + i).toChar()}",
-                                        style = MaterialTheme.typography.titleSmall,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.background,
-                                        modifier = Modifier.padding(start = 15.dp)
-                                    )
+                                seat = j,
+                                isEnable = true,
+                                isSelected = selectedSeat.contains(j.id),
+                                onClick = {
+                                    if (selectedSeat.contains(j.id)) {
+                                        selectedSeat.remove(j.id)
+                                    } else
+                                        selectedSeat.add(j.id)
+
                                 }
-                            }*//*
-                            //if (j != 8) Spacer(modifier = Modifier.width(if (j == 4) 25.dp else 8.dp))
+                            )
+
 
                         }
 
                     }
-                    //Spacer(modifier = Modifier.height(if (i != 6) 8.dp else 25.dp))
-
-                }*/
+                }
             }
         }
 
@@ -310,8 +288,9 @@ fun TicketActivityComp(
                     selectedSeat.forEach {
                         Column {
                             Row {
+                                val seat = bookTicketViewModel.roomState.collectAsState().value.seats.filter { t -> t.id == it }.first()
                                 Text(
-                                    text = "$it",
+                                    text = "${seat.rowNumber}${seat.colNumber}",
                                     fontSize = 18.sp,
                                     modifier = Modifier
                                         .padding(end = 5.dp)
@@ -422,9 +401,8 @@ fun TicketActivityScreenPre() {
 fun SeatComp(
     isEnable: Boolean = false,
     isSelected: Boolean = false,
-    seatNumber: String,
-    onClick: (Boolean, String) -> Unit = { _, _ -> },
-    //seat: Seat
+    seat: Seat,
+    onClick: (String) -> Unit = { _ -> },
 ) {
     val seatColor = when {
         !isEnable -> Color.Gray
@@ -442,12 +420,12 @@ fun SeatComp(
             RoundedCornerShape(8.dp)
         )
         .background(seatColor)
-        .clickable(enabled = isEnable) { onClick(isSelected, seatNumber) }
+        .clickable(enabled = isEnable) { onClick(seat.id) }
         .padding(5.dp),
         contentAlignment = Alignment.Center
 
     ) {
-        Text(text = seatNumber, style = MaterialTheme.typography.bodyMedium.copy(color = textColor))
+        Text(text = "${seat.rowNumber}${seat.colNumber}", style = MaterialTheme.typography.bodyMedium.copy(color = textColor))
     }
 }
 

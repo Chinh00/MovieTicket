@@ -54,19 +54,16 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.order.food.control.MovieFood
 import com.superman.movieticket.ui.order.food.control.OrderFoodActivityModel
-//import com.superman.movieticket.ui.order.payment.PaymentActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class OrderFoodActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        actionBar?.hide()
-
         setContent {
             BaseScreen(content = {
                 Surface(
@@ -86,7 +83,6 @@ fun OrderFoodScreen() {
     val orderFoodActivityModel: OrderFoodActivityModel = hiltViewModel()
     val totalAmount = orderFoodActivityModel.totalPriceFood.collectAsState()
     val context = LocalContext.current
-
 
     ConstraintLayout(
         modifier = Modifier
@@ -249,6 +245,11 @@ fun OrderFoodScreen() {
             }
             val selectFoodPrice = remember { mutableStateOf(0f) }
             val listFood = orderFoodActivityModel.loadingListFood()
+
+
+
+
+
             val c = LocalContext.current
             listFood.forEach {
                 ItemFood(it,
@@ -391,7 +392,7 @@ fun ItemFood(
 @Composable
 //@Preview(showSystemUi = true)
 fun ItemFoodnPre() {
-    val viewModel: OrderFoodActivityModel = viewModel()
+    val viewModel: OrderFoodActivityModel = hiltViewModel()
     ItemFood(
         f = viewModel.loadingListFood().get(0),
         onClickedMinimusQuantity = { quantity, f ->
