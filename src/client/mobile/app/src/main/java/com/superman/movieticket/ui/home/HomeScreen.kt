@@ -64,18 +64,15 @@ import kotlin.math.absoluteValue
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.material3.*
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.core.config.AppOptions
-import com.superman.movieticket.infrastructure.utils.ApiState
+import com.superman.movieticket.infrastructure.utils.DatetimeHelper
 import com.superman.movieticket.ui.components.ScreenLoading
 import com.superman.movieticket.ui.detail.view.DetailActivity
 
@@ -83,8 +80,6 @@ import com.superman.movieticket.ui.theme.MyAppTheme
 import com.superman.movieticket.ui.theme.balooFont
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 private val _imgBg = MutableStateFlow("")
 val imgBg: StateFlow<String> get() = _imgBg
@@ -412,8 +407,6 @@ fun PopularMovies(
                             )
                             Text(
                                 text = "${item.totalTime} phút",
-//                                text = "115 phút",
-
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleSmall
                             )
@@ -422,17 +415,8 @@ fun PopularMovies(
                             horizontalArrangement = Arrangement.spacedBy(5.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            val dateString = item.releaseDate
-                            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-
-                            // Parse the ISO 8601 string to ZonedDateTime
-                            val zonedDateTime = ZonedDateTime.parse(dateString)
-
-                            // Format the ZonedDateTime to a different format
-                            val formattedDate = zonedDateTime.format(formatter)
                             Text(
-//                        text = "${listViewMoviesNowing[page].releaseDate} ",\
-                                text = formattedDate,
+                                text = DatetimeHelper.ConvertISODatetimeToLocalDatetime(item.releaseDate, "dd/MM/yyyy"),
 
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleSmall
@@ -589,16 +573,9 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                         horizontalArrangement = Arrangement.spacedBy(5.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val dateString = listViewMoviesNowing[page].releaseDate
-                        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-                        // Parse the ISO 8601 string to ZonedDateTime
-                        val zonedDateTime = ZonedDateTime.parse(dateString)
-
-                        // Format the ZonedDateTime to a different format
-                        val formattedDate = zonedDateTime.format(formatter)
                         Text(
-                            text = formattedDate,
+                            text = DatetimeHelper.ConvertISODatetimeToLocalDatetime(listViewMoviesNowing[page].releaseDate, "dd/MM/yyyy"),
 
 
                             color = MaterialTheme.colorScheme.surface,

@@ -25,7 +25,8 @@ import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(private val movieService: MovieService) : ViewModel(){
+class HomeScreenViewModel @Inject constructor(
+    private val movieService: MovieService) : ViewModel(){
     val _apiState = MutableStateFlow(ApiState.LOADING)
     val apiState = _apiState.asStateFlow()
 

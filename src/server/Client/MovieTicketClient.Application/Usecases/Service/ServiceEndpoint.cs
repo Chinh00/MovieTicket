@@ -40,3 +40,11 @@ public class ServiceEndpoint : IRequestHandler<GetServices.Query, ResultModel<Li
         return ResultModel<ListResultModel<ServiceDto>>.Create(listResultModel);
     }
 }
+
+public class ServiceMapperConfig : Profile
+{
+    public ServiceMapperConfig()
+    {
+        CreateMap<MovieTicket.Domain.Entities.Service, ServiceDto>();
+    }
+}

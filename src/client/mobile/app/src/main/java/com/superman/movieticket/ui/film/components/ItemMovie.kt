@@ -34,6 +34,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.R
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Movie
+import com.superman.movieticket.infrastructure.utils.DatetimeHelper
 import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.order.screening.ScreenActivity
 import com.superman.movieticket.ui.order.screening.hooks.NavigateScreenActivity
@@ -109,18 +110,8 @@ fun ItemMovie(
                 text = "Thời lượng: ${m.totalTime} phút",
                 style = MaterialTheme.typography.bodyMedium
             )
-            val dateString = m.releaseDate
-            val formatterInput = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-            val formatterOutput = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-            // Parse the string to LocalDateTime
-            val localDateTime = LocalDateTime.parse(dateString, formatterInput)
-
-            // Format the LocalDateTime to the desired format
-            val formattedDate = localDateTime.format(formatterOutput)
-
-            // Format the ZonedDateTime to a different format
-            Text(text = "Khởi chiếu: ${formattedDate}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Khởi chiếu: ${DatetimeHelper.ConvertISODatetimeToLocalDatetime(m.releaseDate, "dd/MM/yyyy")}", style = MaterialTheme.typography.bodyMedium)
             Text(text = "Thể loại: gia đình", style = MaterialTheme.typography.bodyMedium)
 
             OutlinedButton(
