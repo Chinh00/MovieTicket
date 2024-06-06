@@ -66,6 +66,11 @@ import com.superman.movieticket.domain.entities.Screening
 import com.superman.movieticket.domain.entities.Seat
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.components.CustomButton
+import com.superman.movieticket.ui.components.ScreenLoading
+import com.superman.movieticket.ui.order.food.hooks.NavigateOrderFood
+import com.superman.movieticket.ui.order.model.ReservationCreateModel
+import com.superman.movieticket.ui.order.ticket.components.ScreenShape
+import com.superman.movieticket.ui.order.ticket.components.SeatComp
 import com.superman.movieticket.ui.order.ticket.control.BookTicketViewModel
 import com.superman.movieticket.ui.theme.CustomColor4
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,7 +80,6 @@ class TicketBookActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             BaseScreen(content = { TicketActivityComp(
                 Gson().fromJson(intent.getStringExtra("screening"),Screening::class.java)
@@ -91,25 +95,18 @@ fun TicketActivityComp(
     screening: Screening
 
 ) {
+    val context = LocalContext.current
     val bookTicketViewModel: BookTicketViewModel = hiltViewModel()
 
-    val context = LocalContext.current
     val selectedSeat = remember {
 
         mutableStateListOf<String>()
     }
-    val bookedSeats = emptyList<String>()
-    val today = LocalDate.now()
-    val dateScrollState = rememberScrollState()
-    val timeScrollState = rememberScrollState()
 
-    val selectedDate = remember {
-        mutableStateOf<LocalDate?>(null)
-    }
-    val selectedTime = remember {
-        mutableStateOf<String?>(null)
-    }
+
     val colorText = Color.White
+
+
     val totalPrice = rememberSaveable {
         mutableStateOf(180)
 
@@ -121,391 +118,218 @@ fun TicketActivityComp(
 
 
 
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF060831))
-    ) {
+    ScreenLoading(isLoading = bookTicketViewModel.apiState.collectAsState()) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF060831))
+        ) {
 
 
-        val (s, e, b, t) = createRefs()
+            val (s, e, b, t) = createRefs()
 
 
-        val btn_bottom = createRef()
+            val btn_bottom = createRef()
 
-        Row(modifier = Modifier.constrainAs(e) {
-            top.linkTo(parent.top)
-        }) {
-
-
-        }
-        var scale by remember {
-            mutableStateOf(1.5f)
-        }
-        var offSet by remember {
-            mutableStateOf(Offset.Zero)
-        }
-
-        BoxWithConstraints(modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .constrainAs(t) {
-                top.linkTo(e.bottom)
-                bottom.linkTo(b.top)
-
+            Row(modifier = Modifier.constrainAs(e) {
+                top.linkTo(parent.top)
             }) {
-            val state = rememberTransformableState { zoomChange, panChange, _ ->
-                scale = (scale * zoomChange).coerceIn(1f, 1.5f)
-                val extraWidth = (scale - 1) * constraints.maxWidth
-                val extraHeight = (scale - 1) * constraints.maxHeight
-                val maxX = extraWidth / 2
-                val maxY = extraHeight / 2
 
-                offSet = Offset(
-                    x = (offSet.x + scale * panChange.x).coerceIn(-maxX, maxX),
-                    y = (offSet.y + scale * panChange.y).coerceIn(-maxY, maxY)
-                )
+
+            }
+            var scale by remember {
+                mutableStateOf(1.5f)
+            }
+            var offSet by remember {
+                mutableStateOf(Offset.Zero)
             }
 
+            BoxWithConstraints(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .constrainAs(t) {
+                    top.linkTo(e.bottom)
+                    bottom.linkTo(b.top)
 
-            Column(
-                modifier = Modifier
-                    .padding(vertical = 10.dp)
+                }) {
+                val state = rememberTransformableState { zoomChange, panChange, _ ->
+                    scale = (scale * zoomChange).coerceIn(1f, 1.5f)
+                    val extraWidth = (scale - 1) * constraints.maxWidth
+                    val extraHeight = (scale - 1) * constraints.maxHeight
+                    val maxX = extraWidth / 2
+                    val maxY = extraHeight / 2
 
-                    .fillMaxWidth()
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
-                        translationX = offSet.x
-                        translationY = offSet.y
-
-                    }
-                    .transformable(state), horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Column {
-                    ScreenShape()
+                    offSet = Offset(
+                        x = (offSet.x + scale * panChange.x).coerceIn(-maxX, maxX),
+                        y = (offSet.y + scale * panChange.y).coerceIn(-maxY, maxY)
+                    )
                 }
-                seats.value.seats.sortedBy { it.rowNumber.toString() }.groupBy { it.rowNumber }.forEach { i ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        i.value.sortedBy { it.colNumber.toString() }.forEach { j ->
-                            SeatComp(
-                                seat = j,
-                                isEnable = true,
-                                isSelected = selectedSeat.contains(j.id),
-                                onClick = {
-                                    if (selectedSeat.contains(j.id)) {
-                                        selectedSeat.remove(j.id)
-                                    } else
-                                        selectedSeat.add(j.id)
 
-                                }
-                            )
 
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+
+                        .fillMaxWidth()
+                        .graphicsLayer {
+                            scaleX = scale
+                            scaleY = scale
+                            translationX = offSet.x
+                            translationY = offSet.y
 
                         }
+                        .transformable(state), horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Column {
+                        ScreenShape()
+                    }
+                    seats.value.seats.sortedBy { it.rowNumber.toString() }.groupBy { it.rowNumber }.forEach { i ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            i.value.sortedBy { it.colNumber.toString() }.forEach { j ->
+                                SeatComp(
+                                    seat = j,
+                                    isEnable = true,
+                                    isSelected = selectedSeat.contains(j.id),
+                                    onClick = {
+                                        if (selectedSeat.contains(j.id)) {
+                                            selectedSeat.remove(j.id)
+                                        } else
+                                            selectedSeat.add(j.id)
 
+                                    }
+                                )
+
+
+                            }
+
+                        }
                     }
                 }
             }
-        }
 
-        val t1 = createRef()
+            val t1 = createRef()
 
 
-        Row(modifier = Modifier
-            .padding(vertical = 10.dp)
-            .constrainAs(b) {
-                bottom.linkTo(t1.top)
-
-            }
-            .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center) {
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .size(10.dp)
-                        .background(Color.Gray, CircleShape)
-                )
-                Text(text = "Reserved", color = colorText)
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 20.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .size(10.dp)
-                        .background(Color(0xFFEC9B24), CircleShape)
-                )
-                Text(text = "Selected", color = colorText)
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .size(10.dp)
-                        .background(Color(0xFFFFFFFF), CircleShape)
-                )
-                Text(text = "Available", color = colorText)
-            }
-
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
-                .constrainAs(t1) {
-                    bottom.linkTo(btn_bottom.top)
-
+            Row(modifier = Modifier
+                .padding(vertical = 10.dp)
+                .constrainAs(b) {
+                    bottom.linkTo(t1.top)
 
                 }
-                .padding(10.dp)
-                .fillMaxWidth()
-                .clip(
-                    RoundedCornerShape(10.dp)
-                )
-                .background(Color(0xFF888888))
-                .padding(20.dp)
-        ) {
-            Column {
-                Text(text = "Total", fontSize = 18.sp, color = colorText)
-                Text(
-                    text = "${totalPrice.value * selectedSeat.size}đ",
-                    fontSize = 18.sp,
-                    color = colorText
-                )
+                .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center) {
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .size(10.dp)
+                            .background(Color.Gray, CircleShape)
+                    )
+                    Text(text = "Reserved", color = colorText)
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .size(10.dp)
+                            .background(Color(0xFFEC9B24), CircleShape)
+                    )
+                    Text(text = "Selected", color = colorText)
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .size(10.dp)
+                            .background(Color(0xFFFFFFFF), CircleShape)
+                    )
+                    Text(text = "Available", color = colorText)
+                }
+
             }
-            Column {
-                Text(text = "Selected Seats", fontSize = 18.sp, color = colorText)
 
-                Row {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
+                    .constrainAs(t1) {
+                        bottom.linkTo(btn_bottom.top)
 
-                    selectedSeat.forEach {
-                        Column {
-                            Row {
-                                val seat = bookTicketViewModel.roomState.collectAsState().value.seats.filter { t -> t.id == it }.first()
-                                Text(
-                                    text = "${seat.rowNumber}${seat.colNumber}",
-                                    fontSize = 18.sp,
-                                    modifier = Modifier
-                                        .padding(end = 5.dp)
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .background(
-                                            Color(
-                                                0xB4000FFF
+
+                    }
+                    .padding(10.dp)
+                    .fillMaxWidth()
+                    .clip(
+                        RoundedCornerShape(10.dp)
+                    )
+                    .background(Color(0xFF888888))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    Text(text = "Total", fontSize = 18.sp, color = colorText)
+                    Text(
+                        text = "${totalPrice.value * selectedSeat.size}đ",
+                        fontSize = 18.sp,
+                        color = colorText
+                    )
+                }
+                Column {
+                    Text(text = "Selected Seats", fontSize = 18.sp, color = colorText)
+
+                    Row {
+
+                        selectedSeat.forEach {
+                            Column {
+                                Row {
+                                    val seat = bookTicketViewModel.roomState.collectAsState().value.seats.filter { t -> t.id == it }.first()
+                                    Text(
+                                        text = "${seat.rowNumber}${seat.colNumber}",
+                                        fontSize = 18.sp,
+                                        modifier = Modifier
+                                            .padding(end = 5.dp)
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .background(
+                                                Color(
+                                                    0xB4000FFF
+                                                )
                                             )
-                                        )
-                                        .padding(5.dp),
-                                    color = colorText
-                                )
+                                            .padding(5.dp),
+                                        color = colorText
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        Row(modifier = Modifier
-            .padding(5.dp)
-            .constrainAs(btn_bottom) {
-                bottom.linkTo(parent.bottom)
-            }) {
+            Row(modifier = Modifier
+                .padding(5.dp)
+                .constrainAs(btn_bottom) {
+                    bottom.linkTo(parent.bottom)
+                }) {
 
-            CustomButton(
-                onClick = { /*TODO*/ }, text = "PAYMENT TICKET", modifier = Modifier
-                    .padding(bottom = 15.dp)
-                    .fillMaxWidth(), CustomColor4
-            )
+                CustomButton(
+                    onClick = { NavigateOrderFood(
+                        context = context,
+                        reservation = null
+                    ) }, text = "PAYMENT TICKET", modifier = Modifier
+                        .padding(bottom = 15.dp)
+                        .fillMaxWidth(), CustomColor4
+                )
+            }
         }
     }
 
 }
 
 
-@Composable
-fun TimeComp(
-    time: String, isSelected: Boolean = false,
-    onClick: (String) -> Unit = {}
-) {
-    val color = when {
-        isSelected -> Color.Yellow
-        else -> Color.Yellow.copy(0.5f)
-    }
-    val textBg = when {
-        isSelected -> Color.White
-        else -> Color.Transparent
-    }
-
-    Surface(
-        modifier = Modifier
-            .wrapContentSize()
-            .clip(RectangleShape)
-            .clickable { onClick(time) }, color = color
-    ) {
-        Row(
-            modifier = Modifier,
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(10.dp)
-                    .background(Color.Black, CircleShape)
-            )
-            Text(
-                text = time,
-                style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(12.dp)
-            )
-            Box(
-                modifier = Modifier
-                    .size(10.dp)
-                    .background(Color.Black, CircleShape)
-            )
-
-        }
-    }
-}
 
 
 
-@Composable
-@Preview(showBackground = true)
-fun TicketActivityScreenPre() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Box(
-            modifier = Modifier
-                .padding(vertical = 10.dp, horizontal = 15.dp)
-                .fillMaxWidth()
-                .height(30.dp)
-                .shadow(8.dp, shape = RectangleShape)
-                .background(Color.Red)
 
-        ) {
-            Text(
-                text = "Screen",
-                color = Color.White,
-                modifier = Modifier.align(alignment = Alignment.Center),
-                fontSize = 22.sp
-            )
-
-        }
-    }
-}
-
-@Composable
-fun SeatComp(
-    isEnable: Boolean = false,
-    isSelected: Boolean = false,
-    seat: Seat,
-    onClick: (String) -> Unit = { _ -> },
-) {
-    val seatColor = when {
-        !isEnable -> Color.Gray
-        isSelected -> Color(0xFFAF6D0C)
-        else -> Color.White
-    }
-    val textColor = when {
-        isSelected -> Color.White
-        else -> MaterialTheme.colorScheme.onBackground
-    }
-    Box(modifier = Modifier
-        .size(32.dp)
-        .border(1.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
-        .clip(
-            RoundedCornerShape(8.dp)
-        )
-        .background(seatColor)
-        .clickable(enabled = isEnable) { onClick(seat.id) }
-        .padding(5.dp),
-        contentAlignment = Alignment.Center
-
-    ) {
-        Text(text = "${seat.rowNumber}${seat.colNumber}", style = MaterialTheme.typography.bodyMedium.copy(color = textColor))
-    }
-}
-
-@Composable
-fun ScreenShape() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        DrawScreenCurve()
-    }
-}
-
-@Composable
-fun DrawScreenCurve() {
-    Canvas(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-    ) {
-        val width = size.width
-        val height = size.height
-
-        // Gradient brush cho bóng mờ dần
-        val gradientBrush = Brush.verticalGradient(
-            colors = listOf(
-                Color.Gray.copy(alpha = 0.5f),  // Màu bóng bắt đầu với độ mờ
-                Color.Transparent               // Kết thúc trong suốt
-            ),
-            startY = 0f,
-            endY = height
-        )
-
-        val shadowPath = Path().apply {
-            moveTo(0f, height * 0.8f)  // Bắt đầu từ điểm bên trái dưới
-            cubicTo(
-                width * 0.25f, 0f,     // Điểm điều khiển thứ nhất
-                width * 0.75f, 0f,     // Điểm điều khiển thứ hai
-                width, height * 0.8f   // Điểm cuối cùng bên phải
-            )
-        }
-        val shadowPath1 = Path().apply {
-            moveTo(0f, height * 1f)  // Bắt đầu từ điểm bên trái dưới
-            cubicTo(
-                width * 0.25f, 0f,     // Điểm điều khiển thứ nhất
-                width * 0.75f, 0f,     // Điểm điều khiển thứ hai
-                width, height * 1f   // Điểm cuối cùng bên phải
-            )
-        }
-
-        // Vẽ đường cong đổ bóng với gradient
-        drawPath(
-            path = shadowPath,
-            brush = gradientBrush,
-            style = Stroke(width = 10.dp.toPx())
-        )
-        drawPath(
-            path = shadowPath,
-            brush = gradientBrush,
-            style = Stroke(width = 10.dp.toPx())
-        )
-
-        // Vẽ đường cong chính
-        val mainPath = Path().apply {
-            moveTo(0f, height * 0.6f)  // Bắt đầu từ điểm bên trái dưới
-            cubicTo(
-                width * 0.25f, 0f,     // Điểm điều khiển thứ nhất
-                width * 0.75f, 0f,     // Điểm điều khiển thứ hai
-                width, height * 0.6f   // Điểm cuối cùng bên phải
-            )
-        }
-
-        drawPath(
-            path = mainPath,
-            color = Color.Gray,
-            style = Stroke(width = 4.dp.toPx())
-        )
-    }
-}
