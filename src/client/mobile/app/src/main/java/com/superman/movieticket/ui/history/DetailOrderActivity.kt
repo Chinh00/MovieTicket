@@ -1,4 +1,4 @@
-package com.superman.movieticket.ui.history.control
+package com.superman.movieticket.ui.history
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,16 +21,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.superman.movieticket.R
-import androidx.compose.material.icons.filled.CheckCircle
 
+
+
+class DetailOrderActivity :ComponentActivity(){
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            val name = intent.getStringExtra("movieName")
+            val date= intent.getStringExtra("date")
+            val total = intent.getDoubleExtra("total",0.0)
+            val quantity = intent.getIntExtra("quantity",0)
+            val duration = intent.getIntExtra("duration",0)
+            val imageResId = intent.getIntExtra("imageResId",0)
+            DetailScreen(name,date, duration ,quantity ,total, imageResId)
+        }
+    }
+}
 
 @Composable
 fun DetailScreen(
-    movieName: String,
-    date: String,
-    duration: Int,
-    totalPrice: Double,
-    imageResId: Int
+    movieName: String?="",
+    date: String?="",
+    duration: Int?=0,
+    quantity: Int?=0,
+    totalPrice: Double?=0.0,
+    imageResId: Int?=0
 ) {
     Box(
         modifier = Modifier
@@ -47,7 +62,7 @@ fun DetailScreen(
                     .clip(RoundedCornerShape(30.dp))
             ) {
                 Image(
-                    painter = painterResource(id = imageResId),
+                    painter = painterResource(id = imageResId!!),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -119,7 +134,7 @@ fun DetailScreen(
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.visa),
-                                contentDescription = "Sample Image",
+                                contentDescription = "Visa Image",
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
@@ -148,7 +163,7 @@ fun DetailScreen(
                                     text = "Success",
                                     color = Color.LightGray,
                                     fontSize = 17.sp,
-                                    modifier = Modifier.padding(start = 110.dp)
+                                    modifier = Modifier.padding(start = 115.dp)
                                 )
 
                                 Icon(
@@ -159,6 +174,7 @@ fun DetailScreen(
                                         .padding(start = 3.dp)
                                 )
                             }
+
                         }
                     }
                 }
@@ -183,6 +199,7 @@ fun DetailScreen(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(end = 16.dp, top = 10.dp)
                 )
+                
             }
             Row(
                 modifier = Modifier
@@ -198,7 +215,7 @@ fun DetailScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f)) // Sử dụng Spacer để căn chỉnh Text và giá tiền
                 Text(
-                    text = "1",
+                    text = quantity.toString(),
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -223,9 +240,17 @@ fun DetailScreen(
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(end = 16.dp, top = 10.dp)
+                    modifier = Modifier.padding(end = 16.dp, top = 8.dp)
                 )
             }
+
+            Spacer(modifier = Modifier.height(10.dp))
+            Image(
+                painter = painterResource(id = R.drawable.img_1),
+                contentDescription = "Ma Image",
+                modifier = Modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp),
+                contentScale = ContentScale.Crop
+            )
 
         }
     }
@@ -234,5 +259,5 @@ fun DetailScreen(
 @Composable
 @Preview(showSystemUi = true)
 fun DetailScreenPreview() {
-    DetailScreen("Avengers: Endgame", "2024-06-05", 180, 25.0, R.drawable.kingkong2024)
+    DetailScreen("Avengers: Endgame", "2024-06-05", 180, 2,25.0, R.drawable.kingkong2024)
 }

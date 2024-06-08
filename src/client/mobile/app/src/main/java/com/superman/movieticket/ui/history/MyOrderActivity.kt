@@ -27,12 +27,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import com.superman.movieticket.R
-import com.superman.movieticket.ui.detail.view.DetailActivity
 
 data class Order(
     val movieName: String,
     val date: String,
     val duration: Int,
+    val quantity: Int,
+    val total: Int,
     val imageResId: Int
 )
 
@@ -111,18 +112,18 @@ fun OrderItem(order: Order, context: Context) {
 
 private fun fetchOrderHistory(): List<Order> {
     return listOf(
-        Order("Avengers: Endgame", "2024-06-05", 180, R.drawable.kingkong2024),
-        Order("Inception", "2024-06-06", 150, R.drawable.bietdoidanhthue),
-        Order("Conan", "2024-06-07", 152, R.drawable.conan),
-        Order("Doremon", "2024-09-07", 132, R.drawable.doremon),
-        Order("Naruto", "2023-09-07", 132, R.drawable.naruto),
+        Order("Avengers: Endgame", "2024-06-05", 180,2, 150, R.drawable.kingkong2024),
+        Order("Inception", "2024-06-06", 150,1,120, R.drawable.bietdoidanhthue),
+        Order("Conan", "2024-06-07", 152,1,90, R.drawable.conan),
+        Order("Doremon", "2024-09-07", 132, 1,90, R.drawable.doremon),
+        Order("Naruto", "2023-09-07", 132,2,180, R.drawable.naruto),
         // Add more orders to demonstrate scrolling
-        Order("Spider-Man: No Way Home", "2023-12-17", 148, R.drawable.poster),
-        Order("Toy Story 4", "2024-07-10", 100, R.drawable.latmat6),
-        Order("Joker", "2024-08-05", 122, R.drawable.coba),
-        Order("Frozen II", "2024-11-22", 103, R.drawable.exhuma),
-        Order("Black Panther", "2024-02-16", 134, R.drawable.vang),
-        Order("Aquaman", "2024-12-21", 143, R.drawable.kungfu)
+        Order("Spider-Man: No Way Home", "2023-12-17", 148,1,120, R.drawable.poster),
+        Order("Toy Story 4", "2024-07-10", 100,2,180, R.drawable.latmat6),
+        Order("Joker", "2024-08-05", 122, 1,120, R.drawable.coba),
+        Order("Frozen II", "2024-11-22", 103,1,120, R.drawable.exhuma),
+        Order("Black Panther", "2024-02-16", 134,2,180, R.drawable.vang),
+        Order("Aquaman", "2024-12-21", 143, 1,100,R.drawable.kungfu)
     )
 }
 
@@ -133,10 +134,12 @@ fun MyOrderActivityPre() {
 }
 
 private fun navigateToDetail(context: Context, order: Order) {
-    val intent = Intent(context, DetailActivity::class.java)
+    val intent = Intent(context, DetailOrderActivity::class.java)
     intent.putExtra("movieName", order.movieName)
     intent.putExtra("date", order.date)
     intent.putExtra("duration", order.duration)
+    intent.putExtra("quantity", order.quantity)
+    intent.putExtra("total", order.total.toDouble())
     intent.putExtra("imageResId", order.imageResId)
     context.startActivity(intent)
 }
