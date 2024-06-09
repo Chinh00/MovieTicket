@@ -69,6 +69,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.style.TextAlign
+import androidx.core.graphics.scaleMatrix
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.core.config.AppOptions
@@ -456,7 +457,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
         _imgBg.value = listViewMoviesNowing[page].avatar
         Column(
             modifier = Modifier
-                .width(360.dp)
+                .width(360.dp).height(450.dp)
                 .clickable { }
 
                 .graphicsLayer {
@@ -464,8 +465,6 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                             (pagerState.currentPage - page) + pagerState
                                 .currentPageOffsetFraction
                             ).absoluteValue
-
-
 
                     lerp(
                         start = ScaleFactor(1f, 0.85f),
@@ -526,7 +525,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                     fontWeight = FontWeight.Bold,
                     fontFamily = balooFont,
                     letterSpacing = 1.sp,
-                    maxLines = 2,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.surface,
                     modifier = Modifier.wrapContentSize()
                 )

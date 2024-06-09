@@ -22,7 +22,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -87,6 +89,7 @@ fun OrderFoodScreen() {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
 
             .background(Color(0xFF2B2E50))
     ) {
