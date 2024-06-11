@@ -96,44 +96,6 @@ fun OrderFoodScreen() {
         val (s, e, b, t) = createRefs()
         Row(
             modifier = Modifier
-                .constrainAs(s) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(t.top)
-
-                }
-                .fillMaxWidth()
-                .background(Color(0xFF2B2E50))
-                .height(50.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White)
-                    .padding(vertical = 5.dp, horizontal = 3.dp)
-            ) {
-                Text(text = buildAnnotatedString {
-                    withStyle(
-                        SpanStyle(
-                            color = Color.Blue,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
-                    ) {
-                        append("Pay in: ")
-                    }
-                    withStyle(SpanStyle(color = Color(0xFFC57E14))) {
-                        append("6:30")
-                    }
-                }, color = Color.Black)
-            }
-            Spacer(modifier = Modifier.width(5.dp))
-
-        }
-        Row(
-            modifier = Modifier
                 .fillMaxWidth()
                 .constrainAs(e) {
                     top.linkTo(t.bottom)
@@ -227,32 +189,8 @@ fun OrderFoodScreen() {
                 }
                 .fillMaxWidth()
                 .padding(horizontal = 15.dp)) {
-            Row {
-                Text(text = "BHD Phạm Ngọc Thạch", color = Color.White, fontSize = 20.sp)
-            }
-            Row {
-                Text(
-                    text = "Screen 5 -24 tháng 01, 2024   12:30 ",
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.Center, modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .fillMaxWidth()
-                    .background(Color.Gray)
-            ) {
-                Text(text = "Conecssion", color = Color.White, fontSize = 16.sp)
-
-            }
             val selectFoodPrice = remember { mutableStateOf(0f) }
             val listFood = orderFoodActivityModel.loadingListFood()
-
-
-
-
-
             val c = LocalContext.current
             listFood.forEach {
                 ItemFood(it,
@@ -281,7 +219,6 @@ fun OrderFoodScreen() {
                         ).show()
 
 
-//                        totalAmount.value += it.price.toInt() * quantity
                     })
 
             }

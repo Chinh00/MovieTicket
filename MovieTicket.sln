@@ -44,6 +44,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Proxy", "Proxy", "{85A73314
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieTicket.AppGateway", "src\server\Proxy\MovieTicket.AppGateway\MovieTicket.AppGateway.csproj", "{B2EE246A-F889-4C2E-92D0-24BCF4A2E3B7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notification", "Notification", "{A1ADB203-4AD7-4855-BD88-CDF919EE13B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification", "src\server\Notification\Notification\Notification.csproj", "{EA26CF2D-721C-4414-AFD1-E51C6BA05120}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +69,8 @@ Global
 		{7BBD4B00-2877-4ECD-B25D-473374E3895A} = {084BCD21-30AD-403E-A7E3-DE42A62549C3}
 		{85A73314-4235-47FF-ACCB-C43574B3D47E} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
 		{B2EE246A-F889-4C2E-92D0-24BCF4A2E3B7} = {85A73314-4235-47FF-ACCB-C43574B3D47E}
+		{A1ADB203-4AD7-4855-BD88-CDF919EE13B6} = {F1E1ED85-CDD0-4AB6-A787-55FC0988386C}
+		{EA26CF2D-721C-4414-AFD1-E51C6BA05120} = {A1ADB203-4AD7-4855-BD88-CDF919EE13B6}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F3A4CDDC-7F67-459D-8DB6-15EA435C1BAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -111,5 +117,9 @@ Global
 		{B2EE246A-F889-4C2E-92D0-24BCF4A2E3B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2EE246A-F889-4C2E-92D0-24BCF4A2E3B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2EE246A-F889-4C2E-92D0-24BCF4A2E3B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA26CF2D-721C-4414-AFD1-E51C6BA05120}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA26CF2D-721C-4414-AFD1-E51C6BA05120}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA26CF2D-721C-4414-AFD1-E51C6BA05120}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA26CF2D-721C-4414-AFD1-E51C6BA05120}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
