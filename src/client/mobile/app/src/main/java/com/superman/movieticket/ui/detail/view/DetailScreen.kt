@@ -93,9 +93,11 @@ class DetailActivity : ComponentActivity() {
             val detailActivityViewModel = DetailActivityViewModel()
             detailActivityViewModel.setMovie(idMovie)
             val movie by detailActivityViewModel.movie.observeAsState()
+            val m =intent.getSerializableExtra("movie") as? Movie
+            detailActivityViewModel.setMovie(m!!.id.toInt())
 
             MyAppTheme {
-                movie?.let { DetailScreen(it) }
+                movie?.let { DetailScreen(movie!!) }
 
             }
         }

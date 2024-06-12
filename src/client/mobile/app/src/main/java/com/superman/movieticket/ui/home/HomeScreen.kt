@@ -294,6 +294,7 @@ fun PopularMovieComp(listMovies: List<Movie>? = null) {
     PopularMovies(listMovies,
         onMovieClicked = {
             val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra("movie",it)
             context.startActivity(intent)
         },
         onMovieFavouriteClicked = {
@@ -465,6 +466,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                             (pagerState.currentPage - page) + pagerState
                                 .currentPageOffsetFraction
                             ).absoluteValue
+
 
                     lerp(
                         start = ScaleFactor(1f, 0.85f),

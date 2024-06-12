@@ -136,4 +136,9 @@ dependencies {
 
     // Datastore
     implementation(libs.datastore)
+
+
+
+    //Login Google
+    implementation ("com.google.android.gms:play-services-auth:21.2.0")
 }

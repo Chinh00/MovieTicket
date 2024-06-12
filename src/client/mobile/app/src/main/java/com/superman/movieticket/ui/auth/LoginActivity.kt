@@ -3,6 +3,7 @@ package com.superman.movieticket.ui.auth
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,11 +21,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -158,6 +162,22 @@ fun LoginScreen(
                     }, colors = ButtonDefaults.buttonColors(Color.Red), onClick = {
                         HandleLogin()
                     })
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(onClick = { /*TODO*/ }, shape = MaterialTheme.shapes.medium,colors=ButtonDefaults.buttonColors(
+                        containerColor = Color.Blue,
+
+                    )) {
+                        Image(painter = painterResource(id = R.drawable.google), contentDescription = null,modifier=Modifier.size(24.dp))
+                        Text(text = "Sign in with Google",modifier=Modifier.padding(start=5.dp))
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(onClick = { /*TODO*/ }, shape = MaterialTheme.shapes.medium,colors=ButtonDefaults.buttonColors(
+                        containerColor = Color.Blue,
+
+                        )) {
+                        Image(painter = painterResource(id = R.drawable.facebook), contentDescription = null,modifier=Modifier.size(24.dp))
+                        Text(text = "Sign in with FaceBook",modifier=Modifier.padding(start=5.dp))
+                    }
 
                 }
             }
