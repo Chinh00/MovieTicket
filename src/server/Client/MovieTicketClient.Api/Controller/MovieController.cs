@@ -22,5 +22,18 @@ public class MovieController : BaseController
         var model = HttpContext.SafeGetListQuery<GetMovies.Query, ListResultModel<MovieDto>>(query);
         return Ok(await Mediator.Send(model, cancellationToken ));
     }
+
+    /// <summary>
+    /// Get Movie by Id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet("{id}")]
+    public async Task<IActionResult> HandleGetMovieByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return Ok(await Mediator.Send(new GetMovieById.Query() {Id = id}, cancellationToken));
+    }
+    
     
 }
