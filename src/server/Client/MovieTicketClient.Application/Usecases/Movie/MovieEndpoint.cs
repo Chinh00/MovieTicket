@@ -52,9 +52,17 @@ public class GetMovies
     }
 }
 
+public class GetMovieById
+{
+    public record Query : IItemQuery<Guid, MovieDto>
+    {
+        public Guid Id { get; init; }
+    }
+}
 
 
-public class MovieEndpoint : IRequestHandler<MovieCreate.Command, ResultModel<MovieDto>>, IRequestHandler<MovieUpdate.Command, ResultModel<MovieDto>>, IRequestHandler<GetMovies.Query, ResultModel<ListResultModel<MovieDto>>>
+
+public class MovieEndpoint : IRequestHandler<MovieCreate.Command, ResultModel<MovieDto>>, IRequestHandler<MovieUpdate.Command, ResultModel<MovieDto>>, IRequestHandler<GetMovies.Query, ResultModel<ListResultModel<MovieDto>>>, IRequestHandler<GetMovieById.Query, ResultModel<MovieDto>>
 {
     private readonly IRepository<MovieTicket.Domain.Entities.Movie> _repository;
     private readonly IRepository<Category> _repositoryCategory;
@@ -102,6 +110,13 @@ public class MovieEndpoint : IRequestHandler<MovieCreate.Command, ResultModel<Mo
             request.Page, request.PageSize);
         
         return ResultModel<ListResultModel<MovieDto>>.Create(listResultModel);
+    }
+
+    public async Task<ResultModel<MovieDto>> Handle(GetMovieById.Query request, CancellationToken cancellationToken)
+    {
+        var spec = new GetMovieByIdSpec(request.Id);
+        var movie = await _repository.FindOneAsync(spec);
+        return ResultModel<MovieDto>.Create(_mapper.Map<MovieDto>(movie));
     }
 }
 
