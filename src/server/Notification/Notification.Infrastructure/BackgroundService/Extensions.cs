@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using Hangfire.Redis.StackExchange;
 using Hangfire.SqlServer;
 using Microsoft.Data.SqlClient;
 
@@ -8,21 +9,8 @@ public static class Extensions
 {
     public static IServiceCollection AddHangfireExtensions(this IServiceCollection services, IConfiguration config, Action<IServiceCollection>? action = null)
     {
-        services.AddHangfire(configuration => configuration
-            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-            .UseSimpleAssemblyNameTypeSerializer()
-            .UseRecommendedSerializerSettings()
-            .UseSqlServerStorage(config.GetConnectionString("HangfireConnection") , new SqlServerStorageOptions
-            {
-                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                QueuePollInterval = TimeSpan.Zero,
-                UseRecommendedIsolationLevel = true,
-                UsePageLocksOnDequeue = true,
-                DisableGlobalLocks = true
-            })) ;
-
-
+     
+        services.AddHangfire(configuration => configuration.UseRedisStorage(config.GetValue<string>("Redis:Url")));
         services.AddHangfireServer();
 
         services.AddMvc();
@@ -40,6 +28,7 @@ public static class Extensions
         
         app.UseStaticFiles();
         app.UseHangfireDashboard();
+        app.UseHangfireServer();
 
         app.MapControllers();
         app.UseHangfireDashboard("/hangfire", new DashboardOptions
