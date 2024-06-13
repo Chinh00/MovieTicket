@@ -13,5 +13,6 @@ data class Movie (
     val description: String,
     val avatar: String,
     val trailer: String,
+    val categories: List<Category>
 ): BaseEntity(),Serializable
 
