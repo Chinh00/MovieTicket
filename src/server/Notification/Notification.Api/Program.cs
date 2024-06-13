@@ -39,7 +39,7 @@ builder.Services.AddMassTransit(c =>
         t.AddConsumer<MovieNotificationCreateFailConsumer>();
         t.UsingKafka((context, configurator) =>
         {
-            configurator.Host("localhost:9092");
+            configurator.Host(builder.Configuration.GetValue<string>("Kafka:Url"));
             configurator.TopicEndpoint<Null, MovieNotificationCreateSuccess>(nameof(MovieNotificationCreateSuccess), "Movie",
                 opt =>
                 {
