@@ -267,6 +267,7 @@ fun HomePage() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
+    val context = LocalContext.current
     Column(modifier = Modifier.padding(start = 10.dp)) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -282,6 +283,10 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
         Row(modifier = Modifier.wrapContentSize()) {
             NowPlayingMoviesone(listViewMoviesNowing = listViewMoviesNowing) { movie ->
                 Toast.makeText(cp, movie.avatar, Toast.LENGTH_SHORT).show()
+                val intent = Intent(context, DetailActivity::class.java)
+                intent.putExtra("id",movie.id)
+//            Log.w("idMV",it.id)
+                context.startActivity(intent)
             }
         }
     }
@@ -295,7 +300,7 @@ fun PopularMovieComp(listMovies: List<Movie>? = null) {
         onMovieClicked = {
             val intent = Intent(context, DetailActivity::class.java)
             intent.putExtra("id",it.id)
-            Log.w("idMV",it.id)
+//            Log.w("idMV",it.id)
             context.startActivity(intent)
         },
         onMovieFavouriteClicked = {
