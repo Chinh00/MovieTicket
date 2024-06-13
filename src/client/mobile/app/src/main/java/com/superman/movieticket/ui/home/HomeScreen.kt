@@ -377,7 +377,8 @@ fun PopularMovies(
                     Text(
                         text = buildAnnotatedString {
                             withStyle(SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
-                                append("${item.totalTime} | Khoa hoc vien tuong")
+                                append("${item.totalTime} | ${item.categories.forEach {category-> category.name+" | " }}")
+                                Log.d("ca",item.categories.toString())
                             }
                         }
                     )
@@ -448,7 +449,7 @@ fun PopularMovies(
 @OptIn(ExperimentalFoundationApi::class)
 
 fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movie) -> Unit) {
-
+        val context = LocalContext.current
 
     val pagerState =
         androidx.compose.foundation.pager.rememberPagerState(pageCount = { listViewMoviesNowing.size })
@@ -465,7 +466,12 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
         Column(
             modifier = Modifier
                 .width(360.dp).height(450.dp)
-                .clickable { }
+                .clickable {
+                    val intent = Intent(context, DetailActivity::class.java)
+                    intent.putExtra("id",listViewMoviesNowing[page].id)
+//            Log.w("idMV",it.id)
+                    context.startActivity(intent)
+                }
 
                 .graphicsLayer {
                     val pageOffset = (

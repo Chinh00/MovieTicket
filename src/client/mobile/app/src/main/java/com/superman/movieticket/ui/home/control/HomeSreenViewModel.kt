@@ -26,12 +26,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val movieService: MovieService) : ViewModel(){
+    private val movieService: MovieService
+) : ViewModel() {
     val _apiState = MutableStateFlow(ApiState.LOADING)
     val apiState = _apiState.asStateFlow()
 
     private val _listMovies = MutableStateFlow(emptyList<Movie>())
     val listMovies = _listMovies.asStateFlow()
+
     init {
         viewModelScope.launch {
             HandleGetMovie()
@@ -39,36 +41,44 @@ class HomeScreenViewModel @Inject constructor(
     }
 
 
-    fun HandleGetMovie () {
+    fun HandleGetMovie() {
         viewModelScope.launch {
             _apiState.emit(ApiState.LOADING)
-            val getMovie = defaultXQueryHeader.copy()
-           /* getMovie.apply {
-                includes.add("categories")
-            }*/
+            val getMovie = defaultXQueryHeader.copy(
+                sortBy = mutableListOf("categories")
+            )
+            Log.d("gson", "${getMovie.JsonSerializer()}")
 
-            movieService.HandleGetMoviesAsync(getMovie.JsonSerializer()).enqueue(object: Callback<SuccessResponse<ListResponse<Movie>>> {
-                override fun onResponse(
-                    call: Call<SuccessResponse<ListResponse<Movie>>>,
-                    response: Response<SuccessResponse<ListResponse<Movie>>>
-                ) {
-                    _listMovies.value = response.body()?.data?.items!!
-                    _apiState.value = ApiState.SUCCESS
-                }
 
-                override fun onFailure(
-                    call: Call<SuccessResponse<ListResponse<Movie>>>,
-                    t: Throwable
-                ) {
-                    Log.d("Error call api", t.message.toString())
-                    _apiState.value = ApiState.FAIL
-                }
 
-            })
+            movieService.HandleGetMoviesAsync(getMovie.JsonSerializer())
+                .enqueue(object : Callback<SuccessResponse<ListResponse<Movie>>> {
+                    override fun onResponse(
+                        call: Call<SuccessResponse<ListResponse<Movie>>>,
+                        response: Response<SuccessResponse<ListResponse<Movie>>>
+                    ) {
+                        if (response.isSuccessful) {
+                            _listMovies.value = response.body()?.data?.items!!
+                            _apiState.value = ApiState.SUCCESS
+                        } else {
+                            Log.d("Error response", "Unsuccessful response: ${response.code()}")
+                            _apiState.value = ApiState.FAIL
+                        }
+
+                    }
+
+                    override fun onFailure(
+                        call: Call<SuccessResponse<ListResponse<Movie>>>,
+                        t: Throwable
+                    ) {
+                        Log.d("Error call api", t.message.toString())
+                        _apiState.value = ApiState.FAIL
+                    }
+
+                })
             _apiState.emit(ApiState.NONE)
         }
     }
-
 
 
 }
