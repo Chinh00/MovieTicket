@@ -70,6 +70,7 @@ dependencies {
     //di
     implementation(libs.hilt.android)
     implementation(libs.firebase.messaging)
+
     ksp(libs.hilt.compiler)
 
 
@@ -141,4 +142,10 @@ dependencies {
 
     //Login Google
     implementation ("com.google.android.gms:play-services-auth:21.2.0")
+    //facebook login firebase
+    implementation ("com.facebook.android:facebook-login:latest.release")
+
+
+
+
 }

@@ -3,6 +3,7 @@ package com.superman.movieticket.ui.auth.control
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -21,17 +22,34 @@ class LoginSocialViewModel: ViewModel() {
         googleSignInClient = GoogleSignIn.getClient(context, gso)
     }
 
-    fun handleSignInResult(task: Task<GoogleSignInAccount>, onSuccess: (GoogleSignInAccount) -> Unit, onFailure: (Exception) -> Unit) {
+    fun handleSignInGoogleResult(task: Task<GoogleSignInAccount>, onSuccess: (GoogleSignInAccount) -> Unit, onFailure: (Exception) -> Unit) {
         try {
             val account = task.getResult(ApiException::class.java)
             // Log thông tin chi tiết tài khoản
-            Log.d("SignInViewModel", "Google Sign-In successful")
-            Log.d("SignInViewModel", "Display Name: ${account.displayName}")
-            Log.d("SignInViewModel", "Email: ${account.email}")
-            Log.d("SignInViewModel", "Given Name: ${account.givenName}")
-            Log.d("SignInViewModel", "Family Name: ${account.familyName}")
-            Log.d("SignInViewModel", "ID: ${account.id}")
-            Log.d("SignInViewModel", "ID Token: ${account.idToken}")
+//            Log.d("SignInViewModel", "Google Sign-In successful")
+//            Log.d("SignInViewModel", "Display Name: ${account.displayName}")
+//            Log.d("SignInViewModel", "Email: ${account.email}")
+//            Log.d("SignInViewModel", "Given Name: ${account.givenName}")
+//            Log.d("SignInViewModel", "Family Name: ${account.familyName}")
+//            Log.d("SignInViewModel", "ID: ${account.id}")
+//            Log.d("SignInViewModel", "ID Token: ${account.idToken}")
+            onSuccess(account)
+        } catch (e: ApiException) {
+            Log.w("SignInViewModel", "signInResult:failed code=" + e.statusCode)
+            onFailure(e)
+        }
+    }
+    fun handleSignFacebookResult(task: Task<LoginResult>, onSuccess: (LoginResult) -> Unit, onFailure: (Exception) -> Unit) {
+        try {
+            val account = task.getResult(ApiException::class.java)
+            // Log thông tin chi tiết tài khoản
+//            Log.d("SignInViewModel", "Google Sign-In successful")
+//            Log.d("SignInViewModel", "Display Name: ${account.displayName}")
+//            Log.d("SignInViewModel", "Email: ${account.email}")
+//            Log.d("SignInViewModel", "Given Name: ${account.givenName}")
+//            Log.d("SignInViewModel", "Family Name: ${account.familyName}")
+//            Log.d("SignInViewModel", "ID: ${account.id}")
+//            Log.d("SignInViewModel", "ID Token: ${account.idToken}")
             onSuccess(account)
         } catch (e: ApiException) {
             Log.w("SignInViewModel", "signInResult:failed code=" + e.statusCode)

@@ -274,9 +274,9 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Now in Cinema", color = MaterialTheme.colorScheme.onBackground)
-            TextButton(onClick = {}) {
-                Text(text = "See all", color = Color.Red)
-            }
+//            TextButton(onClick = {}) {
+//                Text(text = "See all", color = Color.Red)
+//            }
         }
         val cp = LocalContext.current
         Row(modifier = Modifier.wrapContentSize()) {
@@ -294,7 +294,8 @@ fun PopularMovieComp(listMovies: List<Movie>? = null) {
     PopularMovies(listMovies,
         onMovieClicked = {
             val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra("movie",it)
+            intent.putExtra("id",it.id)
+            Log.w("idMV",it.id)
             context.startActivity(intent)
         },
         onMovieFavouriteClicked = {

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
@@ -66,9 +67,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.R
+import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.detail.control.DetailActivityViewModel
@@ -76,11 +79,13 @@ import com.superman.movieticket.ui.home.control.HomeScreenViewModel
 import com.superman.movieticket.ui.theme.CustomColor4
 import com.superman.movieticket.ui.theme.MyAppTheme
 import com.superman.movieticket.ui.theme.YoutubePlayer
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.format.TextStyle
 
+@AndroidEntryPoint
 class DetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,16 +93,23 @@ class DetailActivity : ComponentActivity() {
 
 
         setContent {
-            val idMovie = intent.getIntExtra("idMovie", 0) // Retrieve the image URI from intent
+//            val idMovie = intent.getIntExtra("idMovie", 0) // Retrieve the image URI from intent
 
-            val detailActivityViewModel = DetailActivityViewModel()
-            detailActivityViewModel.setMovie(idMovie)
+            val detailActivityViewModel: DetailActivityViewModel = hiltViewModel()
             val movie by detailActivityViewModel.movie.observeAsState()
-            val m =intent.getSerializableExtra("movie") as? Movie
-            detailActivityViewModel.setMovie(m!!.id.toInt())
+            val id = intent.getStringExtra("id")
+            LaunchedEffect(Unit) {
+                detailActivityViewModel.getMovieById(id.toString())
+
+            }
+
 
             MyAppTheme {
-                movie?.let { DetailScreen(movie!!) }
+                movie?.let {
+                    DetailScreen(it)
+
+                }
+
 
             }
         }
@@ -118,8 +130,12 @@ fun DetailScreen(m: Movie) {
             top.linkTo(parent.top)
         }) {
 
-            YoutubePlayer(youtubeId = m.trailer, lifecycleOwner = LocalLifecycleOwner.current)
+            YoutubePlayer(
+                youtubeId = AppOptions.BASE_URL + m.trailer,
+                lifecycleOwner = LocalLifecycleOwner.current
+            )
         }
+
         Row(modifier = Modifier
             .padding(horizontal = 5.dp)
             .fillMaxHeight()
@@ -187,18 +203,18 @@ fun DescriptionText(text: String, verticalScroll: ScrollState) {
     }
 }
 
-@Composable
-@Preview(showSystemUi = true)
-
-fun DetailScreenPre() {
-    val detailActivityViewModel = DetailActivityViewModel()
-
-val movie by detailActivityViewModel.movie.observeAsState()
-    MyAppTheme {
-        detailActivityViewModel.setMovie(1)
-        movie?.let { DetailScreen(it) }
-    }
-}
+//@Composable
+//@Preview(showSystemUi = true)
+//
+//fun DetailScreenPre() {
+//    val detailActivityViewModel = DetailActivityViewModel()
+//
+//val movie by detailActivityViewModel.movie.observeAsState()
+//    MyAppTheme {
+//        detailActivityViewModel.setMovie(1)
+//        movie?.let { DetailScreen(it) }
+//    }
+//}
 
 //@SuppressLint("RememberReturnType")
 //@Composable
@@ -251,7 +267,7 @@ fun DetailItemScreen(m: Movie, scroll: ScrollState) {
             Column {
                 Image(
                     painter = rememberAsyncImagePainter(
-                        m.avatar,
+                        model = AppOptions.BASE_URL + m.avatar,
                         error = painterResource(id = R.drawable.moi)
                     ),
                     modifier = Modifier

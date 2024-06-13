@@ -3,10 +3,12 @@ package com.superman.movieticket.ui.auth
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,21 +25,32 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +59,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,6 +88,8 @@ import kotlinx.coroutines.launch
 import com.superman.movieticket.R
 import com.superman.movieticket.ui.components.ButtonLoading
 import com.superman.movieticket.ui.main.MainActivity
+import com.superman.movieticket.ui.theme.CustomBlue
+import com.superman.movieticket.ui.theme.balooFont
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -96,27 +119,35 @@ fun LoginScreen(
     val username = remember {
         mutableStateOf("")
     }
-    val password = remember {
+    var password by rememberSaveable {
         mutableStateOf("")
     }
-    fun HandleLogin () {
+
+    fun HandleLogin() {
         val userLoginModel = UserLoginModel()
         userLoginModel.username = username.value
-        userLoginModel.password = password.value
+        userLoginModel.password = password
         coroutineScope.launch {
             loginActivityModelImpl.HandleLoginAction(userLoginModel)
             loginActivityModelImpl._apiState.collect {
-                when(it) {
+                when (it) {
                     ApiState.SUCCESS -> {
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)
                     }
+
                     ApiState.FAIL -> {
-                        Toast.makeText(context, "Tài khoản mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(
+                            context,
+                            "Tài khoản mật khẩu không chính xác",
+                            Toast.LENGTH_SHORT
+                        ).show();
                     }
+
                     ApiState.LOADING -> {
 
                     }
+
                     ApiState.NONE -> {
 
                     }
@@ -128,60 +159,210 @@ fun LoginScreen(
 
 
 
-    Scaffold (modifier = Modifier.apply {
-        fillMaxSize()
-    }) {
-
-
-        Box (modifier = Modifier.apply {
-            fillMaxSize().padding(it)
-        }, contentAlignment = Alignment.Center) {
-            Image(
-                painter = painterResource(id = R.drawable.conan),
-                contentDescription = "Sample JPG Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .fillMaxSize()
+    ) {
+        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "Login",
+                style = MaterialTheme.typography.titleLarge,
+                fontFamily = balooFont,
+                fontWeight = FontWeight.Bold
             )
-            FlowRow (modifier = Modifier.apply {
-                padding(10.dp)
-            }, horizontalArrangement = Arrangement.Center, verticalArrangement = Arrangement.Top) {
-                Column (modifier = Modifier.apply { fillMaxSize() }, verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                    TextField(value = username.value, onValueChange = {username.value = it}, label = { Text(
-                        text = "Tên đăng nhập"
-                    )} )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    TextField(value = password.value, onValueChange = {password.value = it}, label = { Text(
-                        text = "Mật khẩu"
-                    )} , modifier = Modifier.apply {
+        }
+        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+            Image(
+                painter = painterResource(id = R.drawable.cinema),
+                contentDescription = null,
+                modifier = Modifier.size(200.dp)
+            )
+        }
+        Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "Weclcome Back!",
+                style = MaterialTheme.typography.headlineMedium,
+                color = CustomBlue,
+                fontFamily = balooFont,
+                fontWeight = FontWeight.Bold
+            )
 
-                    })
-                    Spacer(modifier = Modifier.height(10.dp))
+        }
+        Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "Enter Your Details",
+                style = MaterialTheme.typography.titleLarge,
+                fontFamily = balooFont,
+                color = Color.Gray,
+                fontWeight = FontWeight.Medium
+            )
 
-                    ButtonLoading(content = {Text(text = "Đăng nhập ", modifier = Modifier.apply { fillMaxSize() })}, isLoading = 1 != 1, modifier = Modifier.apply {
-                        padding(5.dp)
-                    }, colors = ButtonDefaults.buttonColors(Color.Red), onClick = {
-                        HandleLogin()
-                    })
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Button(onClick = { /*TODO*/ }, shape = MaterialTheme.shapes.medium,colors=ButtonDefaults.buttonColors(
-                        containerColor = Color.Blue,
+        }
+        Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+            TextField(value = username.value,
+                onValueChange = {username.value=it},
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedIndicatorColor = CustomBlue,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedTrailingIconColor = CustomBlue,
+                    unfocusedTrailingIconColor = Color.Gray
+                ),
+                placeholder = {
+                    Text(
+                        text = "Email Address",
+                        fontFamily = FontFamily.SansSerif,
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.MailOutline, contentDescription = null
+                    )
+                })
+        }
 
-                    )) {
-                        Image(painter = painterResource(id = R.drawable.google), contentDescription = null,modifier=Modifier.size(24.dp))
-                        Text(text = "Sign in with Google",modifier=Modifier.padding(start=5.dp))
+        var passwordVisible by remember { mutableStateOf(false) }
+        Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+            TextField(value = password,
+                onValueChange = { password = it },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedIndicatorColor = CustomBlue,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedTrailingIconColor = CustomBlue,
+                    unfocusedTrailingIconColor = Color.Gray
+                ),
+                placeholder = {
+                    Text(
+                        text = "Password",
+                        fontFamily = FontFamily.SansSerif,
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                trailingIcon = {
+                    val image = if (passwordVisible) Icons.Outlined.Visibility
+                    else Icons.Outlined.VisibilityOff
+
+                    // Localized description for accessibility services
+                    val description = if (passwordVisible) "Hide password" else "Show password"
+
+                    // Toggle button to hide or display password
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(imageVector = image, description)
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Button(onClick = { /*TODO*/ }, shape = MaterialTheme.shapes.medium,colors=ButtonDefaults.buttonColors(
-                        containerColor = Color.Blue,
+                })
+        }
+        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+            TextButton(onClick = { /*TODO*/ }) {
+                Text(
+                    text = "Forget password?",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontFamily = FontFamily.SansSerif,
+                    color = CustomBlue,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
-                        )) {
-                        Image(painter = painterResource(id = R.drawable.facebook), contentDescription = null,modifier=Modifier.size(24.dp))
-                        Text(text = "Sign in with FaceBook",modifier=Modifier.padding(start=5.dp))
-                    }
+        }
 
+        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+//            OutlinedButton(
+//                onClick = { /*TODO*/ },
+//                modifier = Modifier.fillMaxWidth(),
+//                shape = MaterialTheme.shapes.small,
+//                border = BorderStroke(
+//                    1.dp,
+//                    CustomBlue
+//                )
+//            ) {
+//                Text(
+//                    text = "Login",
+//                    style = MaterialTheme.typography.headlineSmall,
+//                    fontFamily = FontFamily.SansSerif,
+//                    color = CustomBlue,
+//                    fontWeight = FontWeight.Bold
+//                )
+//            }
+            ButtonLoading(content = {
+                Text(
+                    text = "Đăng nhập ",
+                    modifier = Modifier.apply { fillMaxSize() })
+            }, isLoading = 1 != 1, modifier = Modifier.apply {
+                padding(5.dp).fillMaxWidth()
+            }, colors = ButtonDefaults.buttonColors(CustomBlue), onClick = {
+                HandleLogin()
+            })
+
+        }
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .weight(0.5f)
+                    .background(Color.Black)
+                    .height(1.dp)
+            )
+            Text(
+                text = "Or Continue with",
+                style = MaterialTheme.typography.titleSmall,
+                fontFamily = FontFamily.SansSerif,
+                color = CustomBlue,
+            )
+            Spacer(
+                modifier = Modifier
+                    .weight(0.5f)
+                    .background(Color.Black)
+                    .height(1.dp)
+            )
+
+        }
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .fillMaxWidth()
+        ) {
+            LoginSocialComp()
+        }
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .fillMaxWidth()
+        ) {
+            val annotatedText = buildAnnotatedString {
+                append("Don't have an account? ")
+
+                withStyle(style = SpanStyle(color = CustomBlue)) {
+                    pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
+                    append("Sign up")
+                    pop()
                 }
             }
 
+            ClickableText(text = annotatedText,
+                style = MaterialTheme.typography.bodyLarge,
+                onClick = { offset ->
+                    annotatedText.getStringAnnotations(tag = "SignUp", start = offset, end = offset)
+                        .firstOrNull()?.let {
+                            Log.d("weew","asdasdasdasdasdasd")
+                        }
+                })
         }
     }
 }
