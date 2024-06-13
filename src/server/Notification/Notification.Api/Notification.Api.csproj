@@ -5,12 +5,19 @@
         <Nullable>disable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Infrastructure\MovieTicket.Infrastructure.csproj" />
       <ProjectReference Include="..\Notification.Application\Notification.Application.csproj" />
       <ProjectReference Include="..\Notification.Infrastructure\Notification.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

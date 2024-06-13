@@ -1,4 +1,6 @@
 using Confluent.Kafka;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using MovieTicket.Infrastructure.Logger;
@@ -57,8 +59,11 @@ builder.Services.AddMassTransit(c =>
 
     });
 });
-builder.Services.AddTransient<IFirebaseNotificationService, FirebaseNotificationService>();
-
+builder.Services.AddSingleton<IFirebaseNotificationService, FirebaseNotificationService>();
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile("./android-5e2d0-firebase-adminsdk-p2ikp-adbe0b9280.json")
+});
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();

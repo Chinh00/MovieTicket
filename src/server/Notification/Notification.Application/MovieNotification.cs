@@ -64,8 +64,7 @@ public class MovieNotification :
 
     public async Task Handle(MovieNotificationCreateSuccess notification, CancellationToken cancellationToken)
     {
-        var listDevice = await _appContext.DeviceTokens.ToListAsync(cancellationToken: cancellationToken);
-        await _notificationService.PushNotificationDeviceAsync(listDevice.Select(e => e.Token).ToList(), "",
+        await _notificationService.PushNotificationDeviceAsync(new List<string>(), "",
             cancellationToken);
     }
 
