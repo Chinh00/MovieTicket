@@ -102,11 +102,11 @@ public class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val accessToken=AccessToken.getCurrentAccessToken()
-            if(accessToken!=null&&accessToken.isExpired==false){
-                startActivity(Intent(this,MainActivity::class.java))
-                finish()
-            }
+//            val accessToken=AccessToken.getCurrentAccessToken()
+//            if(accessToken!=null&&accessToken.isExpired==false){
+//                startActivity(Intent(this,MainActivity::class.java))
+//                finish()
+//            }
 
             com.superman.movieticket.ui.components.BaseScreen(content = {
                 LoginScreen()
@@ -116,6 +116,7 @@ public class LoginActivity : ComponentActivity() {
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+    Log.d("request code: ",requestCode.toString()+" réult code "+resultCode)
         viewModel.callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 

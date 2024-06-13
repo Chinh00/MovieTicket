@@ -26,17 +26,22 @@ class LoginSocialViewModel: ViewModel() {
         try {
             val account = task.getResult(ApiException::class.java)
             // Log thông tin chi tiết tài khoản
-//            Log.d("SignInViewModel", "Google Sign-In successful")
-//            Log.d("SignInViewModel", "Display Name: ${account.displayName}")
-//            Log.d("SignInViewModel", "Email: ${account.email}")
-//            Log.d("SignInViewModel", "Given Name: ${account.givenName}")
-//            Log.d("SignInViewModel", "Family Name: ${account.familyName}")
-//            Log.d("SignInViewModel", "ID: ${account.id}")
-//            Log.d("SignInViewModel", "ID Token: ${account.idToken}")
+            Log.d("SignInViewModel", "Google Sign-In successful")
+            Log.d("SignInViewModel", "Display Name: ${account.displayName}")
+            Log.d("SignInViewModel", "Email: ${account.email}")
+            Log.d("SignInViewModel", "Given Name: ${account.givenName}")
+            Log.d("SignInViewModel", "Family Name: ${account.familyName}")
+            Log.d("SignInViewModel", "ID: ${account.id}")
+            Log.d("SignInViewModel", "ID Token: ${account.idToken}")
             onSuccess(account)
         } catch (e: ApiException) {
             Log.w("SignInViewModel", "signInResult:failed code=" + e.statusCode)
             onFailure(e)
+        }
+    }
+    fun signOut(onSignOutComplete: () -> Unit) {
+        googleSignInClient.signOut().addOnCompleteListener {
+            onSignOutComplete()
         }
     }
     fun handleSignFacebookResult(task: Task<LoginResult>, onSuccess: (LoginResult) -> Unit, onFailure: (Exception) -> Unit) {

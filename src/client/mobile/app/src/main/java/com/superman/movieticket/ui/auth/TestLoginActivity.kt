@@ -113,6 +113,7 @@ fun SignInGoogleScreen(viewModel: LoginSocialViewModel = viewModel()) {
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        Log.d("reqCode",result.resultCode.toString())
         viewModel.handleSignInGoogleResult(task,
             onSuccess = { account ->
                 Log.d("account", account.toString())
@@ -127,9 +128,11 @@ fun SignInGoogleScreen(viewModel: LoginSocialViewModel = viewModel()) {
 
     Button(
         onClick = {
-            val signInIntent = viewModel.googleSignInClient.signInIntent
-            coroutineScope.launch {
-                signInLauncher.launch(signInIntent)
+            viewModel.signOut {
+                val signInIntent = viewModel.googleSignInClient.signInIntent
+                coroutineScope.launch {
+                    signInLauncher.launch(signInIntent)
+                }
             }
         }, modifier = Modifier
             .height(50.dp)
