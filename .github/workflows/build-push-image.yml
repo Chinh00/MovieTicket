@@ -63,7 +63,7 @@ jobs:
           file: src/server/Proxy/MovieTicket.AppGateway/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_APPGATEWAY_NAME}}:latest
-      - name: Build and push Docker image app gateway server
+      - name: Build and push Docker image app notification server
         uses: docker/build-push-action@v5
         with:
           context: .
