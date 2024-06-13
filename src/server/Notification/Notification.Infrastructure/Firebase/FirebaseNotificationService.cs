@@ -9,7 +9,7 @@ public class FirebaseNotificationService : IFirebaseNotificationService
     {
         FirebaseApp.Create(new AppOptions()
         {
-            Credential = GoogleCredential.FromJson("../../Notification/Notification.Api/google-services.json")
+            Credential = GoogleCredential.FromFile("../../Notification/Notification.Api/android-5e2d0-firebase-adminsdk-p2ikp-adbe0b9280.json")
         });
     }
     public Task PushNotificationDeviceAsync(ICollection<string> deviceTokens, string message, CancellationToken cancellationToken)
