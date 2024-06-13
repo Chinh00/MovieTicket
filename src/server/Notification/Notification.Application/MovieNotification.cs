@@ -1,7 +1,11 @@
 ﻿using MassTransit;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using MovieTicket.Core.Domain;
 using MovieTicket.Message.MovieNotification;
+using Notification.Infrastructure.Data.Entities;
+using Notification.Infrastructure.Firebase;
+using AppContext = Notification.Infrastructure.Data.AppContext;
 
 namespace Notification.Application;
 
@@ -20,15 +24,33 @@ public class CreateMovieNotification
     }
 }
 
-
-public class MovieNotification : IRequestHandler<CreateMovieNotification.Command, ResultModel<string>>, INotificationHandler<MovieNotificationCreateSuccess>
+public struct RegisterDeviceTokenModel
 {
-    private readonly IPublishEndpoint _publishEndpoint;
-    private readonly ITopicProducer<MovieNotificationCreate> _topicProducer;
-    public MovieNotification(IPublishEndpoint publishEndpoint, ITopicProducer<MovieNotificationCreate> topicProducer)
+    public string DeviceId { get; set; }
+    public string? Token { get; set; }
+    public Guid? UserId { get; set; }
+}
+public class RegisterDeviceToken
+{
+    public record Command : ICreateCommand<RegisterDeviceTokenModel, string>
     {
-        _publishEndpoint = publishEndpoint;
+        public RegisterDeviceTokenModel CreateModel { get; init; }
+    }
+}
+
+public class MovieNotification : 
+    IRequestHandler<CreateMovieNotification.Command, ResultModel<string>>, 
+    INotificationHandler<MovieNotificationCreateSuccess>, 
+    IRequestHandler<RegisterDeviceToken.Command, ResultModel<string>>
+{
+    private readonly ITopicProducer<MovieNotificationCreate> _topicProducer;
+    private readonly AppContext _appContext;
+    private readonly IFirebaseNotificationService _notificationService;
+    public MovieNotification(ITopicProducer<MovieNotificationCreate> topicProducer, AppContext appContext, IFirebaseNotificationService notificationService)
+    {
         _topicProducer = topicProducer;
+        _appContext = appContext;
+        _notificationService = notificationService;
     }
 
     public async Task<ResultModel<string>> Handle(CreateMovieNotification.Command request, CancellationToken cancellationToken)
@@ -42,6 +64,19 @@ public class MovieNotification : IRequestHandler<CreateMovieNotification.Command
 
     public async Task Handle(MovieNotificationCreateSuccess notification, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var listDevice = await _appContext.DeviceTokens.ToListAsync(cancellationToken: cancellationToken);
+        await _notificationService.PushNotificationDeviceAsync(listDevice.Select(e => e.Token).ToList(), "",
+            cancellationToken);
+    }
+
+    public async Task<ResultModel<string>> Handle(RegisterDeviceToken.Command request, CancellationToken cancellationToken)
+    {
+        var deviceToken = await _appContext.DeviceTokens.AddAsync(new DeviceToken()
+        {
+            DeviceId = request.CreateModel.DeviceId,
+            Token = request.CreateModel.Token,
+        }, cancellationToken);
+        await _appContext.SaveChangesAsync(cancellationToken);
+        return ResultModel<string>.Create("");
     }
 }

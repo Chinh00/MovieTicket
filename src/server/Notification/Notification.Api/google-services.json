@@ -1,0 +1,106 @@
+{
+  "project_info": {
+    "project_number": "45285163111",
+    "firebase_url": "https://android-5e2d0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "android-5e2d0",
+    "storage_bucket": "android-5e2d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45285163111:android:316d0433da9bb606bad4c2",
+        "android_client_info": {
+          "package_name": "com.example.ching"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfZ5hvFjMJYX-zf2WXxKTd5vLOVcbKyfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45285163111:android:da73e9a5031f19fbbad4c2",
+        "android_client_info": {
+          "package_name": "com.example.phonebookapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfZ5hvFjMJYX-zf2WXxKTd5vLOVcbKyfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45285163111:android:3a7d0b8337fc9bcbbad4c2",
+        "android_client_info": {
+          "package_name": "com.superman.firebasedatabase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfZ5hvFjMJYX-zf2WXxKTd5vLOVcbKyfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45285163111:android:e3706b6c1a007ccebad4c2",
+        "android_client_info": {
+          "package_name": "com.superman.movieticket"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfZ5hvFjMJYX-zf2WXxKTd5vLOVcbKyfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45285163111:android:9c4dfc3a74823ee5bad4c2",
+        "android_client_info": {
+          "package_name": "com.supperman.firebaseapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfZ5hvFjMJYX-zf2WXxKTd5vLOVcbKyfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
