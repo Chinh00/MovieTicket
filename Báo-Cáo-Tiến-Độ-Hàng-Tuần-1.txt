@@ -1,0 +1,41 @@
+# Báo Cáo Tiến Độ Hàng Tuần
+
+## Thông Tin Chung
+- **Tên Dự Án**: MovieTicket
+- **Tuần**: 1
+- **Ngày**: (5-5-2024 -> 12-5-2024)
+- **Nhóm Thực Hiện**: 
+  - Thành viên 1: Nguyễn Quang Đông
+  - Thành viên 2: Nguyễn Văn Chinh
+  - Thành viên 3: Nguyễn Thị Ngọc Khánh
+
+
+## Mục Tiêu Tuần Này
+(Tóm tắt ngắn gọn mục tiêu chính của tuần này.)
+Cả nhóm cùng suy nghĩ và đưa ra ý tưởng cho giao diện app đặt vé phim, phác họa để người thiết kế giao diện hiểu rõ và thiết kế app
+
+## Công Việc Đã Hoàn Thành
+(Tóm tắt các công việc đã hoàn thành trong tuần này.)
+Đã thiết kế sơ qua phần giao diện
+
+### Thành viên 1: Nguyễn Văn Chinh
+- Công việc 1: Nêu ý tưởng cho giao diện
+- Công việc 2: Thiết kế chức năng, thiết kế CSDL, thiết kế API
+
+### Thành viên 2:Nguyễn Thị Ngọc Khánh
+- Công việc 1: Nêu ý tưởng cho giao diện 
+- Công việc 2: Thiết kế giao diện trên Figma
+
+### Thành viên 3: Nguyễn Quang Đông
+- Công việc 1: Nêu ý tưởng cho giao diện
+- Công việc 2:Thiết kế CSDL
+
+## Vấn Đề Gặp Phải
+-Các thành viên chưa tích cực, Tiến độ còn chậm,...
+(Tiêu điểm vào các vấn đề, thách thức mà nhóm gặp phải và cách giải quyết.)
+-có nhiều tranh cãi về vấn đề giao diện
+## Kế Hoạch Tuần Tới
+(Phác thảo ngắn gọn các kế hoạch và mục tiêu dự kiến cho tuần tiếp theo.)
+-Bắt đầu bắt tay vào thiết kế xử lý từng màn giao diện
+## Nhận Xét và Đề Xuất
+(Mọi nhận xét và đề xuất để cải thiện quá trình làm việc nhóm và tiến độ dự án.)

@@ -1,4 +1,4 @@
-﻿version: "3.7"
+version: "3.7"
 
 services:
   redis:
@@ -9,7 +9,11 @@ services:
     restart: always
     networks:
       movie-network:
+<<<<<<< HEAD
   
+=======
+      
+>>>>>>> 1a59af70895e3ae742332de1c47b6a6ede945ed2
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
@@ -25,12 +29,17 @@ services:
       movie-network:
 
   movieticketclient:
+<<<<<<< HEAD
     #image: chinhval/movieticketclientapi
     build:
       context: .
       dockerfile: src/server/Client/MovieTicketClient.Api/Dockerfile
     container_name: movieticketclient
     restart: always
+=======
+    image: chinhval/movieticketclientapi
+    container_name: movieticketclient
+>>>>>>> 1a59af70895e3ae742332de1c47b6a6ede945ed2
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
       - Identity__Url=http://identityserverclient:8091
@@ -50,11 +59,15 @@ services:
       movie-network:
 
   identityserverclient:
+<<<<<<< HEAD
     #image: chinhval/movieticketclientidentity
     build:
       context: .
       dockerfile: src/server/Client/MovieTicketClient.IdentityServer/Dockerfile
     restart: always
+=======
+    image: chinhval/movieticketmanagementidentity
+>>>>>>> 1a59af70895e3ae742332de1c47b6a6ede945ed2
     container_name: identityserverclient
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
@@ -69,11 +82,15 @@ services:
       movie-network:
 
   movieticketmanagement:
+<<<<<<< HEAD
     #image: chinhval/movieticketmanagementapi
     restart: always
     build:
       context: .
       dockerfile: src/server/Management/MovieTicketManagement.Api/Dockerfile
+=======
+    image: chinhval/movieticketmanagementapi
+>>>>>>> 1a59af70895e3ae742332de1c47b6a6ede945ed2
     container_name: movieticketmanagement
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_ticket;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
@@ -95,11 +112,15 @@ services:
       movie-network:
 
   identityservermanagement:
+<<<<<<< HEAD
     #image: chinhval/movieticketmanagementidentity
     restart: always
     build:
       context: .
       dockerfile: src/server/Management/MovieTicketManagement.IdentityServer/Dockerfile
+=======
+    image: chinhval/movieticketmanagementidentity
+>>>>>>> 1a59af70895e3ae742332de1c47b6a6ede945ed2
     container_name: identityservermanagement
     environment:
       - ConnectionStrings__db=Server=db;Database=movie_admin;Encrypt=false;User Id=sa;Password=@P@ssw0rd02;
@@ -114,11 +135,15 @@ services:
       movie-network:
 
   appgateway:
+<<<<<<< HEAD
     restart: always
     #image: chinhval/movieticketappgateway
     build:
       context: .
       dockerfile: src/server/Proxy/MovieTicket.AppGateway/Dockerfile
+=======
+    image: chinhval/movieticketappgateway
+>>>>>>> 1a59af70895e3ae742332de1c47b6a6ede945ed2
     container_name: appgateway
     ports:
       - "9000:80"
@@ -157,7 +182,11 @@ services:
     
     labels:
       - "com.centurylinklabs.watchtower.enbale=true"
+<<<<<<< HEAD
     
+=======
+        
+>>>>>>> 1a59af70895e3ae742332de1c47b6a6ede945ed2
     depends_on:
       - movieticketclient
       - identityserverclient

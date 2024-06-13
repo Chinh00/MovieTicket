@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+  portainer:
+    image: portainer/portainer-ce:alpine
+    container_name: portainer
+    ports:
+      - 9009:9000
+    volumes: 
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "portainer_data:/data"
+    restart: always
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    command: appgateway identityservermanagement movieticketmanagement identityserverclient movieticketclient
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_POLL_INTERVAL: 30
+      WATCHTOWER_INCLUDE_RESTARTING: "true"
+      WATCHTOWER_CLEANUP: "true"
+
+volumes:
+  portainer_data:
