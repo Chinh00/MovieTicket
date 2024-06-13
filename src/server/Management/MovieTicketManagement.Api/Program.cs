@@ -1,4 +1,6 @@
 
+using Confluent.Kafka;
+using MassTransit;
 using Microsoft.OpenApi.Models;
 using MovieTicket.Infrastructure.Auth;
 using MovieTicket.Infrastructure.Caching;
@@ -7,6 +9,8 @@ using MovieTicket.Infrastructure.Files;
 using MovieTicket.Infrastructure.Logger;
 using MovieTicket.Infrastructure.Security;
 using MovieTicket.Infrastructure.Swagger;
+using MovieTicket.Message.MovieNotification;
+using MovieTicketManagement.Api.Consumers;
 using MovieTicketManagement.Api.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +43,33 @@ builder.Services.AddMediatR(e => e.RegisterServicesFromAssemblies(typeof(MovieTi
 
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddMassTransit(x =>
+{
+    x.SetKebabCaseEndpointNameFormatter();
+    x.UsingInMemory((context, configurator) =>
+    {
+        configurator.ConfigureEndpoints(context);
+    });
+    x.AddRider(e =>
+    {
+        
+        e.AddProducer<MovieNotificationCreateSuccess>(nameof(MovieNotificationCreateSuccess));
+        e.AddProducer<MovieNotificationCreateFail>(nameof(MovieNotificationCreateFail));
+        e.AddConsumer<MovieNotificationCreateConsumer>();
+        e.UsingKafka((context, configurator) =>
+        {
+            configurator.Host(builder.Configuration.GetValue<string>("Kafka:Url"));
+            configurator.TopicEndpoint<Null, MovieNotificationCreate>(nameof(MovieNotificationCreate), "Movie", c =>
+            {
+                c.AutoOffsetReset = AutoOffsetReset.Earliest;
+                c.CreateIfMissing(options => options.NumPartitions = 1);
+                c.ConfigureConsumer<MovieNotificationCreateConsumer>(context);
+            });
+        });
+    });
+    
+    
+});
 
 
 

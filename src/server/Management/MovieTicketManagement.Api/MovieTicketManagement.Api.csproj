@@ -16,6 +16,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Infrastructure.EfCore\MovieTicket.Infrastructure.EfCore.csproj" />
       <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Infrastructure\MovieTicket.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Message\MovieTicket.Message.csproj" />
       <ProjectReference Include="..\MovieTicketManagement.Application\MovieTicketManagement.Application.csproj" />
     </ItemGroup>
 
