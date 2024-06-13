@@ -157,14 +157,14 @@ fun SignInFacebookComp(viewModel: LoginFaceBookViewModel = viewModel()) {
     val context = LocalContext.current
     FacebookSdk.sdkInitialize(context)
 
-    val launcher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            viewModel.callbackManager.onActivityResult(
-                result.resultCode,
-                result.resultCode,
-                result.data
-            )
-        }
+//    val launcher =
+//        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//            viewModel.callbackManager.onActivityResult(
+//                result.resultCode,
+//                result.resultCode,
+//                result.data
+//            )
+//        }
 
 
 

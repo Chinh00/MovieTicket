@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -76,6 +77,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import coil.compose.rememberAsyncImagePainter
+import com.facebook.AccessToken
 import com.superman.movieticket.core.view.BaseActivity
 import com.superman.movieticket.core.view.BaseScreen
 import com.superman.movieticket.infrastructure.utils.ApiState
@@ -86,6 +88,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.superman.movieticket.R
+import com.superman.movieticket.ui.auth.control.LoginFaceBookViewModel
 import com.superman.movieticket.ui.components.ButtonLoading
 import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.theme.CustomBlue
@@ -95,16 +98,26 @@ import kotlinx.coroutines.Dispatchers
 
 @AndroidEntryPoint
 public class LoginActivity : ComponentActivity() {
-
+    private val viewModel: LoginFaceBookViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val accessToken=AccessToken.getCurrentAccessToken()
+            if(accessToken!=null&&accessToken.isExpired==false){
+                startActivity(Intent(this,MainActivity::class.java))
+                finish()
+            }
+
             com.superman.movieticket.ui.components.BaseScreen(content = {
                 LoginScreen()
             }, title = "")
         }
-    }
 
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        viewModel.callbackManager.onActivityResult(requestCode, resultCode, data)
+    }
 
 }
 

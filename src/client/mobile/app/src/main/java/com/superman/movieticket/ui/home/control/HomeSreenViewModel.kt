@@ -45,9 +45,7 @@ class HomeScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _apiState.emit(ApiState.LOADING)
             val getMovie = defaultXQueryHeader.copy(
-                sortBy = mutableListOf("categories")
             )
-            Log.d("gson", "${getMovie.JsonSerializer()}")
 
 
 
