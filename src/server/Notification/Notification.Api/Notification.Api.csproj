@@ -9,20 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.5"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Infrastructure.EfCore\MovieTicket.Infrastructure.EfCore.csproj" />
       <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Infrastructure\MovieTicket.Infrastructure.csproj" />
-      <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Message\MovieTicket.Message.csproj" />
-      <ProjectReference Include="..\MovieTicketManagement.Application\MovieTicketManagement.Application.csproj" />
+      <ProjectReference Include="..\Notification.Application\Notification.Application.csproj" />
+      <ProjectReference Include="..\Notification.Infrastructure\Notification.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Include="..\..\..\..\.dockerignore">
         <Link>.dockerignore</Link>
+      </Content>
+      <Content Update="wwwroot\android-5e2d0-firebase-adminsdk-p2ikp-adbe0b9280.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
 

@@ -11,6 +11,7 @@ const Modules = [
     "auth",
     "service",
     "category",
+    "notification",
 ]
 
 export default Modules

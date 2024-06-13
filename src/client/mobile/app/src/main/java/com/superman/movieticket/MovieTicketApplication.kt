@@ -6,6 +6,8 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingService
 import com.superman.movieticket.ui.systems.ErrorActivity
 import dagger.hilt.android.HiltAndroidApp
 import java.time.ZoneId
@@ -27,5 +29,13 @@ class MovieTicketApplication : Application() {
         }
 
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.systemDefault()))
+        getFcmToken()
     }
+    private fun getFcmToken () {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener  { task ->
+            Log.d("Token", task.result)
+         }
+    }
+
+
 }
