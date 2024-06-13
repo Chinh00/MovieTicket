@@ -75,7 +75,7 @@ app.UseHangfireUi();
 FirebaseApp.Create(new AppOptions()
 {
     
-    Credential = GoogleCredential.FromFile(Path.Combine(app.Environment.WebRootPath, "android-5e2d0-firebase-adminsdk-p2ikp-adbe0b9280.json"))
+    Credential = GoogleCredential.FromFile("./android-5e2d0-firebase-adminsdk-p2ikp-adbe0b9280.json")
 });
 
 
