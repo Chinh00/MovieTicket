@@ -27,10 +27,10 @@ object NetworkProvider {
     fun okHttpClientProvider(
     ): OkHttpClient {
         return OkHttpClient.Builder()
-            .callTimeout(2, TimeUnit.MINUTES)
-            .connectTimeout(2, TimeUnit.MINUTES)
-            .readTimeout(2, TimeUnit.MINUTES)
-            .writeTimeout(2, TimeUnit.MINUTES).build()
+            .callTimeout(5, TimeUnit.MINUTES)
+            .connectTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES)
+            .writeTimeout(5, TimeUnit.MINUTES).build()
     }
     @Provides
     @Singleton

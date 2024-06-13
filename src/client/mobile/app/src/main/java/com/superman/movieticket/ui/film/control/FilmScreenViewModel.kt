@@ -10,6 +10,6 @@ interface FilmScreenViewModel {
 
     val apiState: StateFlow<ApiState>
 
-    suspend fun getListFilmShowing()
-    suspend fun getListFilmComingSoon()
+    fun getListFilmShowing()
+    fun getListFilmComingSoon()
 }
