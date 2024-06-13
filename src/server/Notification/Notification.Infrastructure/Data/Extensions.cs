@@ -1,6 +1,8 @@
-﻿namespace Notification.Infrastructure.Data;
+﻿using Microsoft.Data.SqlClient;
 
-public class Extensions
+namespace Notification.Infrastructure.Data;
+
+public static class Extensions
 {
     
 }

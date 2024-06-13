@@ -8,6 +8,7 @@ using MovieTicket.Message.MovieNotification;
 using Notification.Api.Consumers;
 using Notification.Application;
 using Notification.Infrastructure.BackgroundService;
+using Notification.Infrastructure.Data.Internal;
 using Notification.Infrastructure.Firebase;
 using AppContext = Notification.Infrastructure.Data.AppContext;
 
@@ -15,7 +16,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCustomLogger();
 
-builder.Services.AddHangfireExtensions(builder.Configuration);
 builder.Services.AddMediatR(e => e.RegisterServicesFromAssembly(typeof(Anchor).Assembly));
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
@@ -23,6 +23,10 @@ builder.Services.AddDbContext<AppContext>((provider, optionsBuilder) =>
 {
     optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("HangfireConnection"));
 });
+builder.Services.AddHostedService<DbMigrationsHostService>();
+
+
+builder.Services.AddHangfireExtensions(builder.Configuration);
 
 builder.Services.AddMassTransit(c =>
 {
@@ -76,3 +80,4 @@ FirebaseApp.Create(new AppOptions()
 
 
 app.Run();
+

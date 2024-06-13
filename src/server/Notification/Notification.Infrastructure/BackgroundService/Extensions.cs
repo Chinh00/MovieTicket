@@ -1,5 +1,6 @@
 ﻿using Hangfire;
 using Hangfire.SqlServer;
+using Microsoft.Data.SqlClient;
 
 namespace Notification.Infrastructure.BackgroundService;
 
@@ -30,6 +31,9 @@ public static class Extensions
         action?.Invoke(services);
         return services;
     }
+    
+    
+    
 
     public static IApplicationBuilder UseHangfireUi(this WebApplication app)
     {
