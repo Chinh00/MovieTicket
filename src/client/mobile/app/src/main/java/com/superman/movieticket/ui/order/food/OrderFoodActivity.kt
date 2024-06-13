@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -89,7 +90,6 @@ fun OrderFoodScreen() {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
 
             .background(Color(0xFF2B2E50))
     ) {
@@ -98,8 +98,7 @@ fun OrderFoodScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .constrainAs(e) {
-                    top.linkTo(t.bottom)
-                    bottom.linkTo(b.top)
+                    top.linkTo(parent.top)
                 }
                 .background(Color(0xFFD3D3D3))
                 .height(150.dp),
@@ -184,10 +183,12 @@ fun OrderFoodScreen() {
         Column(
             Modifier
                 .constrainAs(t) {
-                    top.linkTo(s.bottom)
-                    bottom.linkTo(e.top)
+                    top.linkTo(e.bottom)
+                    bottom.linkTo(b.top)
                 }
                 .fillMaxWidth()
+                .wrapContentHeight()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 15.dp)) {
             val selectFoodPrice = remember { mutableStateOf(0f) }
             val listFood = orderFoodActivityModel.loadingListFood()
@@ -229,7 +230,6 @@ fun OrderFoodScreen() {
                 .fillMaxWidth()
                 .constrainAs(b) {
                     bottom.linkTo(parent.bottom)
-                    top.linkTo(e.bottom)
                 }
                 .padding(bottom = 10.dp)
 

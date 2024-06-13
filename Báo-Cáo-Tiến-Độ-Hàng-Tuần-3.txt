@@ -1,0 +1,40 @@
+# Báo Cáo Tiến Độ Hàng Tuần
+
+## Thông Tin Chung
+- **Tên Dự Án**: MovieTicket
+- **Tuần**: 2
+- **Ngày**: (19-5-2024 -> 26-5-2024)
+- **Nhóm Thực Hiện**: 
+  - Thành viên 1: Nguyễn Quang Đông
+  - Thành viên 2: Nguyễn Văn Chinh
+  - Thành viên 3: Nguyễn Thị Ngọc Khánh
+
+
+## Mục Tiêu Tuần Này
+(Tóm tắt ngắn gọn mục tiêu chính của tuần này.)
+
+
+## Công Việc Đã Hoàn Thành
+(Tóm tắt các công việc đã hoàn thành trong tuần này.)
+
+
+### Thành viên 1: Nguyễn Văn Chinh
+- Công việc 1: 
+- Công việc 2: 
+
+### Thành viên 2:Nguyễn Thị Ngọc Khánh
+- Công việc 1:  
+- Công việc 2: 
+
+### Thành viên 3: Nguyễn Quang Đông
+- Công việc 1:
+- Công việc 2:
+
+## Vấn Đề Gặp Phải
+(Tiêu điểm vào các vấn đề, thách thức mà nhóm gặp phải và cách giải quyết.)
+
+## Kế Hoạch Tuần Tới
+(Phác thảo ngắn gọn các kế hoạch và mục tiêu dự kiến cho tuần tiếp theo.)
+
+## Nhận Xét và Đề Xuất
+(Mọi nhận xét và đề xuất để cải thiện quá trình làm việc nhóm và tiến độ dự án.)
