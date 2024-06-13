@@ -62,7 +62,7 @@ builder.Services.AddMassTransit(c =>
 builder.Services.AddSingleton<IFirebaseNotificationService, FirebaseNotificationService>();
 FirebaseApp.Create(new AppOptions()
 {
-    Credential = GoogleCredential.FromFile("./android-5e2d0-firebase-adminsdk-p2ikp-adbe0b9280.json")
+    Credential = GoogleCredential.FromFile(builder.Configuration.GetValue<string>("PathFirebase:Url"))
 });
 var app = builder.Build();
 app.UseSwagger();
