@@ -60,14 +60,19 @@ builder.Services.AddMassTransit(c =>
     });
 });
 builder.Services.AddSingleton<IFirebaseNotificationService, FirebaseNotificationService>();
-FirebaseApp.Create(new AppOptions()
-{
-    Credential = GoogleCredential.FromFile("./android-5e2d0-firebase-adminsdk-p2ikp-adbe0b9280.json")
-});
+
 var app = builder.Build();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();
 app.UseHangfireUi();
+
+FirebaseApp.Create(new AppOptions()
+{
+    
+    Credential = GoogleCredential.FromFile(Path.Combine(app.Environment.WebRootPath, "android-5e2d0-firebase-adminsdk-p2ikp-adbe0b9280.json"))
+});
+
 
 app.Run();
