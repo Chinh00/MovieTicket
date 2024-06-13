@@ -31,6 +31,7 @@ import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +43,7 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,10 +69,13 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.FacebookSdk
+import com.facebook.GraphRequest
+import com.facebook.login.Login
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
@@ -80,6 +85,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.superman.movieticket.R
 import com.superman.movieticket.ui.auth.control.LoginFaceBookViewModel
 import com.superman.movieticket.ui.auth.control.LoginSocialViewModel
+import com.superman.movieticket.ui.auth.control.LoginState
 import com.superman.movieticket.ui.theme.CustomBlue
 import com.superman.movieticket.ui.theme.balooFont
 import kotlinx.coroutines.launch
@@ -147,55 +153,66 @@ fun SignInGoogleScreen(viewModel: LoginSocialViewModel = viewModel()) {
 
 @Composable
 fun SignInFacebookComp(viewModel: LoginFaceBookViewModel = viewModel()) {
+    val loginState by viewModel.loginState.collectAsState()
     val context = LocalContext.current
     FacebookSdk.sdkInitialize(context)
 
-    val callbackManager = remember { CallbackManager.Factory.create() }
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            callbackManager.onActivityResult(
+            viewModel.callbackManager.onActivityResult(
                 result.resultCode,
                 result.resultCode,
                 result.data
             )
         }
-    LoginManager.getInstance().registerCallback(callbackManager,object:FacebookCallback<LoginResult>{
-        override fun onCancel() {
-            TODO("Not yet implemented")
+
+
+
+
+
+    when (loginState) {
+        is LoginState.Idle -> {
+            Button(
+                onClick = {
+
+                    LoginManager.getInstance().logInWithReadPermissions(
+                        context as Activity ,
+                        listOf("email", "public_profile")
+                    )
+                }, modifier = Modifier
+                    .height(50.dp)
+                    .shadow(
+                        shape = MaterialTheme.shapes.small,
+                        ambientColor = Color.Gray,
+                        elevation = 8.dp
+                    ), shape = MaterialTheme.shapes.small, colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White
+                )
+
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.facebook),
+                    modifier = Modifier.size(24.dp),
+                    contentDescription = null
+                )
+            }
         }
 
-        override fun onError(error: FacebookException) {
-            TODO("Not yet implemented")
+        is LoginState.Error -> TODO()
+        is LoginState.Loading -> {
+            CircularProgressIndicator()
         }
 
-        override fun onSuccess(result: LoginResult) {
-            TODO("Not yet implemented")
+        is LoginState.Success -> {
+            val name = (loginState as LoginState.Success).name
+            val email = (loginState as LoginState.Success).email
+            Text(text = "Welcome, $name ($email)")
         }
 
-    })
-
-
-
-    Button(
-        onClick = {
-
-            LoginManager.getInstance().logInWithReadPermissions(context as Activity,listOf("email","public_profile"))
-        }, modifier = Modifier
-            .height(50.dp)
-            .shadow(
-                shape = MaterialTheme.shapes.small,
-                ambientColor = Color.Gray,
-                elevation = 8.dp
-            ), shape = MaterialTheme.shapes.small, colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White
-        )
-
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.facebook),
-            modifier = Modifier.size(24.dp),
-            contentDescription = null
-        )
+        is LoginState.Error -> {
+            val message = (loginState as LoginState.Error).message
+            Text(text = "Login Failed: $message")
+        }
     }
 
 }

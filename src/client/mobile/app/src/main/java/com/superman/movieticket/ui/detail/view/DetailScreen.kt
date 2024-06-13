@@ -72,6 +72,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.R
 import com.superman.movieticket.core.config.AppOptions
+import com.superman.movieticket.domain.entities.Category
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.detail.control.DetailActivityViewModel
@@ -312,7 +313,7 @@ fun DetailItemScreen(m: Movie, scroll: ScrollState) {
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
-                        text = "Dramma",
+                        text = "${m.categories.forEach{if(m.categories.size>0){ if(m.categories.lastIndex==m.categories.size) " |"+it.name else it.name+" | "   }else "Đang cập nhật"}}",
                         color = MaterialTheme.colorScheme.surface,
                         style = MaterialTheme.typography.titleSmall
                     )

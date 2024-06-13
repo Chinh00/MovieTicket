@@ -57,3 +57,9 @@ class LoginSocialViewModel: ViewModel() {
         }
     }
 }
+sealed class LoginState {
+    object Idle : LoginState()
+    object Loading : LoginState()
+    data class Success(val name: String, val email: String) : LoginState()
+    data class Error(val message: String) : LoginState()
+}
