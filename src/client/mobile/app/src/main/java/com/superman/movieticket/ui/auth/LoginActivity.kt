@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -56,14 +57,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -114,9 +120,10 @@ public class LoginActivity : ComponentActivity() {
         }
 
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-    Log.d("request code: ",requestCode.toString()+" réult code "+resultCode)
+        Log.d("request code: ", requestCode.toString() + " réult code " + resultCode)
         viewModel.callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -127,10 +134,12 @@ public class LoginActivity : ComponentActivity() {
 @Composable
 fun LoginScreen(
 ) {
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
     val loginActivityModelImpl: LoginActivityModelImpl = hiltViewModel()
     val coroutineScope = CoroutineScope(Dispatchers.IO)
     val context = LocalContext.current
-    val username = remember {
+    var username by remember {
         mutableStateOf("")
     }
     var password by rememberSaveable {
@@ -139,7 +148,7 @@ fun LoginScreen(
 
     fun HandleLogin() {
         val userLoginModel = UserLoginModel()
-        userLoginModel.username = username.value
+        userLoginModel.username = username
         userLoginModel.password = password
         coroutineScope.launch {
             loginActivityModelImpl.HandleLoginAction(userLoginModel)
@@ -176,7 +185,6 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .padding(horizontal = 10.dp)
-            .fillMaxSize()
     ) {
         Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -214,15 +222,26 @@ fun LoginScreen(
 
         }
         Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
-            TextField(value = username.value,
-                onValueChange = {username.value=it},
-                modifier = Modifier.fillMaxWidth(),
+            TextField(value = username,
+                onValueChange = { username = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 colors = TextFieldDefaults.colors(
                     unfocusedIndicatorColor = Color.Gray,
                     focusedIndicatorColor = CustomBlue,
                     unfocusedContainerColor = Color.Transparent,
                     focusedTrailingIconColor = CustomBlue,
-                    unfocusedTrailingIconColor = Color.Gray
+                    unfocusedTrailingIconColor = Color.Gray,
+                    focusedContainerColor = Color.Transparent
+
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
                 ),
                 placeholder = {
                     Text(
@@ -244,14 +263,24 @@ fun LoginScreen(
             TextField(value = password,
                 onValueChange = { password = it },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.moveFocus(FocusDirection.Down) }
+
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 colors = TextFieldDefaults.colors(
                     unfocusedIndicatorColor = Color.Gray,
                     focusedIndicatorColor = CustomBlue,
                     unfocusedContainerColor = Color.Transparent,
                     focusedTrailingIconColor = CustomBlue,
-                    unfocusedTrailingIconColor = Color.Gray
+                    unfocusedTrailingIconColor = Color.Gray,
+                    focusedContainerColor = Color.Transparent
                 ),
                 placeholder = {
                     Text(
@@ -374,7 +403,7 @@ fun LoginScreen(
                 onClick = { offset ->
                     annotatedText.getStringAnnotations(tag = "SignUp", start = offset, end = offset)
                         .firstOrNull()?.let {
-                            Log.d("weew","asdasdasdasdasdasd")
+                            Log.d("weew", "asdasdasdasdasdasd")
                         }
                 })
         }
