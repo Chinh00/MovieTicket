@@ -1,15 +1,22 @@
+using System.Linq.Expressions;
 using MovieTicket.Core.Specification;
 using MovieTicket.Domain.Entities;
 
 namespace MovieTicketManagement.Application.Usecases.CategoryCRUD.Specs;
 
-public class GetCategoriesByIds : GridSpecificationBase<Category>
+public class GetCategoriesByIds : SpecificationBase<Category>
 {
+    private List<Guid> _guids { get; } = new List<Guid>(); 
     public GetCategoriesByIds(ICollection<Guid> categoriesId)
     {
-        foreach (var guid in categoriesId)
+        _guids.AddRange(categoriesId);
+    }
+
+    public override Expression<Func<Category, bool>> Criteria
+    {
+        get
         {
-            ApplyFilter(e => e.Id == guid);
+            return e => _guids.Contains(e.Id);
         }
     }
 }
