@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -11,7 +13,9 @@ import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -43,6 +47,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +70,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -74,8 +80,11 @@ import com.superman.movieticket.R
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Category
 import com.superman.movieticket.domain.entities.Movie
+import com.superman.movieticket.infrastructure.utils.DatetimeHelper
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.components.CustomButton
+
+import com.superman.movieticket.ui.components.VideoViewer
 import com.superman.movieticket.ui.detail.control.DetailActivityViewModel
 import com.superman.movieticket.ui.home.control.HomeScreenViewModel
 import com.superman.movieticket.ui.theme.CustomColor4
@@ -89,6 +98,7 @@ import java.time.format.TextStyle
 
 @AndroidEntryPoint
 class DetailActivity : ComponentActivity() {
+    @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -120,9 +130,10 @@ class DetailActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreen(m: Movie) {
-
+    var isFullscreen by rememberSaveable { mutableStateOf(false) }
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -130,14 +141,19 @@ fun DetailScreen(m: Movie) {
     ) {
         val (s, t, e, b) = createRefs()
 
-        Box(modifier = Modifier.constrainAs(s) {
-            top.linkTo(parent.top)
-        }) {
-
-            YoutubePlayer(
-                youtubeId = AppOptions.BASE_URL + m.trailer,
-                lifecycleOwner = LocalLifecycleOwner.current
+        Box(
+            modifier =  Modifier.constrainAs(s) {
+                top.linkTo(parent.top)
+            }
+        ) {
+            VideoViewer(
+                url = AppOptions.BASE_URL + m.trailer, image = AppOptions.BASE_URL +m.avatar, onFullscreenToggle = { isFullscreen = it }
             )
+
+//            YoutubePlayer(
+//                youtubeId = AppOptions.BASE_URL + m.trailer,
+//                lifecycleOwner = LocalLifecycleOwner.current
+//            )
         }
 
         Row(modifier = Modifier
@@ -151,19 +167,21 @@ fun DetailScreen(m: Movie) {
         }
 
 
-        Row(modifier = Modifier
+        AnimatedVisibility(!isFullscreen, modifier = Modifier
             .padding(bottom = 20.dp, end = 10.dp, start = 10.dp)
             .constrainAs(b) {
                 bottom.linkTo(parent.bottom)
             }) {
-            CustomButton(
-                onClick = { /*TODO*/ },
-                text = "Booking Tiket",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp), CustomColor4
-            )
+            Row() {
+                CustomButton(
+                    onClick = { /*TODO*/ },
+                    text = "Booking Tiket",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp), CustomColor4
+                )
 
+            }
         }
 
 
@@ -256,12 +274,13 @@ fun DescriptionText(text: String, verticalScroll: ScrollState) {
 //
 //}
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailItemScreen(m: Movie, scroll: ScrollState) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.padding(vertical = 5.dp)) {
             Text(
-                text = m.name.uppercase(),
+                text = "${m.name?:"Ddang caap nhat"}".uppercase(),
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.surface
@@ -303,8 +322,8 @@ fun DetailItemScreen(m: Movie, scroll: ScrollState) {
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
-                        //text = "${SimpleDateFormat("dd/MM/yyyy").format(m.releaseDate)}",
-                        text = "__",
+                        text = DatetimeHelper.ConvertISODatetimeToLocalDatetime(m.releaseDate, "dd/MM/yyyy"),
+//                        text = "__",
                         color = MaterialTheme.colorScheme.surface,
                         style = MaterialTheme.typography.titleSmall
                     )

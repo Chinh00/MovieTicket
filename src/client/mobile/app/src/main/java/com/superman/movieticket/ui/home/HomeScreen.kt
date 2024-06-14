@@ -171,8 +171,10 @@ fun ComingPageItem(m: Movie) {
                     .wrapContentSize(), verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Row {
+                    val title  =m.name?: "Đang cập nhật"
+
                     Text(
-                        m.name,
+                        title,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -348,7 +350,7 @@ fun PopularMovies(
                 ) {
                     Box {
                         Text(
-                            text = item.name.uppercase(),
+                            text = "${item.name?: "Đang cập nhật"}".uppercase(),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             fontFamily = balooFont,
@@ -531,9 +533,9 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
 
                 }
                 Spacer(modifier = Modifier.height(5.dp))
-
+                val title  =listViewMoviesNowing[page].name?: "Đang cập nhật"
                 Text(
-                    text = listViewMoviesNowing[page].name.uppercase(),
+                    text = "$title".uppercase(),
                     textAlign = TextAlign.Justify,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,

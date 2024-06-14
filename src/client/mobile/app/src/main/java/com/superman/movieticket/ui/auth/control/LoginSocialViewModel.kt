@@ -22,7 +22,7 @@ class LoginSocialViewModel : ViewModel() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("759290814660-t25235hlv3t765rph6qh897q2q4f7dn9.apps.googleusercontent.com")
             .requestEmail()
-            .requestIdToken("759290814660-ueleaiokmsdq3vmseuj7kdni0au8c010.apps.googleusercontent.com")
+//            .requestIdToken("759290814660-ueleaiokmsdq3vmseuj7kdni0au8c010.apps.googleusercontent.com")
             .build()
         googleSignInClient = GoogleSignIn.getClient(context, gso)
     }
