@@ -26,6 +26,7 @@ import {
 import {Movie} from "@/domain/entities/movie.model.ts";
 import {AccountCircle, Send} from "@mui/icons-material";
 import {XQueryHeader} from "@/infrastructure/network/header.ts";
+import {AppConfig} from "@/core/config/AppConfig.ts";
 
 const MovieList = () => {
 
@@ -100,11 +101,12 @@ const MovieList = () => {
         },
         muiPaginationProps: {
             color: 'secondary',
-            rowsPerPageOptions: [10, 20, 30],
+            rowsPerPageOptions: [5, 10, 20, 30],
             shape: 'rounded',
             variant: 'outlined',
         },
         pageCount: Math.ceil(Number.parseInt((data?.data?.data?.totalItems ?? 1).toString()) / Number.parseInt((data?.data?.data?.pageSize ?? 1).toString())),
+        rowCount: pagination.pageSize,
         manualPagination: true,
         renderDetailPanel: ({ row }) => (
             <Box
@@ -120,16 +122,14 @@ const MovieList = () => {
             >
                 <img
                     alt="avatar"
-                    height={200}
-                    src={row.original.avatar}
+                    width={200}
+                    height={300}
+                    
+                    src={ `http://localhost:5002${row?.original?.avatar}`}
                     loading="lazy"
-                    style={{ borderRadius: '50%' }}
                 />
                 <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="h4">Signature Catch Phrase:</Typography>
-                    <Typography variant="h1">
-                       
-                    </Typography>
+                    
                 </Box>
             </Box>
         ),
