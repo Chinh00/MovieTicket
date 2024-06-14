@@ -8,9 +8,9 @@ using MovieTicket.Message.MovieNotification;
 using Notification.Api.Consumers;
 using Notification.Application;
 using Notification.Infrastructure.BackgroundService;
+using Notification.Infrastructure.Data;
 using Notification.Infrastructure.Data.Internal;
 using Notification.Infrastructure.Firebase;
-using AppContext = Notification.Infrastructure.Data.AppContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,11 +19,16 @@ builder.Services.AddCustomLogger();
 builder.Services.AddMediatR(e => e.RegisterServicesFromAssembly(typeof(Anchor).Assembly));
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppContext>((provider, optionsBuilder) =>
+builder.Services.AddDbContext<AppDbContext>((provider, optionsBuilder) =>
 {
-    optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("HangfireConnection"));
+    optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("HangfireConnection"),
+        contextOptionsBuilder =>
+        {
+            contextOptionsBuilder.EnableRetryOnFailure().EnableRetryOnFailure()
+                .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
+        });
 });
-builder.Services.AddHostedService<DbMigrationsHostService>();
+//builder.Services.AddHostedService<DbMigrationsHostService>();
 
 
 builder.Services.AddHangfireExtensions(builder.Configuration);
@@ -63,7 +68,7 @@ builder.Services.AddMassTransit(c =>
 
     });
 });
-builder.Services.AddSingleton<IFirebaseNotificationService, FirebaseNotificationService>();
+builder.Services.AddScoped<IFirebaseNotificationService, FirebaseNotificationService>();
 
 var app = builder.Build();
 

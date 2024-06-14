@@ -1,6 +1,7 @@
 package com.superman.movieticket.ui.auth.control
 
 import android.content.Context
+import android.provider.Settings.Global.getString
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getString
@@ -21,6 +22,7 @@ class LoginSocialViewModel : ViewModel() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("759290814660-t25235hlv3t765rph6qh897q2q4f7dn9.apps.googleusercontent.com")
             .requestEmail()
+            .requestIdToken("759290814660-ueleaiokmsdq3vmseuj7kdni0au8c010.apps.googleusercontent.com")
             .build()
         googleSignInClient = GoogleSignIn.getClient(context, gso)
     }
@@ -42,7 +44,7 @@ class LoginSocialViewModel : ViewModel() {
             Log.d("SignInViewModel", "ID Token: ${account?.idToken}")
             onSuccess(account)
         } catch (e: ApiException) {
-            Log.w("SignInViewModel", "signInResult:failed code=" + e.statusCode)
+            Log.w("SignInViewModel", "signInResult:failed code=" + e.toString())
             onFailure(e)
         }
     }

@@ -9,17 +9,17 @@ public class FirebaseNotificationService : IFirebaseNotificationService
     public FirebaseNotificationService()
     {
     }
-    public Task PushNotificationDeviceAsync(ICollection<string> deviceTokens, string message, CancellationToken cancellationToken)
+    public async Task PushNotificationDeviceAsync(ICollection<string> deviceTokens, string message, CancellationToken cancellationToken)
     {
-        FirebaseMessaging.DefaultInstance.SendAsync(new Message()
+        var multicastMessage = new MulticastMessage()
         {
-            Token = "c_7Whqk4TmGZby9FYfowPK:APA91bHPOzDK34eFgXpgCYHwisfqchhgk3rqOGXu9T6jD4NwJUlvmQwifkVgV5URtIO8bONK2o0CW0punKjxnLW6mv_hapb22XMPYKpoAtTYrlOrXgj37GOfczP7U1p3iNiMKRfOlTe7",
+            Tokens = new List<string>(deviceTokens),
             Notification = new FirebaseAdmin.Messaging.Notification()
             {
                 Title = "Sdvds",
                 Body = "sdvsd",
             }
-        }, cancellationToken);
-        return Task.CompletedTask;
+        };
+        var response = await FirebaseMessaging.DefaultInstance.SendMulticastAsync(multicastMessage, cancellationToken);
     }
 }

@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Notification.Api.Data;
-using AppContext = Notification.Infrastructure.Data.AppContext;
+using Notification.Infrastructure.Data;
 
 #nullable disable
 
 namespace Notification.Api.Data.Migrations
 {
-    [DbContext(typeof(AppContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20240613070157_InitDb")]
     partial class InitDb
     {

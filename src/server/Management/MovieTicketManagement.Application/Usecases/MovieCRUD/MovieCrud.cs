@@ -7,6 +7,7 @@ using MovieTicket.Infrastructure.Files;
 using MovieTicketManagement.Application.Usecases.CategoryCRUD;
 using MovieTicketManagement.Application.Usecases.CategoryCRUD.Specs;
 using MovieTicketManagement.Application.Usecases.MovieCRUD.Specs;
+using Serilog;
 
 namespace MovieTicketManagement.Application.Usecases.MovieCRUD;
 
@@ -52,29 +53,34 @@ public class MovieCrud : IRequestHandler<MovieCreate.Command, ResultModel<MovieD
     private readonly IMapper _mapper;
     private readonly IRepository<Movie> _repository;
     private readonly IFileHelper _fileHelper;
-    private readonly IGridRepository<Category> _gridRepositoryCategory;
-    public MovieCrud(IGridRepository<Movie> gridRepository, IMapper mapper, IRepository<Movie> repository, IFileHelper fileHelper, IGridRepository<Category> gridRepositoryCategory)
+    private readonly ILogger<MovieCrud> _logger;
+    private readonly IRepository<Category> _repositoryCategory;
+    public MovieCrud(IGridRepository<Movie> gridRepository, IMapper mapper, IRepository<Movie> repository, IFileHelper fileHelper, ILogger<MovieCrud> logger, IRepository<Category> repositoryCategory)
     {
         _gridRepository = gridRepository;
         _mapper = mapper;
         _repository = repository;
         _fileHelper = fileHelper;
-        _gridRepositoryCategory = gridRepositoryCategory;
+        _logger = logger;
+        _repositoryCategory = repositoryCategory;
     }
 
     
     public async Task<ResultModel<MovieDto>> Handle(MovieCreate.Command request, CancellationToken cancellationToken)
     {
-        
-        var categories = await _gridRepositoryCategory.FindAsync(new GetCategoriesByIds(request.CreateModel.CategoryIds.ToList()));
+        var categories = await _repositoryCategory.FindAsync(new GetCategoriesByIds(request.CreateModel.CategoryIds));
         var movie = new Movie()
         {
             Name = request.CreateModel.Name,
             ReleaseDate = request.CreateModel.ReleaseDate,
             TotalTime = request.CreateModel.TotalTime,
-            Description = request.CreateModel.Description,
-            Categories = categories
+            Description = request.CreateModel.Description
         };
+        movie.Categories = new List<Category>();
+        foreach (var category in categories)
+        {
+            movie.Categories.Add(category);
+        }
         await _repository.AddAsync(movie);
         
         var avatarFilePath = await _fileHelper.SaveFile(request.CreateModel.Avatar, movie.Id.ToString());
