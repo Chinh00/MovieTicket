@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 @Composable
 fun BaseScreen (
     content: @Composable () -> Unit,
-    title: String?
+    title: String?,onNavigateUp:(()->Unit)?=null
 
 ){
     Scaffold(
@@ -34,6 +34,7 @@ fun BaseScreen (
                 },
                 navigationIcon = {
                     IconButton(onClick = {
+                        onNavigateUp?.invoke()
                     }) {
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowLeft,

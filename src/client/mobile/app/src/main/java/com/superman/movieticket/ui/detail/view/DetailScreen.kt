@@ -74,6 +74,7 @@ import com.superman.movieticket.R
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Category
 import com.superman.movieticket.domain.entities.Movie
+import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.detail.control.DetailActivityViewModel
 import com.superman.movieticket.ui.home.control.HomeScreenViewModel
@@ -106,10 +107,12 @@ class DetailActivity : ComponentActivity() {
 
 
             MyAppTheme {
-                movie?.let {
-                    DetailScreen(it)
+                BaseScreen(content = {
+                    movie?.let {
+                        DetailScreen(it)
 
-                }
+                    }
+                }, title = "", onNavigateUp = { finish() })
 
 
             }
@@ -313,7 +316,13 @@ fun DetailItemScreen(m: Movie, scroll: ScrollState) {
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
-                        text = "${m.categories.forEach{if(m.categories.size>0){ if(m.categories.lastIndex==m.categories.size) " |"+it.name else it.name+" | "   }else "Đang cập nhật"}}",
+                        text = "${
+                            if (m.categories.size > 0) {
+                                m.categories.joinToString(separator = " | ") { category -> category.name }
+                            } else {
+                                "Đang cập nhật"
+                            }
+                        } ",
                         color = MaterialTheme.colorScheme.surface,
                         style = MaterialTheme.typography.titleSmall
                     )
