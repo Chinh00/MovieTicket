@@ -3,9 +3,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MovieTicket.Core.Domain;
 using MovieTicket.Message.MovieNotification;
+using Notification.Infrastructure.Data;
 using Notification.Infrastructure.Data.Entities;
 using Notification.Infrastructure.Firebase;
-using AppContext = Notification.Infrastructure.Data.AppContext;
 
 namespace Notification.Application;
 
@@ -24,7 +24,7 @@ public class CreateMovieNotification
     }
 }
 
-public struct RegisterDeviceTokenModel
+public record RegisterDeviceTokenModel
 {
     public string DeviceId { get; set; }
     public string? Token { get; set; }
@@ -44,12 +44,12 @@ public class MovieNotification :
     IRequestHandler<RegisterDeviceToken.Command, ResultModel<string>>
 {
     private readonly ITopicProducer<MovieNotificationCreate> _topicProducer;
-    private readonly AppContext _appContext;
+    private readonly Infrastructure.Data.AppDbContext _appDbContext;
     private readonly IFirebaseNotificationService _notificationService;
-    public MovieNotification(ITopicProducer<MovieNotificationCreate> topicProducer, AppContext appContext, IFirebaseNotificationService notificationService)
+    public MovieNotification(ITopicProducer<MovieNotificationCreate> topicProducer, AppDbContext appDbContext, IFirebaseNotificationService notificationService)
     {
         _topicProducer = topicProducer;
-        _appContext = appContext;
+        _appDbContext = appDbContext;
         _notificationService = notificationService;
     }
 
@@ -64,18 +64,20 @@ public class MovieNotification :
 
     public async Task Handle(MovieNotificationCreateSuccess notification, CancellationToken cancellationToken)
     {
-        await _notificationService.PushNotificationDeviceAsync(new List<string>(), "",
+        await _notificationService.PushNotificationDeviceAsync(await _appDbContext.Set<DeviceToken>().Select(e => e.Token).AsQueryable().ToListAsync(cancellationToken: cancellationToken), "",
             cancellationToken);
     }
 
     public async Task<ResultModel<string>> Handle(RegisterDeviceToken.Command request, CancellationToken cancellationToken)
     {
-        var deviceToken = await _appContext.DeviceTokens.AddAsync(new DeviceToken()
+        await _appDbContext.Set<DeviceToken>().AddAsync(new DeviceToken()
         {
+
             DeviceId = request.CreateModel.DeviceId,
             Token = request.CreateModel.Token,
         }, cancellationToken);
-        await _appContext.SaveChangesAsync(cancellationToken);
+        
+        await _appDbContext.SaveChangesAsync(cancellationToken);
         return ResultModel<string>.Create("");
     }
 }

@@ -45,6 +45,9 @@ class HomeScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _apiState.emit(ApiState.LOADING)
             val getMovie = defaultXQueryHeader.copy(
+                includes = mutableListOf("Categories"),
+                        sortBy = mutableListOf("Id")
+
             )
 
 

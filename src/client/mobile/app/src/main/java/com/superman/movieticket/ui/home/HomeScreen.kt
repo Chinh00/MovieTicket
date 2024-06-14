@@ -377,7 +377,7 @@ fun PopularMovies(
                     Text(
                         text = buildAnnotatedString {
                             withStyle(SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
-                                append("${item.totalTime} | ${item.categories.forEach {category-> category.name+" | " }}")
+                                append("${item.totalTime} | ${item.categories.joinToString(separator = " | ") { category -> category.name }}")
                                 Log.d("ca",item.categories.toString())
                             }
                         }

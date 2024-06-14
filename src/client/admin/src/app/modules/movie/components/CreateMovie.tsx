@@ -31,7 +31,7 @@ const CreateMovie = ({onCreate, setOnCreate}: {onCreate: boolean, setOnCreate: D
                     let form = new FormData()
                     form.append("id", "")
                     form.append("name", value?.name)
-                    form.append("releaseDate", dayjs(value?.releaseDate))
+                    form.append("releaseDate", dayjs(value?.releaseDate).toString())
                     form.append("totalTime", value.totalTime.toString())
                     form.append("description", value?.description)
                     form.append("avatar", value?.avatar[0])
