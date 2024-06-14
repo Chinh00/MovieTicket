@@ -1,7 +1,10 @@
 package com.superman.movieticket.ui.auth.control
 
 import android.content.Context
+import android.provider.Settings.Global.getString
 import android.util.Log
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.ViewModel
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -11,15 +14,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.superman.movieticket.R
-import com.superman.movieticket.core.config.AppOptions
 
 class LoginSocialViewModel : ViewModel() {
     lateinit var googleSignInClient: GoogleSignInClient
 
     fun configureGoogleSignIn(context: Context) {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(AppOptions.WEB_CLIENT_ID)
+            .requestIdToken("759290814660-t25235hlv3t765rph6qh897q2q4f7dn9.apps.googleusercontent.com")
             .requestEmail()
+//            .requestIdToken("759290814660-ueleaiokmsdq3vmseuj7kdni0au8c010.apps.googleusercontent.com")
             .build()
         googleSignInClient = GoogleSignIn.getClient(context, gso)
     }
@@ -31,7 +34,14 @@ class LoginSocialViewModel : ViewModel() {
     ) {
         try {
             val account = task.getResult(ApiException::class.java)
-
+            // Log thông tin chi tiết tài khoản
+            Log.d("SignInViewModel", "Google Sign-In successful")
+            Log.d("SignInViewModel", "Display Name: ${account.displayName}")
+            Log.d("SignInViewModel", "Email: ${account.email}")
+            Log.d("SignInViewModel", "Given Name: ${account.givenName}")
+            Log.d("SignInViewModel", "Family Name: ${account.familyName}")
+            Log.d("SignInViewModel", "ID: ${account.id}")
+            Log.d("SignInViewModel", "ID Token: ${account?.idToken}")
             onSuccess(account)
         } catch (e: ApiException) {
             Log.w("SignInViewModel", "signInResult:failed code=" + e.toString())
@@ -54,6 +64,12 @@ class LoginSocialViewModel : ViewModel() {
             val account = task.getResult(ApiException::class.java)
             // Log thông tin chi tiết tài khoản
             Log.d("SignInViewModel", "Google Sign-In successful")
+//            Log.d("SignInViewModel", "Display Name: ${account.displayName}")
+//            Log.d("SignInViewModel", "Email: ${account.email}")
+//            Log.d("SignInViewModel", "Given Name: ${account.givenName}")
+//            Log.d("SignInViewModel", "Family Name: ${account.familyName}")
+//            Log.d("SignInViewModel", "ID: ${account.id}")
+//            Log.d("SignInViewModel", "ID Token: ${account.idToken}")
             onSuccess(account)
         } catch (e: ApiException) {
             Log.w("SignInViewModel", "signInResult:failed code=" + e.statusCode)
