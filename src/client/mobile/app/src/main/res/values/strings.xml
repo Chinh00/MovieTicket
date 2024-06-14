@@ -54,5 +54,6 @@
     <string name="fb_login_protocol_scheme">fb472953128748324</string>
     <string name="facebook_client_token">c705c29af243eea3e5b21dbdb8b57e08</string>
 
+    <string name="server_client_id">759290814660-ueleaiokmsdq3vmseuj7kdni0au8c010.apps.googleusercontent.com</string>
 
 </resources>
