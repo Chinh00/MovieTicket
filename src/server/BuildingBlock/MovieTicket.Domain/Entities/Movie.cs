@@ -12,8 +12,8 @@ public class Movie : EntityBase
     public string Avatar { get; set; }
     public string Trailer { get; set; }
     
-    public virtual ICollection<Category> Categories { get; init; }
+    public virtual ICollection<Category> Categories { get; set; }
     
-    public virtual ICollection<Screening> Screenings { get; init; }
+    public virtual ICollection<Screening> Screenings { get; set; }
     
 }
