@@ -1,78 +1,149 @@
 import {
     Box,
     Button, Drawer,
-    IconButton,
+    IconButton, lighten, ListItemIcon, MenuItem,
     Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow, Typography
 } from "@mui/material";
 import {useGetMovies} from "@/app/usecases/movie.usecase.ts";
 import dayjs from "dayjs";
 import { RiEditBoxLine } from "react-icons/ri";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import CreateMovie from "@/app/modules/movie/components/CreateMovie.tsx";
 import {IoIosNotificationsOutline} from "react-icons/io";
+import {
+    MaterialReactTable,
+    MRT_ColumnDef,
+    MRT_GlobalFilterTextField,
+    MRT_ToggleFiltersButton,
+    useMaterialReactTable
+} from "material-react-table";
+import {Movie} from "@/domain/entities/movie.model.ts";
+import {AccountCircle, Send} from "@mui/icons-material";
+import {XQueryHeader} from "@/infrastructure/network/header.ts";
+
 const MovieList = () => {
 
     const [onEdit, setOnEdit] = useState<string>("")
     const [onCreate, setOnCreate] = useState(false)
-    const {data} = useGetMovies({})
-    return <Box padding={10}>
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 5
+    })
+   
+    const {data, isLoading} = useGetMovies({
+        page: (pagination.pageSize * (pagination.pageIndex )) + 1,
+        pageSize: pagination.pageSize
+    })
+
+    
+    const columns = useMemo<MRT_ColumnDef<Movie>[]>(
+        () => [
+            {
+                accessorKey: 'name',
+                header: 'Tên phim',
+            },
+            {
+                accessorKey: 'releaseDate',
+                header: 'Ngày phát hành',
+                Cell: props => (<span>{dayjs(props?.renderedCellValue?.toString()).format("ll")}</span>)
+            },
+            {
+                accessorKey: 'totalTime',
+                header: 'Tổng thời gian chiếu (phút)',
+            },
+            
+        ],
+        [],
+    );
+    const res = data?.data?.data?.items || []
+
+    const handlePaginationChange = (updater: any) => {
+        setPagination((old) => {
+            const newState = typeof updater === 'function' ? updater(old) : updater;
+            return newState;
+        });
+    };
+    
+    
+    
+    const table = useMaterialReactTable({
+        columns,
+        data:res,
+        enableColumnFilterModes: false,
+        enableColumnOrdering: false,
+        enableGrouping: false,
+        enableColumnPinning: true,
+        enableFacetedValues: true,
+        enableRowActions: true,
+        enableRowSelection: true,
+        initialState: {
+            columnPinning: {
+                left: ['mrt-row-expand', 'mrt-row-select'],
+                right: ['mrt-row-actions'],
+            },
+        },
+        state: {
+            showSkeletons: isLoading,
+            pagination: pagination
+        },
+        paginationDisplayMode: 'pages',
+        positionToolbarAlertBanner: 'bottom',
+        muiSearchTextFieldProps: {
+            size: 'small',
+            variant: 'outlined',
+        },
+        muiPaginationProps: {
+            color: 'secondary',
+            rowsPerPageOptions: [10, 20, 30],
+            shape: 'rounded',
+            variant: 'outlined',
+        },
+        pageCount: Math.ceil(Number.parseInt((data?.data?.data?.totalItems ?? 1).toString()) / Number.parseInt((data?.data?.data?.pageSize ?? 1).toString())),
+        manualPagination: true,
+        renderDetailPanel: ({ row }) => (
+            <Box
+                sx={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    justifyContent: 'space-around',
+                    left: '30px',
+                    maxWidth: '1000px',
+                    position: 'sticky',
+                    width: '100%',
+                }}
+            >
+                <img
+                    alt="avatar"
+                    height={200}
+                    src={row.original.avatar}
+                    loading="lazy"
+                    style={{ borderRadius: '50%' }}
+                />
+                <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="h4">Signature Catch Phrase:</Typography>
+                    <Typography variant="h1">
+                       
+                    </Typography>
+                </Box>
+            </Box>
+        ),
+        onPaginationChange: handlePaginationChange
+    });
+    
+    
+    
+    
+    return <Box padding={5}>
         <Button variant={"contained"} onClick={() => setOnCreate(true)}>Thêm phim mới </Button>
-        <TableContainer component={Paper} sx={{
-            marginTop: "10px"
-        }}>
-            <Table border={2} className={"border-2"} sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Tên phim </TableCell>
-                        <TableCell >Ngày phát hành </TableCell>
-                        <TableCell >Tổng thời lượng </TableCell>
-                        <TableCell >Ảnh </TableCell>
-                        <TableCell >Thể loại </TableCell>
-                        <TableCell >Hành động  </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {!!data && data?.data?.data?.items.map((row) => (
-                        <TableRow
-                            key={row.id}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                            <TableCell component="th" scope="row">
-                                {row.name}
-                            </TableCell>
-                            <TableCell >{dayjs(row?.releaseDate).format("ll")}</TableCell>
-                            <TableCell >{row?.totalTime}</TableCell>
-                            <TableCell >
-                                <Box width={200} height={300}>
-                                    {
-                                        import.meta.env.DEV ? <img className={"w-full h-full"} src={`http://localhost:5002${row?.avatar}`}/> : <img src={row?.avatar}/>
-                                    }
-                                </Box>
-                            </TableCell>
-                            <TableCell >
-                                <Box className={"flex flex-row flex-wrap gap-2"}>
-                                    {
-                                        row.categories?.length > 0 ? row.categories?.map((item) => {
-                                            return <Button variant={"outlined"} key={item?.id}>{item?.name}</Button>
-                                        }) : "__"
-                                    }
-                                </Box>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton color={"info"} onClick={() => setOnEdit(row.id)} type={"button"}><RiEditBoxLine size={30} /></IconButton>
-                                <IconButton color={'warning'} onClick={() => {}} type={"button"}><IoIosNotificationsOutline size={30} /></IconButton>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+
+        <MaterialReactTable table={table} />
+        
         
         <Drawer
             anchor={"right"}
