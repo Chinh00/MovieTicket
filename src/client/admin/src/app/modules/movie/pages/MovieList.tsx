@@ -125,7 +125,7 @@ const MovieList = () => {
                     width={200}
                     height={300}
                     
-                    src={ `http://localhost:5002${row?.original?.avatar}`}
+                    src={ `${ import.meta.env.DEV ? "http://localhost:5002" : ""}${row?.original?.avatar}`}
                     loading="lazy"
                 />
                 <Box sx={{ textAlign: 'center' }}>
