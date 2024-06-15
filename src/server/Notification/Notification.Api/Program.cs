@@ -30,9 +30,8 @@ builder.Services.AddDbContext<AppDbContext>((provider, optionsBuilder) =>
 });
 //builder.Services.AddHostedService<DbMigrationsHostService>();
 
-
 builder.Services.AddHangfireExtensions(builder.Configuration);
-
+builder.WebHost.ConfigureKestrel(e => e.Limits.MaxRequestBodySize = 100 * 1024 * 1024);
 builder.Services.AddMassTransit(c =>
 {
     c.SetKebabCaseEndpointNameFormatter();;

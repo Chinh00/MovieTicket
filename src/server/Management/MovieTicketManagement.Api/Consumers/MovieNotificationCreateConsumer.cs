@@ -24,7 +24,8 @@ public class MovieNotificationCreateConsumer : IConsumer<MovieNotificationCreate
         await _topicProducerSuccess.Produce(new MovieNotificationCreateSuccess()
         {
             Movie = movie,
-            Message = "Success"
+            Message = context.Message.Message,
+            SendTime = context.Message.SendTime
         });
     }
 }

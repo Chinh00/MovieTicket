@@ -27,6 +27,7 @@ import {Movie} from "@/domain/entities/movie.model.ts";
 import {AccountCircle, Send} from "@mui/icons-material";
 import {XQueryHeader} from "@/infrastructure/network/header.ts";
 import {AppConfig} from "@/core/config/AppConfig.ts";
+import UpdateMovie from "@/app/modules/movie/components/UpdateMovie.tsx";
 
 const MovieList = () => {
 
@@ -115,25 +116,42 @@ const MovieList = () => {
                     display: 'flex',
                     justifyContent: 'space-around',
                     left: '30px',
-                    maxWidth: '1000px',
                     position: 'sticky',
                     width: '100%',
                 }}
             >
-                <img
-                    alt="avatar"
-                    width={200}
-                    height={300}
-                    
-                    src={ `${ import.meta.env.DEV ? "http://localhost:5002" : ""}${row?.original?.avatar}`}
-                    loading="lazy"
-                />
-                <Box sx={{ textAlign: 'center' }}>
-                    
-                </Box>
+                <UpdateMovie movieId={row?.original?.id } />
             </Box>
         ),
-        onPaginationChange: handlePaginationChange
+        onPaginationChange: handlePaginationChange,
+        renderRowActionMenuItems: ({ closeMenu }) => [
+           /* <MenuItem
+                key={0}
+                onClick={() => {
+                    // View profile logic...
+                    closeMenu();
+                }}
+                sx={{ m: 0 }}
+            >
+                <ListItemIcon>
+                    <AccountCircle />
+                </ListItemIcon>
+                View Profile
+            </MenuItem>,*/
+            <MenuItem
+                key={1}
+                onClick={() => {
+                    // Send email logic...
+                    closeMenu();
+                }}
+                sx={{ m: 0 }}
+            >
+                <ListItemIcon>
+                    <Send />
+                </ListItemIcon>
+                Gửi thông báo
+            </MenuItem>,
+        ],
     });
     
     

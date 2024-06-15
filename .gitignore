@@ -28,3 +28,5 @@ riderModule.iml
 ./tools
 src/client/mobile/.idea/deploymentTargetSelector.xml
 src/server/Notification/Notification.Api/wwwroot/android-5e2d0-firebase-adminsdk-p2ikp-adbe0b9280.json
+
+src/server/Management/MovieTicketManagement.Api/wwwroot/files/*

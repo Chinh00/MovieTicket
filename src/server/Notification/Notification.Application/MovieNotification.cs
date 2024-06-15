@@ -57,14 +57,14 @@ public class MovieNotification :
     {
         await _topicProducer.Produce(new MovieNotificationCreate()
         {
-            MovieId = request.CreateModel.MovieId
+            MovieId = request.CreateModel.MovieId,
         }, cancellationToken);
         return ResultModel<string>.Create("");
     }
 
     public async Task Handle(MovieNotificationCreateSuccess notification, CancellationToken cancellationToken)
     {
-        await _notificationService.PushNotificationDeviceAsync(await _appDbContext.Set<DeviceToken>().Select(e => e.Token).AsQueryable().ToListAsync(cancellationToken: cancellationToken), "",
+        await _notificationService.PushNotificationDeviceAsync(await _appDbContext.Set<DeviceToken>().Select(e => e.Token).AsQueryable().ToListAsync(cancellationToken: cancellationToken), notification.Movie.Name, notification.Message,
             cancellationToken);
     }
 

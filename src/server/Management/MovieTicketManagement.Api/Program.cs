@@ -20,11 +20,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Cors", policyBuilder =>
     {
-        policyBuilder.AllowAnyHeader().AllowAnyOrigin();
+        policyBuilder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
     });
 });
 
 builder.Services.AddCachingService(builder.Configuration);
+builder.WebHost.ConfigureKestrel(e => e.Limits.MaxRequestBodySize = 1000 * 1024 * 1024);
 
 builder.Services.AddMssqlDbContext<AppBaseContext>(builder.Configuration.GetConnectionString("db")).AddRepository(typeof(Repository<>));
 
