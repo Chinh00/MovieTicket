@@ -304,7 +304,10 @@ fun LoginScreen(
                 })
         }
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-            TextButton(onClick = { /*TODO*/ }) {
+            TextButton(onClick = {
+                val intent = Intent(context.applicationContext,ForgotPasswordActivity::class.java)
+
+                context.startActivity(intent) }) {
                 Text(
                     text = "Forget password?",
                     style = MaterialTheme.typography.labelLarge,

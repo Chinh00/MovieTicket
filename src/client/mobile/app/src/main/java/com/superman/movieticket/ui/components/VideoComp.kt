@@ -149,11 +149,11 @@ fun VideoViewer(
                     model = image, error = painterResource(
                         id = R.drawable.error_img
                     )
-                ), contentDescription = "", contentScale = ContentScale.FillBounds)
+                ), contentDescription = "", contentScale = ContentScale.Inside)
                 Icon(
                     Icons.Default.PlayCircle,
                     contentDescription = "",
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(40.dp)
                         .constrainAs(b) {
                             top.linkTo(t.top)
                             bottom.linkTo(t.bottom)
