@@ -2,6 +2,7 @@ package com.superman.movieticket.infrastructure.di
 
 import com.superman.movieticket.domain.services.AuthService
 import com.superman.movieticket.domain.services.MovieService
+import com.superman.movieticket.domain.services.NotificationService
 import com.superman.movieticket.domain.services.RoomService
 import com.superman.movieticket.domain.services.ScreeningService
 import com.superman.movieticket.domain.services.ServiceService
@@ -38,5 +39,10 @@ object ServiceProvider {
     @Provides
     @Singleton
     fun AddServiceService(retrofit: Retrofit) = retrofit.create(ServiceService::class.java)
+
+    @Provides
+    @Singleton
+    fun AddNotificationService(retrofit: Retrofit) = retrofit.create(NotificationService::class.java)
+
 
 }
