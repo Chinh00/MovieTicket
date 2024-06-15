@@ -25,6 +25,18 @@ public class MovieCreateModel
     public ICollection<Guid> CategoryIds { get; init; }
 }
 
+public class MovieUpdateModel
+{
+    public Guid Id { get; init; }
+    public string Name { get; init; }
+    public DateTime ReleaseDate { get; init; }
+    public long TotalTime { get; init; }
+    public string Description { get; init; }
+    public IFormFile? Avatar { get; init; }
+    public IFormFile? Trailer { get; init; }
+    public ICollection<Guid> CategoryIds { get; init; }
+}
+
 
 public class MovieCreate
 {
@@ -44,10 +56,25 @@ public class GetMovies
         public int PageSize { get; init; } = 20;
     }
 }
+public class GetMovieById
+{
+    public record Query : IItemQuery<Guid, MovieDto>
+    {
+        public Guid Id { get; init; }
+    }
+}
+
+public class UpdateMovie
+{
+    public record Command : IUpdateCommand<MovieUpdateModel, MovieDto>
+    {
+        public MovieUpdateModel CreateModel { get; init; }
+    }
+}
 
 
 
-public class MovieCrud : IRequestHandler<MovieCreate.Command, ResultModel<MovieDto>>, IRequestHandler<GetMovies.Query, ResultModel<ListResultModel<MovieDto>>>
+public class MovieCrud : IRequestHandler<MovieCreate.Command, ResultModel<MovieDto>>, IRequestHandler<GetMovies.Query, ResultModel<ListResultModel<MovieDto>>>, IRequestHandler<GetMovieById.Query, ResultModel<MovieDto>>, IRequestHandler<UpdateMovie.Command, ResultModel<MovieDto>>
 {
     private readonly IGridRepository<Movie> _gridRepository;
     private readonly IMapper _mapper;
@@ -101,6 +128,48 @@ public class MovieCrud : IRequestHandler<MovieCreate.Command, ResultModel<MovieD
             request.Page, request.PageSize);
         
         return ResultModel<ListResultModel<MovieDto>>.Create(listResultModel);
+    }
+
+    public async Task<ResultModel<MovieDto>> Handle(GetMovieById.Query request, CancellationToken cancellationToken)
+    { 
+        var spec = new GetMovieByIdSpec(request.Id);
+        var movie = await _repository.FindOneAsync(spec);
+        return ResultModel<MovieDto>.Create(_mapper.Map<MovieDto>(movie));
+    }
+
+    public async Task<ResultModel<MovieDto>> Handle(UpdateMovie.Command request, CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(request.CreateModel.Id.ToString());
+        var movie = await _repository.FindOneAsync(
+            new GetMovieByIdSpec(Guid.Parse(request.CreateModel.Id.ToString())));
+        var avatarFilePath = string.Empty;
+        var trailerFilePath = string.Empty;
+
+        if (request.CreateModel.Avatar is not null)
+        {
+            avatarFilePath = await _fileHelper.SaveFile(request.CreateModel.Avatar, movie.Id.ToString());
+        }
+        if (request.CreateModel.Trailer is not null)
+        {
+            trailerFilePath = await _fileHelper.SaveFile(request.CreateModel.Trailer, movie.Id.ToString());
+        }
+        
+       
+        movie.Categories = new List<Category>();
+        var categories = await _repositoryCategory.FindAsync(new GetCategoriesByIds(request.CreateModel.CategoryIds));
+        foreach (var category in categories)
+        {
+            movie.Categories.Add(category);
+        }
+        movie.Name = request.CreateModel.Name;
+        movie.ReleaseDate = request.CreateModel.ReleaseDate;
+        movie.TotalTime = request.CreateModel.TotalTime;
+        movie.Description = request.CreateModel.Description;
+        movie.Avatar = !string.IsNullOrEmpty(avatarFilePath) ? avatarFilePath : movie.Avatar;
+        movie.Trailer = !string.IsNullOrEmpty(trailerFilePath) ? trailerFilePath : movie.Trailer;
+
+        await _repository.EditAsync(movie, cancellationToken: cancellationToken);
+        return ResultModel<MovieDto>.Create(_mapper.Map<MovieDto>(movie));
     }
 }
 

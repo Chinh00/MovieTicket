@@ -62,7 +62,7 @@ public class GetMovieById
 
 
 
-public class MovieEndpoint : IRequestHandler<MovieCreate.Command, ResultModel<MovieDto>>, IRequestHandler<MovieUpdate.Command, ResultModel<MovieDto>>, IRequestHandler<GetMovies.Query, ResultModel<ListResultModel<MovieDto>>>, IRequestHandler<GetMovieById.Query, ResultModel<MovieDto>>
+public class  MovieEndpoint : IRequestHandler<MovieCreate.Command, ResultModel<MovieDto>>, IRequestHandler<MovieUpdate.Command, ResultModel<MovieDto>>, IRequestHandler<GetMovies.Query, ResultModel<ListResultModel<MovieDto>>>, IRequestHandler<GetMovieById.Query, ResultModel<MovieDto>>
 {
     private readonly IRepository<MovieTicket.Domain.Entities.Movie> _repository;
     private readonly IRepository<Category> _repositoryCategory;
