@@ -105,8 +105,6 @@ class DetailActivity : ComponentActivity() {
 
 
         setContent {
-//            val idMovie = intent.getIntExtra("idMovie", 0) // Retrieve the image URI from intent
-
             val detailActivityViewModel: DetailActivityViewModel = hiltViewModel()
             val movie by detailActivityViewModel.movie.observeAsState()
             val id = intent.getStringExtra("id")
@@ -114,7 +112,7 @@ class DetailActivity : ComponentActivity() {
                 detailActivityViewModel.getMovieById(id.toString())
 
             }
-
+            Log.d("Chinh", id.toString())
 
             MyAppTheme {
                 BaseScreen(content = {

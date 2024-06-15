@@ -44,13 +44,20 @@
     <!--<activity android:name=".ui.auth.LoginActivity" android:exported="true" />-->
 
         <activity android:name=".ui.systems.ErrorActivity" android:exported="true" />
-        <activity android:name=".ui.detail.view.DetailActivity"/>
+        <activity android:name=".ui.detail.view.DetailActivity" android:exported="true" >
+            <intent-filter>
+                <action android:name="DETAIL_FILM_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ui.order.screening.ScreenActivity"/>
         <activity android:name=".ui.order.food.OrderFoodActivity" android:exported="true"/>
         <activity android:name=".ui.order.ticket.TicketBookActivity"/>
         <activity android:name=".ui.history.DetailOrderActivity"/>
 
-        <activity android:name=".ui.auth.LoginActivity" android:exported="true"/>
+        <activity android:name=".ui.auth.LoginActivity" android:exported="true" >
+
+        </activity>
         <activity android:name=".ui.auth.ForgotPasswordActivity" android:exported="true">
 
         </activity>

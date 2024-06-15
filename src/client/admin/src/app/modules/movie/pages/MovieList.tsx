@@ -28,6 +28,8 @@ import {AccountCircle, Send} from "@mui/icons-material";
 import {XQueryHeader} from "@/infrastructure/network/header.ts";
 import {AppConfig} from "@/core/config/AppConfig.ts";
 import UpdateMovie from "@/app/modules/movie/components/UpdateMovie.tsx";
+import {useCreateNotificationNewMovie} from "@/app/usecases/notification.service.ts";
+import {LoadingButton} from "@mui/lab";
 
 const MovieList = () => {
 
@@ -71,7 +73,7 @@ const MovieList = () => {
             return newState;
         });
     };
-    
+    const {mutate, isLoading: loading} = useCreateNotificationNewMovie()
     
     
     const table = useMaterialReactTable({
@@ -124,7 +126,7 @@ const MovieList = () => {
             </Box>
         ),
         onPaginationChange: handlePaginationChange,
-        renderRowActionMenuItems: ({ closeMenu }) => [
+        renderRowActionMenuItems: ({ closeMenu, row }) => [
            /* <MenuItem
                 key={0}
                 onClick={() => {
@@ -141,7 +143,11 @@ const MovieList = () => {
             <MenuItem
                 key={1}
                 onClick={() => {
-                    // Send email logic...
+                    mutate({
+                        movieId: row?.original?.id,
+                        message: "Phim moi",
+                        sendTime: dayjs().toDate()
+                    })
                     closeMenu();
                 }}
                 sx={{ m: 0 }}
@@ -149,7 +155,7 @@ const MovieList = () => {
                 <ListItemIcon>
                     <Send />
                 </ListItemIcon>
-                Gửi thông báo
+                <LoadingButton loading={loading}>Gửi thông báo</LoadingButton>
             </MenuItem>,
         ],
     });
