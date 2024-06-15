@@ -58,8 +58,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.superman.movieticket.core.config.AppOptions
+import com.superman.movieticket.domain.entities.Service
 import com.superman.movieticket.ui.components.BaseScreen
-import com.superman.movieticket.ui.order.food.control.MovieFood
 import com.superman.movieticket.ui.order.food.control.OrderFoodActivityModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -191,36 +192,12 @@ fun OrderFoodScreen() {
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 15.dp)) {
             val selectFoodPrice = remember { mutableStateOf(0f) }
-            val listFood = orderFoodActivityModel.loadingListFood()
+            val listFood = orderFoodActivityModel.listService.collectAsState().value
             val c = LocalContext.current
             listFood.forEach {
-                ItemFood(it,
-                    onClickedMinimusQuantity = { quantity, it ->
-                        if (quantity > 0) {
-                            orderFoodActivityModel.setTotalPrice(totalAmount.value - (it.price.toInt()))
-
-                        }
+                ItemFood(it)
 
 
-                        Toast.makeText(
-                            c,
-                            "Ban tru mot ${totalAmount.value} - ${(it.price.toInt())}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-//                        Log.e("Quantity trừ","quantity minus ${quantity}")
-//                        Log.e("Total trừ","quantity minus ${quantity.toInt()*it.price.toInt()}")
-                    },
-                    onClickedAddQuantity = { quantity, it ->
-                        orderFoodActivityModel.setTotalPrice(totalAmount.value + (it.price.toInt()))
-                        Toast.makeText(
-                            c,
-                            "Ban cong  ${totalAmount.value} + ${(it.price.toInt())}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-
-                    })
 
             }
 
@@ -261,9 +238,7 @@ fun OrderFoodScreen() {
 
 @Composable
 fun ItemFood(
-    f: MovieFood,
-    onClickedMinimusQuantity: (Int, MovieFood) -> Unit,
-    onClickedAddQuantity: (Int, MovieFood) -> Unit
+    service: Service
 ) {
     val c = Color(0xFFA8F54E)
     var quantity = rememberSaveable {
@@ -284,11 +259,11 @@ fun ItemFood(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        Image(painter = painterResource(id = f.img), contentDescription = null)
+        //Image(painter = painterResource(id = "${AppOptions.BASE_URL}${service.avatar}"), contentDescription = null)
 
         Column {
             Row {
-                Text(text = f.name)
+                Text(text = service.name)
             }
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -296,11 +271,7 @@ fun ItemFood(
             ) {
                 Column {
                     IconButton(onClick = {
-                        if (quantity.value > 0) {
-                            onClickedMinimusQuantity(quantity.value--, f)
-                        } else {
-                            onClickedMinimusQuantity(0, f)
-                        }
+
 
 
                     }) {
@@ -313,7 +284,6 @@ fun ItemFood(
                 Column {
                     IconButton(onClick = {
                         quantity.value++
-                        onClickedAddQuantity(1, f)
                     }) {
                         Text(text = "+", fontSize = 30.sp, color = c)
                     }
@@ -323,25 +293,13 @@ fun ItemFood(
         Column {
 
             Row(horizontalArrangement = Arrangement.Center) {
-                Text(text = "${f.price}00 đ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = "${service.priceUnit}00 đ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
 }
 
-@Composable
-//@Preview(showSystemUi = true)
-fun ItemFoodnPre() {
-    val viewModel: OrderFoodActivityModel = hiltViewModel()
-    ItemFood(
-        f = viewModel.loadingListFood().get(0),
-        onClickedMinimusQuantity = { quantity, f ->
 
-        }, onClickedAddQuantity = { quantity, f ->
-
-        }
-    )
-}
 
 @Composable
 @Preview(showSystemUi = true)
