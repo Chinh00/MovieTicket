@@ -1,3 +1,4 @@
+using Duende.IdentityServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MovieTicketClient.IdentityServer;
@@ -37,6 +38,15 @@ builder.Services.AddIdentityServer(options =>
     .AddInMemoryApiScopes(Config.ApiScopes)
     .AddAspNetIdentity<User>()
     .AddDeveloperSigningCredential();
+
+builder.Services.AddAuthentication().AddGoogle("Google", options =>
+{
+    options.ClientId = "";
+    options.ClientSecret = "";
+    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+});
+
+
 
 builder.Services.AddScoped<IFacadeResolver>(provider => provider.GetService<AppDbContext>());
 

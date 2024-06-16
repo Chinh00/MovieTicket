@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -58,6 +59,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
+import com.superman.movieticket.R
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Service
 import com.superman.movieticket.ui.components.BaseScreen
@@ -241,7 +244,7 @@ fun ItemFood(
     service: Service
 ) {
     val c = Color(0xFFA8F54E)
-    var quantity = rememberSaveable {
+    val quantity = rememberSaveable {
         mutableStateOf(0)
     }
     var totalPrice = remember {
@@ -259,11 +262,21 @@ fun ItemFood(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        //Image(painter = painterResource(id = "${AppOptions.BASE_URL}${service.avatar}"), contentDescription = null)
+        Image(
+            painter = rememberAsyncImagePainter(
+                model = AppOptions.BASE_URL + "/admin-api/image/" + service.avatar,
+                error = painterResource(
+                    id = R.drawable.error_img
+                )
+            ),
+            contentDescription = "", contentScale = ContentScale.FillBounds,
+            modifier = Modifier
+                .size(50.dp, 50.dp)
+        )
 
         Column {
             Row {
-                Text(text = service.name)
+                Text(text = service.name + "(${service.unit})")
             }
             Row(
                 horizontalArrangement = Arrangement.Center,

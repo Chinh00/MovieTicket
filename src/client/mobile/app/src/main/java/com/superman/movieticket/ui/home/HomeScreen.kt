@@ -331,7 +331,7 @@ fun PopularMovies(
                 Spacer(modifier = Modifier.height(20.dp))
                 Image(
                     painter = rememberAsyncImagePainter(
-                        model = AppOptions.BASE_URL + item.avatar,
+                        model = AppOptions.BASE_URL + "/admin-api/image/" + item.avatar,
                         error = painterResource(
                             id = R.drawable.error_img
                         )
@@ -521,7 +521,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                     Image(
 
                         painter = rememberAsyncImagePainter(
-                            model = AppOptions.BASE_URL + listViewMoviesNowing[page].avatar,
+                            model = AppOptions.BASE_URL + "/admin-api/image/" + listViewMoviesNowing[page].avatar,
                             error = painterResource(
                                 id = R.drawable.error_img
                             )
