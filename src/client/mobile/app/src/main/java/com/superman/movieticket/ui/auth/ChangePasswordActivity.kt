@@ -56,7 +56,7 @@ class ChangePasswordActivity : ComponentActivity() {
         setContent {
             BaseScreen(content = {
                 ChangePasswordComp()
-            }, title = "Forgot Password", onNavigateUp = { finish() })
+            }, title = "Forgot Password")
 
         }
     }

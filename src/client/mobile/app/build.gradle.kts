@@ -31,7 +31,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"https://ce17-113-190-242-151.ngrok-free.app\"")
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://ce17-113-190-242-151.ngrok-free.app\""
+            )
 
         }
     }
@@ -115,7 +119,7 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
-    implementation (libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
 
 
 
@@ -123,12 +127,12 @@ dependencies {
 
 
 
-  implementation ("com.makeramen:roundedimageview:2.3.0")
+    implementation("com.makeramen:roundedimageview:2.3.0")
 
 
     //ViedeoYoutubetrailer
-    implementation( "com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
-    implementation ("androidx.webkit:webkit:1.4.0")
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
+    implementation("androidx.webkit:webkit:1.4.0")
 
     implementation(libs.androidx.runtime.livedata)
 
@@ -139,14 +143,15 @@ dependencies {
     implementation(libs.datastore)
 
 
-
     //Login Google
-    implementation ("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
     //facebook login firebase
-    implementation ("com.facebook.android:facebook-login:latest.release")
+    implementation("com.facebook.android:facebook-login:latest.release")
 
 //video exo player media
 
-    implementation ("androidx.media3:media3-exoplayer:1.0.0-beta02")
-    implementation ("androidx.media3:media3-ui:1.0.0-beta02")
+    implementation("androidx.media3:media3-exoplayer:1.0.0-beta02")
+    implementation("androidx.media3:media3-ui:1.0.0-beta02")
+
+
 }
