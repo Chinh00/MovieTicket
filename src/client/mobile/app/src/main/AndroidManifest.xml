@@ -54,6 +54,7 @@
         <activity android:name=".ui.order.food.OrderFoodActivity" android:exported="true"/>
         <activity android:name=".ui.order.ticket.TicketBookActivity"/>
         <activity android:name=".ui.history.DetailOrderActivity"/>
+        <activity android:name=".ui.order.payment.PaymentActivity"/>
 
         <!--<activity android:name=".ui.auth.LoginActivity" android:exported="true" >
 

@@ -69,6 +69,7 @@ import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.components.ScreenLoading
 import com.superman.movieticket.ui.order.food.hooks.NavigateOrderFood
 import com.superman.movieticket.ui.order.model.ReservationCreateModel
+import com.superman.movieticket.ui.order.model.SeatReservationsCreateModel
 import com.superman.movieticket.ui.order.ticket.components.ScreenShape
 import com.superman.movieticket.ui.order.ticket.components.SeatComp
 import com.superman.movieticket.ui.order.ticket.control.BookTicketViewModel
@@ -95,9 +96,13 @@ fun TicketActivityComp(
     reservationCreateModel: ReservationCreateModel
 
 ) {
-    Log.d("Chinh", reservationCreateModel.toString())
     val context = LocalContext.current
     val bookTicketViewModel: BookTicketViewModel = hiltViewModel()
+    val reservationCreateModelState = remember {
+        mutableStateOf(reservationCreateModel)
+    }
+
+
 
     val selectedSeat = remember {
 
@@ -112,7 +117,10 @@ fun TicketActivityComp(
         mutableStateOf(180)
 
     }
+
     val seats = bookTicketViewModel.roomState.collectAsState()
+
+
     LaunchedEffect(key1 = Unit) {
         bookTicketViewModel.GetAllSeatsOfRoomAsync(reservationCreateModel.screeningId.roomId)
     }
@@ -315,10 +323,14 @@ fun TicketActivityComp(
                 }) {
 
                 CustomButton(
-                    onClick = { NavigateOrderFood(
-                        context = context,
-                        reservationCreateModel = reservationCreateModel
-                    ) }, text = "PAYMENT TICKET", modifier = Modifier
+                    onClick = {
+                        reservationCreateModelState.value.seatReservations.addAll(selectedSeat.map { SeatReservationsCreateModel(it) })
+                        NavigateOrderFood(
+                            context = context,
+                            reservationCreateModel = reservationCreateModelState.value
+                        )
+
+                    }, text = "Tiếp theo", modifier = Modifier
                         .padding(bottom = 15.dp)
                         .fillMaxWidth(), CustomColor4
                 )

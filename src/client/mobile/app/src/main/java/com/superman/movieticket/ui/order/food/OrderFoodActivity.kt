@@ -59,12 +59,17 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.media3.common.util.Log
 import coil.compose.rememberAsyncImagePainter
+import com.google.gson.Gson
 import com.superman.movieticket.R
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Service
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.order.food.control.OrderFoodActivityModel
+import com.superman.movieticket.ui.order.model.ReservationCreateModel
+import com.superman.movieticket.ui.order.model.ServiceReservationsCreateModel
+import com.superman.movieticket.ui.order.payment.hooks.NavigatePaymentTicket
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -78,18 +83,52 @@ class OrderFoodActivity : ComponentActivity() {
                         .fillMaxSize()
                         .safeDrawingPadding()
                 ) {
-                    OrderFoodScreen()
+                    OrderFoodScreen(Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java))
                 }
             }, title = "Chọn đồ")
         }
     }
 }
+enum class ChangeServiceAction {
+    ADD,
+    REMOVE
+}
 
 @Composable
-fun OrderFoodScreen() {
+fun OrderFoodScreen(reservationCreateModel: ReservationCreateModel) {
     val orderFoodActivityModel: OrderFoodActivityModel = hiltViewModel()
-    val totalAmount = orderFoodActivityModel.totalPriceFood.collectAsState()
     val context = LocalContext.current
+    var totalPrice = remember {
+        mutableStateOf(0)
+    }
+
+
+    val reservationCreateModelState = remember {
+        mutableStateOf(reservationCreateModel)
+    }
+    fun ChangeService (serviceId: String, changeServiceAction: ChangeServiceAction = ChangeServiceAction.ADD){
+        when(changeServiceAction) {
+            ChangeServiceAction.ADD -> {
+                val serviceDetail = reservationCreateModelState.value.serviceReservations.firstOrNull { it.serviceId == serviceId }
+                if (serviceDetail != null) {
+                    serviceDetail.quantity += 1
+                } else {
+                    reservationCreateModelState.value.serviceReservations.add(
+                        ServiceReservationsCreateModel(serviceId, 1)
+                    )
+                }
+            }
+            ChangeServiceAction.REMOVE -> {
+                val serviceDetail = reservationCreateModelState.value.serviceReservations.firstOrNull { it.serviceId == serviceId }
+                if (serviceDetail != null) {
+                    serviceDetail.quantity -= 1
+                }
+            }
+        }
+    }
+
+
+
 
     ConstraintLayout(
         modifier = Modifier
@@ -98,92 +137,6 @@ fun OrderFoodScreen() {
             .background(Color(0xFF2B2E50))
     ) {
         val (s, e, b, t) = createRefs()
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(e) {
-                    top.linkTo(parent.top)
-                }
-                .background(Color(0xFFD3D3D3))
-                .height(150.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .padding(15.dp)
-                    .weight(1f)
-                    .fillMaxWidth()
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Text(
-                        text = "Doremon the\n" +
-                                "Movies: Nobita\n" +
-                                "earth symphony",
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    )
-                }
-                Row(
-                    modifier = Modifier.padding(vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "P", color = Color.White, fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .clip(
-                                RoundedCornerShape(5.dp)
-                            )
-                            .background(Color(0xFFD58611))
-                            .padding(15.dp, 5.dp)
-
-                    )
-                    Text(
-                        text = "2 Seat", color = Color.White, fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .clip(
-                                RoundedCornerShape(5.dp)
-                            )
-                            .background(Color(0xFFD58611))
-                            .padding(15.dp, 5.dp)
-
-                    )
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .padding(15.dp)
-                    .weight(1.5f)
-            ) {
-                Row {
-                    Text(
-                        text = "Subtotal ( including surcharges )",
-                        color = Color.Black,
-                        fontSize = 14.sp
-                    )
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-
-                    Text(
-                        text = "${totalAmount.value}đ",
-                        textAlign = TextAlign.Center,
-                        color = Color.White,
-                        fontSize = 18.sp
-                    )
-                }
-            }
-
-        }
-
         Column(
             Modifier
                 .constrainAs(t) {
@@ -194,14 +147,13 @@ fun OrderFoodScreen() {
                 .wrapContentHeight()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 15.dp)) {
-            val selectFoodPrice = remember { mutableStateOf(0f) }
+
             val listFood = orderFoodActivityModel.listService.collectAsState().value
-            val c = LocalContext.current
+
             listFood.forEach {
-                ItemFood(it)
-
-
-
+                ItemFood(service = it, totalPrice = totalPrice.value) {
+                    totalPrice.value = it
+                }
             }
 
         }
@@ -216,9 +168,10 @@ fun OrderFoodScreen() {
         ) {
             Button(
                 onClick = {
-
-//                    val intent = Intent(context, PaymentActivity::class.java)
-//                    context.startActivity(intent)
+                    NavigatePaymentTicket(
+                        context,
+                        reservationCreateModelState.value
+                    )
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFF1DC24),
@@ -233,7 +186,7 @@ fun OrderFoodScreen() {
                         spotColor = Color.Yellow
                     )
             ) {
-                Text(text = " Finish Payment")
+                Text(text = " Thanh toán ${totalPrice.value}")
             }
         }
     }
@@ -241,15 +194,17 @@ fun OrderFoodScreen() {
 
 @Composable
 fun ItemFood(
-    service: Service
+    service: Service,
+    totalPrice: Int,
+    setTotalPrice: (Int) -> Unit
 ) {
     val c = Color(0xFFA8F54E)
+
+
     val quantity = rememberSaveable {
         mutableStateOf(0)
     }
-    var totalPrice = remember {
-        mutableStateOf(0)
-    }
+
 
     Row(
         modifier = Modifier
@@ -284,7 +239,10 @@ fun ItemFood(
             ) {
                 Column {
                     IconButton(onClick = {
-
+                        if (quantity.value > 0) {
+                            quantity.value -= 1
+                            setTotalPrice(totalPrice - service.priceUnit)
+                        }
 
 
                     }) {
@@ -296,7 +254,8 @@ fun ItemFood(
                 }
                 Column {
                     IconButton(onClick = {
-                        quantity.value++
+                        quantity.value += 1
+                        setTotalPrice(totalPrice + service.priceUnit)
                     }) {
                         Text(text = "+", fontSize = 30.sp, color = c)
                     }
@@ -304,9 +263,8 @@ fun ItemFood(
             }
         }
         Column {
-
             Row(horizontalArrangement = Arrangement.Center) {
-                Text(text = "${service.priceUnit}00 đ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = "${service.priceUnit} đ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -314,11 +272,6 @@ fun ItemFood(
 
 
 
-@Composable
-@Preview(showSystemUi = true)
-fun OrderFoodScreenPre() {
-    OrderFoodScreen()
-}
 
 
 

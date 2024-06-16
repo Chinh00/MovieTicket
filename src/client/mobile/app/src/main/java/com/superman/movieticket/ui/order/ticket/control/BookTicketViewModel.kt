@@ -43,7 +43,7 @@ class BookTicketViewModel @Inject constructor(
 
 
 
-    suspend fun GetAllSeatsOfRoomAsync(
+    fun GetAllSeatsOfRoomAsync(
         roomId: String
     ) {
         _apiState.value = ApiState.LOADING

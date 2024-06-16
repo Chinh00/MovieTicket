@@ -81,14 +81,15 @@ fun ScreensComp(
 ) {
     val dateScrollState = rememberScrollState()
     val context = LocalContext.current
+
+    val screenViewModel: ScreenActivityViewModel = hiltViewModel()
+    val screenings = screenViewModel.listRoom.collectAsState()
     val today = LocalDate.now()
     val selectedDate = remember {
         mutableStateOf<LocalDate?>(today)
     }
 
 
-    val screenViewModel: ScreenActivityViewModel = hiltViewModel()
-    val screenings = screenViewModel.listRoom.collectAsState()
 
     LaunchedEffect(key1 = Unit) {
         screenViewModel.HandleGetRoomWithMovieAndDate(movieId, LocalDateTime.of(today, LocalTime.MIDNIGHT), LocalDateTime.of(today.plusDays(1), LocalTime.MIDNIGHT))
@@ -140,21 +141,28 @@ fun ScreensComp(
 
 @Composable
 fun ScreenItemComp(
-    screening: Screening?,
+    screening: Screening,
 ) {
     val context = LocalContext.current
+
+    val reservationCreateModel = remember {
+        mutableStateOf(ReservationCreateModel(
+            screeningId = screening,
+            seatReservations = mutableListOf(),
+            serviceReservations = mutableListOf(),
+            ))
+    }
+
     Column(
         modifier = Modifier
             .padding(horizontal = 10.dp)
             .shadow(4.dp, spotColor = Color.Green)
             .clip(MaterialTheme.shapes.small)
-            .clickable { screening?.let {
-                NavigateBookTicket(context, ReservationCreateModel(
-                    screeningId = it,
-                    seatReservations = emptyList(),
-                    serviceReservations = emptyList()
-                ))
-            } }
+            .clickable {
+                NavigateBookTicket(
+                    context, reservationCreateModel.value
+                )
+            }
             .background(MaterialTheme.colorScheme.onBackground),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

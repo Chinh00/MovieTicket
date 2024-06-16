@@ -4,6 +4,8 @@ import com.superman.movieticket.domain.entities.Screening
 
 data class ReservationCreateModel(
     var screeningId: Screening,
-    var seatReservations: List<SeatReservationsCreateModel>,
-    var serviceReservations: List<ServiceReservationsCreateModel>
+    var seatReservations: MutableList<SeatReservationsCreateModel> = mutableListOf(),
+    var serviceReservations: MutableList<ServiceReservationsCreateModel> = mutableListOf()
 )
+
+
