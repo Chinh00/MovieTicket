@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using FirebaseAdmin.Messaging;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MovieTicket.Core.Domain;
@@ -57,15 +58,35 @@ public class MovieNotification :
     {
         await _topicProducer.Produce(new MovieNotificationCreate()
         {
-            MovieId = request.CreateModel.MovieId
+            MovieId = request.CreateModel.MovieId,
         }, cancellationToken);
         return ResultModel<string>.Create("");
     }
 
     public async Task Handle(MovieNotificationCreateSuccess notification, CancellationToken cancellationToken)
     {
-        await _notificationService.PushNotificationDeviceAsync(await _appDbContext.Set<DeviceToken>().Select(e => e.Token).AsQueryable().ToListAsync(cancellationToken: cancellationToken), "",
-            cancellationToken);
+        var data = new Dictionary<string, string> { { "id", notification.Movie.Id.ToString() } };
+        var multicastMessage = new MulticastMessage()
+        {
+            Tokens = new List<string>(await _appDbContext.Set<DeviceToken>().Select(e => e.Token).AsQueryable().ToListAsync(cancellationToken: cancellationToken)),
+            Notification = new FirebaseAdmin.Messaging.Notification()
+            {
+                Title = notification.Movie.Name,
+                ImageUrl = "http://codewithme.id.vn/files/19585d7e-dd1f-4dab-ace3-fa485a0ac89a/Pee-Nak-3-1-poster.jpg",
+            },
+            Android = new AndroidConfig()
+            {
+                Priority = Priority.Normal,
+                Notification = new AndroidNotification()
+                {
+                    ClickAction = "DETAIL_FILM_ACTIVITY"
+                },
+                Data = data
+                
+            }
+        };
+        await FirebaseMessaging.DefaultInstance.SendMulticastAsync(multicastMessage, cancellationToken);
+        
     }
 
     public async Task<ResultModel<string>> Handle(RegisterDeviceToken.Command request, CancellationToken cancellationToken)

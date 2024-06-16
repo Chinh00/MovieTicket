@@ -48,64 +48,47 @@ class OrderFoodActivityModel
     private var _totalPriceFood = MutableStateFlow(0)
     val totalPriceFood: StateFlow<Int> = _totalPriceFood
 
-    fun HandleGetServices () {
-        _apiState.value = ApiState.LOADING
-        var xQueryHeader = defaultXQueryHeader.copy()
-
-        service.HandleGetServicesAsync(xQueryHeader.JsonSerializer()).enqueue(object: Callback<SuccessResponse<ListResponse<Service>>> {
-            override fun onResponse(
-                call: Call<SuccessResponse<ListResponse<Service>>>,
-                response: Response<SuccessResponse<ListResponse<Service>>>
-            ) {
-                _listService.value = response.body()?.data?.items ?: emptyList()
-                _apiState.value = ApiState.SUCCESS
-            }
-
-            override fun onFailure(
-                call: Call<SuccessResponse<ListResponse<Service>>>,
-                t: Throwable
-            ) {
-                Log.d("Chinh", t.message.toString())
-                _apiState.value = ApiState.FAIL
-            }
-
-        })
-        _apiState.value = ApiState.NONE
+    init {
+        HandleGetServices()
     }
 
-
-    fun setQuantity(newQuantity:Int){
-        _quantity.value=newQuantity
-    }
-    fun setTotalPrice(newTotal:Int){
-        _totalPriceFood.value=newTotal
-    }
-    fun updateText(newText: String, newId: Int) {
+    fun HandleGetServices() {
         viewModelScope.launch {
-            _text.value = newText
-            _id.value = newId
+            _apiState.value = ApiState.LOADING
+            val xQueryHeader = defaultXQueryHeader.copy()
+
+            service.HandleGetServicesAsync(xQueryHeader.JsonSerializer())
+                .enqueue(object : Callback<SuccessResponse<ListResponse<Service>>> {
+                    override fun onResponse(
+                        call: Call<SuccessResponse<ListResponse<Service>>>,
+                        response: Response<SuccessResponse<ListResponse<Service>>>
+                    ) {
+                        _listService.value = response.body()?.data?.items ?: emptyList()
+                        _apiState.value = ApiState.SUCCESS
+                    }
+
+                    override fun onFailure(
+                        call: Call<SuccessResponse<ListResponse<Service>>>,
+                        t: Throwable
+                    ) {
+                        Log.d("Chinh", t.message.toString())
+                        _apiState.value = ApiState.FAIL
+                    }
+
+                })
+            _apiState.value = ApiState.NONE
         }
     }
 
-    fun loadingListFood(): List<MovieFood> {
-        return listFood
+
+    fun setQuantity(newQuantity: Int) {
+        _quantity.value = newQuantity
     }
 
-    private val listFood = listOf(
-        MovieFood(R.drawable.bong, "Bap nam Ga 1 (Sweet)", 60.000),
-        MovieFood(R.drawable.bong, "Bap nam Ga 2 (Sweet)", 95.000),
-        MovieFood(R.drawable.bong, "Bap nam Ga 3 (Sweet)", 120.000),
-        MovieFood(R.drawable.bong, "Bap nam Ga 4 (Sweet)", 135.000),
-        MovieFood(R.drawable.bong, "Bap nam Ga 5 (Sweet)", 210.000)
-
-    )
+    fun setTotalPrice(newTotal: Int) {
+        _totalPriceFood.value = newTotal
+    }
 
 }
-
-
-data class MovieFood(
-    @DrawableRes val img: Int,
-    val name: String, val price: Number
-) : BaseEntity()
 
 

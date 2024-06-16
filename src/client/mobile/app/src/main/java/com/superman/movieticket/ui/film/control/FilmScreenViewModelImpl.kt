@@ -65,7 +65,7 @@ class FilmScreenViewModelImpl
             val filterModel = FilterModel(
                 fieldName = "releaseDate",
                 comparision = "<=",
-                fieldValue = formatter.format(currentDateTime)
+                fieldValue = currentDateTime.toString()
             )
             xQueryHeader.sortBy.add("releaseDateDesc")
             xQueryHeader.filters.add(filterModel)
@@ -99,10 +99,11 @@ class FilmScreenViewModelImpl
             val xQueryHeader = defaultXQueryHeader.copy()
             val currentDateTime = LocalDateTime.now()
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+
             val filterModel = FilterModel(
                 fieldName = "releaseDate",
                 comparision = ">",
-                fieldValue = formatter.format(currentDateTime)
+                fieldValue = currentDateTime.toString()
             )
             xQueryHeader.filters.add(filterModel)
 
@@ -111,7 +112,8 @@ class FilmScreenViewModelImpl
                     call: Call<SuccessResponse<ListResponse<Movie>>>,
                     response: Response<SuccessResponse<ListResponse<Movie>>>
                 ) {
-                    _listFilmComingSoon.value = response.body()?.data?.items!!
+                    Log.d("tuz", response.body()?.data?.items.toString())
+                    _listFilmComingSoon.value = response.body()?.data?.items ?: emptyList()
                     _apiState.value = ApiState.SUCCESS
                 }
 

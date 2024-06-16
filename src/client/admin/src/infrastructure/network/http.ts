@@ -15,7 +15,7 @@ class Http {
     constructor() {
         this.instance = axios.create({
             baseURL: AppConfig.BASE_URL,
-            timeout: 2 * 60 * 60
+            timeout: 100000
         })
         this.accessToken = CookieHelper.GetToken().access_token
         this.instance.interceptors.request.use(value => {
@@ -28,6 +28,7 @@ class Http {
             return value
         }, error => {
             nProgress.done()
+            console.log(error)
             return new Promise(error)
         })
         
@@ -41,6 +42,7 @@ class Http {
             return value
         }, error => {
             nProgress.done()
+            console.log(error)
             return new Promise(error)
         })
     }

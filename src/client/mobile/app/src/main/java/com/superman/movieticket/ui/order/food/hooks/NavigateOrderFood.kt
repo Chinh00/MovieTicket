@@ -9,9 +9,9 @@ import com.superman.movieticket.ui.order.model.ReservationCreateModel
 
 fun NavigateOrderFood(
     context: Context,
-    reservation: ReservationCreateModel?
+    reservationCreateModel: ReservationCreateModel
 ) {
     val intent = Intent(context, OrderFoodActivity::class.java)
-
+    intent.putExtra("ReservationCreateModel", Gson().toJson(reservationCreateModel))
     context.startActivity(intent)
 }

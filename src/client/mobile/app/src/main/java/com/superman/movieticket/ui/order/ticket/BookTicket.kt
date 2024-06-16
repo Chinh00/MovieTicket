@@ -82,7 +82,7 @@ class TicketBookActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BaseScreen(content = { TicketActivityComp(
-                Gson().fromJson(intent.getStringExtra("screening"),Screening::class.java)
+                Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java)
             ) }, title = "Chọn ghế ")
         }
     }
@@ -92,9 +92,10 @@ class TicketBookActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TicketActivityComp(
-    screening: Screening
+    reservationCreateModel: ReservationCreateModel
 
 ) {
+    Log.d("Chinh", reservationCreateModel.toString())
     val context = LocalContext.current
     val bookTicketViewModel: BookTicketViewModel = hiltViewModel()
 
@@ -113,7 +114,7 @@ fun TicketActivityComp(
     }
     val seats = bookTicketViewModel.roomState.collectAsState()
     LaunchedEffect(key1 = Unit) {
-        bookTicketViewModel.GetAllSeatsOfRoomAsync(screening.roomId)
+        bookTicketViewModel.GetAllSeatsOfRoomAsync(reservationCreateModel.screeningId.roomId)
     }
 
 
@@ -316,7 +317,7 @@ fun TicketActivityComp(
                 CustomButton(
                     onClick = { NavigateOrderFood(
                         context = context,
-                        reservation = null
+                        reservationCreateModel = reservationCreateModel
                     ) }, text = "PAYMENT TICKET", modifier = Modifier
                         .padding(bottom = 15.dp)
                         .fillMaxWidth(), CustomColor4

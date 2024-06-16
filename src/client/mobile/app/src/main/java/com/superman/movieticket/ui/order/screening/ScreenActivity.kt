@@ -45,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.superman.movieticket.domain.entities.Screening
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.components.ScreenLoading
+import com.superman.movieticket.ui.order.model.ReservationCreateModel
 import com.superman.movieticket.ui.order.screening.control.ScreenActivityViewModel
 import com.superman.movieticket.ui.order.ticket.TicketBookActivity
 import com.superman.movieticket.ui.order.ticket.hooks.NavigateBookTicket
@@ -148,7 +149,11 @@ fun ScreenItemComp(
             .shadow(4.dp, spotColor = Color.Green)
             .clip(MaterialTheme.shapes.small)
             .clickable { screening?.let {
-                NavigateBookTicket(context, it)
+                NavigateBookTicket(context, ReservationCreateModel(
+                    screeningId = it,
+                    seatReservations = emptyList(),
+                    serviceReservations = emptyList()
+                ))
             } }
             .background(MaterialTheme.colorScheme.onBackground),
         horizontalAlignment = Alignment.CenterHorizontally

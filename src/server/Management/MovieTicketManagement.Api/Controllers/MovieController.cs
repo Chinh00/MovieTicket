@@ -59,7 +59,7 @@ public class MovieController : BaseController
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut("{id}")]
-    public async Task<IActionResult> HandleUpdateMovieAsync(Guid id, MovieUpdateModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> HandleUpdateMovieAsync(Guid id, [FromForm] MovieUpdateModel model, CancellationToken cancellationToken)
     {
         return Ok(await Mediator.Send(new UpdateMovie.Command() {CreateModel = model}, cancellationToken));
     }

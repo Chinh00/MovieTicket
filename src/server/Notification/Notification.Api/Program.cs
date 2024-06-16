@@ -13,7 +13,13 @@ using Notification.Infrastructure.Data.Internal;
 using Notification.Infrastructure.Firebase;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Cors", policyBuilder =>
+    {
+        policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+    });
+});
 builder.Services.AddCustomLogger();
 
 builder.Services.AddMediatR(e => e.RegisterServicesFromAssembly(typeof(Anchor).Assembly));
@@ -28,11 +34,10 @@ builder.Services.AddDbContext<AppDbContext>((provider, optionsBuilder) =>
                 .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
         });
 });
-//builder.Services.AddHostedService<DbMigrationsHostService>();
-
+builder.Services.AddHostedService<DbMigrationsHostService>();
 
 builder.Services.AddHangfireExtensions(builder.Configuration);
-
+builder.WebHost.ConfigureKestrel(e => e.Limits.MaxRequestBodySize = 100 * 1024 * 1024);
 builder.Services.AddMassTransit(c =>
 {
     c.SetKebabCaseEndpointNameFormatter();;
@@ -71,7 +76,7 @@ builder.Services.AddMassTransit(c =>
 builder.Services.AddScoped<IFirebaseNotificationService, FirebaseNotificationService>();
 
 var app = builder.Build();
-
+app.UseCors("Cors");
 app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();
