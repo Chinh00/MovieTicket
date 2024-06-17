@@ -57,13 +57,14 @@ class OrderFoodActivityModel
             _apiState.value = ApiState.LOADING
             val xQueryHeader = defaultXQueryHeader.copy()
 
-            service.HandleGetServicesAsync(xQueryHeader.JsonSerializer())
+            service.HandleGetServicesAsync("")
                 .enqueue(object : Callback<SuccessResponse<ListResponse<Service>>> {
                     override fun onResponse(
                         call: Call<SuccessResponse<ListResponse<Service>>>,
                         response: Response<SuccessResponse<ListResponse<Service>>>
                     ) {
                         _listService.value = response.body()?.data?.items ?: emptyList()
+                        Log.d("Chinh", response?.body()?.data?.items.toString())
                         _apiState.value = ApiState.SUCCESS
                     }
 
