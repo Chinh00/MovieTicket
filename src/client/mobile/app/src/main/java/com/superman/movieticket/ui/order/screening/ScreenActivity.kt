@@ -65,9 +65,14 @@ class ScreenActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BaseScreen(content = {
-                ScreensComp(intent.getStringExtra("movieId")!!)
-            }, title = "Chọn phòng ")
+                ScreensComp(intent.getStringExtra("movieId")!!) {
+                    finish()
+                }
+            }, title = "Chọn phòng ", onNavigateUp = {
+                onBackPressedDispatcher
+            })
         }
+
     }
 
 
@@ -77,7 +82,8 @@ class ScreenActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ScreensComp(
-    movieId: String
+    movieId: String,
+    finish: () -> Unit
 ) {
     val dateScrollState = rememberScrollState()
     val context = LocalContext.current

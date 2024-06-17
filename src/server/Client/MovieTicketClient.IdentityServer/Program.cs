@@ -37,14 +37,16 @@ builder.Services.AddIdentityServer(options =>
     .AddInMemoryIdentityResources(Config.IdentityResources)
     .AddInMemoryApiScopes(Config.ApiScopes)
     .AddAspNetIdentity<User>()
-    .AddDeveloperSigningCredential();
+    .AddDeveloperSigningCredential()
+    .AddExtensionGrantValidator<ExternalGrantValidator>();
+    ;
 
-builder.Services.AddAuthentication().AddGoogle("Google", options =>
-{
-    options.ClientId = "";
-    options.ClientSecret = "";
-    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-});
+builder.Services.AddAuthentication()
+        .AddGoogle("Google", options =>
+        {
+            options.ClientId = builder.Configuration.GetValue<string>("Authentication:Google:ClientId");
+            options.ClientSecret = builder.Configuration.GetValue<string>("Authentication:Google:ClientSecret");
+        });
 
 
 
