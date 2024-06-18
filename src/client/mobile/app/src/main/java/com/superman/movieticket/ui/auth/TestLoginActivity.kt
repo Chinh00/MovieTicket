@@ -84,6 +84,7 @@ import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.superman.movieticket.R
+import com.superman.movieticket.ui.auth.control.AuthViewModel
 import com.superman.movieticket.ui.auth.control.LoginFaceBookViewModel
 import com.superman.movieticket.ui.auth.control.LoginSocialViewModel
 import com.superman.movieticket.ui.auth.control.LoginState
@@ -104,34 +105,39 @@ class TestLoginActivity : ComponentActivity() {
 
 //@Preview(showSystemUi = true)
 @Composable
-fun SignInGoogleScreen() {
+fun SignInGoogleScreen(ggViewModel: AuthViewModel = viewModel()) {
     val viewModel: LoginSocialViewModel = hiltViewModel()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     viewModel.configureGoogleSignIn(context)
-
-    val signInLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-        Log.d("reqCode",result.resultCode.toString())
-        viewModel.handleSignInGoogleResult(task,
-            onSuccess = { account ->
-                (context as? Activity)?.finish()
-            },
-            onFailure = { exception ->
-
-            }
-        )
-    }
+    val authViewModel: AuthViewModel = viewModel()
+//    val signInLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.StartActivityForResult()
+//    ) { result ->
+//        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+//        Log.d("reqCode",result.resultCode.toString())
+//        viewModel.handleSignInGoogleResult(task,
+//            onSuccess = { account ->
+//                (context as? Activity)?.finish()
+//            },
+//            onFailure = { exception ->
+//
+//            }
+//        )
+//    }
 
     Button(
         onClick = {
             viewModel.signOut {
-                val signInIntent = viewModel.googleSignInClient.signInIntent
+                val signInIntent = ggViewModel.googleSignInClient.signInIntent
                 coroutineScope.launch {
-                    signInLauncher.launch(signInIntent)
+                    (context as LoginActivity).startActivityForResult(
+                        signInIntent,
+                        LoginActivity.RC_SIGN_IN
+                    )
+
+
                 }
             }
         }, modifier = Modifier
@@ -170,16 +176,13 @@ fun SignInFacebookComp(viewModel: LoginFaceBookViewModel = viewModel()) {
 //        }
 
 
-
-
-
     when (loginState) {
         is LoginState.Idle -> {
             Button(
                 onClick = {
 
                     LoginManager.getInstance().logInWithReadPermissions(
-                        context as Activity ,
+                        context as Activity,
                         listOf("email", "public_profile")
                     )
                 }, modifier = Modifier

@@ -85,6 +85,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import coil.compose.rememberAsyncImagePainter
 import com.facebook.AccessToken
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.superman.movieticket.core.view.BaseActivity
 import com.superman.movieticket.core.view.BaseScreen
 import com.superman.movieticket.infrastructure.utils.ApiState
@@ -95,6 +96,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.superman.movieticket.R
+import com.superman.movieticket.ui.auth.control.AuthViewModel
 import com.superman.movieticket.ui.auth.control.LoginFaceBookViewModel
 import com.superman.movieticket.ui.auth.control.LoginSocialViewModel
 import com.superman.movieticket.ui.components.ButtonLoading
@@ -107,12 +109,14 @@ import kotlinx.coroutines.Dispatchers
 @AndroidEntryPoint
 public class LoginActivity : ComponentActivity() {
     private val viewModel: LoginFaceBookViewModel by viewModels()
+    private val ggviewModel: AuthViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             com.superman.movieticket.ui.components.BaseScreen(content = {
-                LoginScreen()
+                LoginScreen(ggviewModel)
             }, title = "")
         }
 
@@ -120,16 +124,33 @@ public class LoginActivity : ComponentActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d("request code: ", requestCode.toString() + " réult code " + resultCode)
-        viewModel.callbackManager.onActivityResult(requestCode, resultCode, data)
-    }
 
+
+
+        if(requestCode ==RC_SIGN_IN){
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            ggviewModel.signInWithGoogle(task) { success ->
+                if (success) {
+                    // Handle successful sign-in
+                } else {
+                    // Handle sign-in failure
+                }
+            }
+        }else{
+            Log.d("request code: ", requestCode.toString() + " réult code " + resultCode)
+            viewModel.callbackManager.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+    companion object {
+         const val RC_SIGN_IN = 9001
+    }
 }
 
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LoginScreen(
+    ggViewModel:AuthViewModel
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -404,6 +425,8 @@ fun LoginScreen(
             )
         }
     }
+
 }
+
 
 
