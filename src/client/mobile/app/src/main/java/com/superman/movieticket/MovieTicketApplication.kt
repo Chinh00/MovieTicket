@@ -51,7 +51,7 @@ class MovieTicketApplication : Application() {
             Log.d("Chinh", task.result)
             notificationService.RegisterDevice(NotificationDeviceCreateModel(
                 token = task.result,
-                userId = "",
+                userId = "19585d7e-dd1f-4dab-ace3-fa485a0ac89a",
                 deviceId = ""
             ))
         }
