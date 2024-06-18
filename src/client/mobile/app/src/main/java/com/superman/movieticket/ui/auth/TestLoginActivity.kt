@@ -68,6 +68,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -103,7 +104,8 @@ class TestLoginActivity : ComponentActivity() {
 
 //@Preview(showSystemUi = true)
 @Composable
-fun SignInGoogleScreen(viewModel: LoginSocialViewModel = viewModel()) {
+fun SignInGoogleScreen() {
+    val viewModel: LoginSocialViewModel = hiltViewModel()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -116,11 +118,9 @@ fun SignInGoogleScreen(viewModel: LoginSocialViewModel = viewModel()) {
         Log.d("reqCode",result.resultCode.toString())
         viewModel.handleSignInGoogleResult(task,
             onSuccess = { account ->
-                Log.d("account", account.toString())
+                (context as? Activity)?.finish()
             },
             onFailure = { exception ->
-                // Xử lý khi đăng nhập thất bại
-                Log.d("account", exception.message.toString())
 
             }
         )

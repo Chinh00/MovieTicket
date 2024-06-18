@@ -49,6 +49,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -95,6 +96,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.superman.movieticket.R
 import com.superman.movieticket.ui.auth.control.LoginFaceBookViewModel
+import com.superman.movieticket.ui.auth.control.LoginSocialViewModel
 import com.superman.movieticket.ui.components.ButtonLoading
 import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.theme.CustomBlue
@@ -107,13 +109,8 @@ public class LoginActivity : ComponentActivity() {
     private val viewModel: LoginFaceBookViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-//            val accessToken=AccessToken.getCurrentAccessToken()
-//            if(accessToken!=null&&accessToken.isExpired==false){
-//                startActivity(Intent(this,MainActivity::class.java))
-//                finish()
-//            }
 
+        setContent {
             com.superman.movieticket.ui.components.BaseScreen(content = {
                 LoginScreen()
             }, title = "")
@@ -137,6 +134,7 @@ fun LoginScreen(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val loginActivityModelImpl: LoginActivityModelImpl = hiltViewModel()
+    val loginSocialModelImpl: LoginSocialViewModel = hiltViewModel()
     val coroutineScope = CoroutineScope(Dispatchers.IO)
     val context = LocalContext.current
     var username by remember {
@@ -182,233 +180,228 @@ fun LoginScreen(
 
 
 
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 10.dp)
-    ) {
-        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Login",
-                style = MaterialTheme.typography.titleLarge,
-                fontFamily = balooFont,
-                fontWeight = FontWeight.Bold
-            )
-        }
-        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-            Image(
-                painter = painterResource(id = R.drawable.cinema),
-                contentDescription = null,
-                modifier = Modifier.size(200.dp)
-            )
-        }
-        Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Weclcome Back!",
-                style = MaterialTheme.typography.headlineMedium,
-                color = CustomBlue,
-                fontFamily = balooFont,
-                fontWeight = FontWeight.Bold
-            )
-
-        }
-        Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Enter Your Details",
-                style = MaterialTheme.typography.titleLarge,
-                fontFamily = balooFont,
-                color = Color.Gray,
-                fontWeight = FontWeight.Medium
-            )
-
-        }
-        Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
-            TextField(value = username,
-                onValueChange = { username = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
-                colors = TextFieldDefaults.colors(
-                    unfocusedIndicatorColor = Color.Gray,
-                    focusedIndicatorColor = CustomBlue,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedTrailingIconColor = CustomBlue,
-                    unfocusedTrailingIconColor = Color.Gray,
-                    focusedContainerColor = Color.Transparent
-
-                ),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { focusManager.clearFocus() }
-                ),
-                placeholder = {
-                    Text(
-                        text = "Email Address",
-                        fontFamily = FontFamily.SansSerif,
-                        color = Color.Gray,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                trailingIcon = {
-                    Icon(
-                        Icons.Default.MailOutline, contentDescription = null
-                    )
-                })
-        }
-
-        var passwordVisible by remember { mutableStateOf(false) }
-        Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
-            TextField(value = password,
-                onValueChange = { password = it },
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { focusManager.moveFocus(FocusDirection.Down) }
-
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
-                colors = TextFieldDefaults.colors(
-                    unfocusedIndicatorColor = Color.Gray,
-                    focusedIndicatorColor = CustomBlue,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedTrailingIconColor = CustomBlue,
-                    unfocusedTrailingIconColor = Color.Gray,
-                    focusedContainerColor = Color.Transparent
-                ),
-                placeholder = {
-                    Text(
-                        text = "Password",
-                        fontFamily = FontFamily.SansSerif,
-                        color = Color.Gray,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                trailingIcon = {
-                    val image = if (passwordVisible) Icons.Outlined.Visibility
-                    else Icons.Outlined.VisibilityOff
-
-                    // Localized description for accessibility services
-                    val description = if (passwordVisible) "Hide password" else "Show password"
-
-                    // Toggle button to hide or display password
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(imageVector = image, description)
-                    }
-                })
-        }
-        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-            TextButton(onClick = {
-                val intent = Intent(context.applicationContext,ForgotPasswordActivity::class.java)
-
-                context.startActivity(intent) }) {
+    Box (modifier = Modifier.apply {
+        fillMaxSize().background(Color.Gray)
+    }, contentAlignment = Alignment.Center) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+        ) {
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Forget password?",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontFamily = FontFamily.SansSerif,
-                    color = CustomBlue,
+                    text = "Login",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontFamily = balooFont,
                     fontWeight = FontWeight.Bold
                 )
             }
-
-        }
-
-        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-//            OutlinedButton(
-//                onClick = { /*TODO*/ },
-//                modifier = Modifier.fillMaxWidth(),
-//                shape = MaterialTheme.shapes.small,
-//                border = BorderStroke(
-//                    1.dp,
-//                    CustomBlue
-//                )
-//            ) {
-//                Text(
-//                    text = "Login",
-//                    style = MaterialTheme.typography.headlineSmall,
-//                    fontFamily = FontFamily.SansSerif,
-//                    color = CustomBlue,
-//                    fontWeight = FontWeight.Bold
-//                )
-//            }
-            ButtonLoading(content = {
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                Image(
+                    painter = painterResource(id = R.drawable.cinema),
+                    contentDescription = null,
+                    modifier = Modifier.size(200.dp)
+                )
+            }
+            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Đăng nhập ",
-                    modifier = Modifier.apply { fillMaxSize() })
-            }, isLoading = 1 != 1, modifier = Modifier.apply {
-                padding(5.dp).fillMaxWidth()
-            }, colors = ButtonDefaults.buttonColors(CustomBlue), onClick = {
-                HandleLogin()
-            })
+                    text = "Weclcome Back!",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = CustomBlue,
+                    fontFamily = balooFont,
+                    fontWeight = FontWeight.Bold
+                )
 
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier
-                .padding(top = 20.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .weight(0.5f)
-                    .background(Color.Black)
-                    .height(1.dp)
-            )
-            Text(
-                text = "Or Continue with",
-                style = MaterialTheme.typography.titleSmall,
-                fontFamily = FontFamily.SansSerif,
-                color = CustomBlue,
-            )
-            Spacer(
-                modifier = Modifier
-                    .weight(0.5f)
-                    .background(Color.Black)
-                    .height(1.dp)
-            )
+            }
+            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Enter Your Details",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontFamily = balooFont,
+                    color = Color.Gray,
+                    fontWeight = FontWeight.Medium
+                )
 
-        }
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(top = 20.dp)
-                .fillMaxWidth()
-        ) {
-            LoginSocialComp()
-        }
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(top = 20.dp)
-                .fillMaxWidth()
-        ) {
-            val annotatedText = buildAnnotatedString {
-                append("Don't have an account? ")
+            }
+            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+                TextField(value = username,
+                    onValueChange = { username = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedIndicatorColor = Color.Gray,
+                        focusedIndicatorColor = CustomBlue,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedTrailingIconColor = CustomBlue,
+                        unfocusedTrailingIconColor = Color.Gray,
+                        focusedContainerColor = Color.Transparent
 
-                withStyle(style = SpanStyle(color = CustomBlue)) {
-                    pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
-                    append("Sign up")
-                    pop()
-                }
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
+                    ),
+                    placeholder = {
+                        Text(
+                            text = "Email Address",
+                            fontFamily = FontFamily.SansSerif,
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Default.MailOutline, contentDescription = null
+                        )
+                    })
             }
 
-            ClickableText(text = annotatedText,
-                style = MaterialTheme.typography.bodyLarge,
-                onClick = { offset ->
-                    annotatedText.getStringAnnotations(tag = "SignUp", start = offset, end = offset)
-                        .firstOrNull()?.let {
-                            Log.d("weew", "asdasdasdasdasdasd")
+            var passwordVisible by remember { mutableStateOf(false) }
+            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+                TextField(value = password,
+                    onValueChange = { password = it },
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.moveFocus(FocusDirection.Down) }
+
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedIndicatorColor = Color.Gray,
+                        focusedIndicatorColor = CustomBlue,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedTrailingIconColor = CustomBlue,
+                        unfocusedTrailingIconColor = Color.Gray,
+                        focusedContainerColor = Color.Transparent
+                    ),
+                    placeholder = {
+                        Text(
+                            text = "Password",
+                            fontFamily = FontFamily.SansSerif,
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    trailingIcon = {
+                        val image = if (passwordVisible) Icons.Outlined.Visibility
+                        else Icons.Outlined.VisibilityOff
+
+                        // Localized description for accessibility services
+                        val description = if (passwordVisible) "Hide password" else "Show password"
+
+                        // Toggle button to hide or display password
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(imageVector = image, description)
                         }
+                    })
+            }
+            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                TextButton(onClick = {
+                    val intent = Intent(context.applicationContext,ForgotPasswordActivity::class.java)
+
+                    context.startActivity(intent) }) {
+                    Text(
+                        text = "Forget password?",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontFamily = FontFamily.SansSerif,
+                        color = CustomBlue,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+            }
+
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                ButtonLoading(content = {
+                    Text(
+                        text = "Đăng nhập ",
+                        modifier = Modifier.apply { fillMaxSize() })
+                }, isLoading = 1 != 1, modifier = Modifier.apply {
+                    padding(5.dp).fillMaxWidth()
+                }, colors = ButtonDefaults.buttonColors(CustomBlue), onClick = {
+                    HandleLogin()
                 })
+
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .background(Color.Black)
+                        .height(1.dp)
+                )
+                Text(
+                    text = "Or Continue with",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontFamily = FontFamily.SansSerif,
+                    color = CustomBlue,
+                )
+                Spacer(
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .background(Color.Black)
+                        .height(1.dp)
+                )
+
+            }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .fillMaxWidth()
+            ) {
+                LoginSocialComp()
+            }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .fillMaxWidth()
+            ) {
+                val annotatedText = buildAnnotatedString {
+                    append("Don't have an account? ")
+
+                    withStyle(style = SpanStyle(color = CustomBlue)) {
+                        pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
+                        append("Sign up")
+                        pop()
+                    }
+                }
+
+                ClickableText(text = annotatedText,
+                    style = MaterialTheme.typography.bodyLarge,
+                    onClick = { offset ->
+                        annotatedText.getStringAnnotations(tag = "SignUp", start = offset, end = offset)
+                            .firstOrNull()?.let {
+                                Log.d("weew", "asdasdasdasdasdasd")
+                            }
+                    })
+            }
+        }
+
+        if (loginSocialModelImpl.apiLoading.collectAsState().value == ApiState.LOADING) {
+            CircularProgressIndicator(
+                modifier = Modifier.width(70.dp),
+                color = MaterialTheme.colorScheme.secondary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            )
         }
     }
 }

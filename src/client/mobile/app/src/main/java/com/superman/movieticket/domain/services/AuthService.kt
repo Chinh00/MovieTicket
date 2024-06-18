@@ -16,4 +16,16 @@ interface AuthService {
         @Field("password") password: String,
         @Field("scope") scope: String
     ): retrofit2.Call<TokenResponse>
+
+    @FormUrlEncoded
+    @POST("/client-identity/connect/token")
+    fun getTokenSocial(
+        @Field("grant_type") grantType: String,
+        @Field("client_id") clientId: String,
+        @Field("scope") scope: String,
+        @Field("token") token: String,
+        @Field("client_secret") secret: String,
+        @Field("provider") provider: String
+
+    ): retrofit2.Call<TokenResponse>
 }

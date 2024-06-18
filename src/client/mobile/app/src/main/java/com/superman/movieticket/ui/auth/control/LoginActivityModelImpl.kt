@@ -39,7 +39,6 @@ class LoginActivityModelImpl @Inject constructor(
 
 
     suspend fun HandleLoginAction(userLoginModel: UserLoginModel) {
-
         viewModelScope.launch {
             apiState.value = ApiState.LOADING
 

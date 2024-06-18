@@ -4,10 +4,10 @@ namespace MovieTicket.Domain.Entities;
 
 public class Seat : EntityBase
 {
-    public string RowNumber { get; init; }
-    public string ColNumber { get; init; }
+    public string RowNumber { get; set; }
+    public string ColNumber { get; set; }
     
-    public Guid RoomId { get; init; }
-    public virtual Room Room { get; init; }
-    public virtual ICollection<SeatReservation> SeatReservations { get; init; }
+    public Guid RoomId { get; set; }
+    public virtual Room Room { get; set; }
+    public virtual ICollection<SeatReservation> SeatReservations { get; set; }
 }

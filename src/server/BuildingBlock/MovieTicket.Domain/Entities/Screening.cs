@@ -4,12 +4,12 @@ namespace MovieTicket.Domain.Entities;
 
 public class Screening : EntityBase
 {
-    public Guid MovieId { get; init; }
-    public Guid RoomId { get; init; }
-    public DateTime StartDate { get; init; }
+    public Guid MovieId { get; set; }
+    public Guid RoomId { get; set; }
+    public DateTime StartDate { get; set; }
     
-    public virtual Movie Movie { get; init; }
-    public virtual Room Room { get; init; }
-    public virtual ICollection<Reservation> Reservations { get; init; }
+    public virtual Movie Movie { get; set; }
+    public virtual Room Room { get; set; }
+    public virtual ICollection<Reservation> Reservations { get; set; }
     
 }

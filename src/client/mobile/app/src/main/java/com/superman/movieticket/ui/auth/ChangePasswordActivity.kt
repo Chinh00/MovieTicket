@@ -76,10 +76,6 @@ class ChangePasswordActivity : ComponentActivity() {
                 .padding(horizontal = 10.dp)
                 .fillMaxSize()
                 .background(Color.White)
-//                .paint(
-//                    painterResource(id = R.drawable.mobilepasswordforgot),
-//                    contentScale = ContentScale.FillWidth
-//                )
             , contentAlignment = Alignment.TopStart
         ) {
             Column(modifier = Modifier.padding(top = 50.dp)) {
