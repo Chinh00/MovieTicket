@@ -153,5 +153,6 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.0.0-beta02")
     implementation("androidx.media3:media3-ui:1.0.0-beta02")
 
+    implementation("com.google.firebase:firebase-auth:21.0.1")
 
 }

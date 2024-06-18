@@ -53,6 +53,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.order.screening.ScreenActivity"/>
+        <activity android:name=".ui.auth.PhoneOtpActivity" android:exported="true"/>
+        <activity android:name=".ui.auth.PhoneVerifyActivity" android:exported="true"/>
+
         <activity android:name=".ui.order.food.OrderFoodActivity" android:exported="true"/>
         <activity android:name=".ui.order.ticket.TicketBookActivity"/>
         <activity android:name=".ui.history.DetailOrderActivity"/>
