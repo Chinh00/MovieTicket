@@ -12,8 +12,8 @@ using MovieTicket.Infrastructure.EfCore;
 namespace MovieTicket.Infrastructure.EfCore.Migrations
 {
     [DbContext(typeof(AppBaseContext))]
-    [Migration("20240603143105_ChangeDataTypeSeat")]
-    partial class ChangeDataTypeSeat
+    [Migration("20240619144802_InitDb")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,7 +50,7 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getDate()");
+                        .HasDefaultValueSql("(getutcdate())");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -79,7 +79,7 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getDate()");
+                        .HasDefaultValueSql("(getutcdate())");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -117,16 +117,22 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getDate()");
+                        .HasDefaultValueSql("(getutcdate())");
 
-                    b.Property<Guid>("ItemPrice")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ItemPrice")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ReservationState")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("ScreeningId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TotalPrice")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("TotalPrice")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -154,7 +160,7 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getDate()");
+                        .HasDefaultValueSql("(getutcdate())");
 
                     b.Property<int>("RoomNumber")
                         .HasColumnType("int");
@@ -180,7 +186,7 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getDate()");
+                        .HasDefaultValueSql("(getutcdate())");
 
                     b.Property<Guid>("MovieId")
                         .HasColumnType("uniqueidentifier");
@@ -214,20 +220,18 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                         .HasDefaultValueSql("(newsequentialid())");
 
                     b.Property<string>("ColNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(1)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getDate()");
+                        .HasDefaultValueSql("(getutcdate())");
 
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("RowNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(1)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -252,7 +256,7 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getDate()");
+                        .HasDefaultValueSql("(getutcdate())");
 
                     b.Property<Guid?>("ReservationId")
                         .HasColumnType("uniqueidentifier");
@@ -288,7 +292,7 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getDate()");
+                        .HasDefaultValueSql("(getutcdate())");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -320,7 +324,7 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getDate()");
+                        .HasDefaultValueSql("(getutcdate())");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");

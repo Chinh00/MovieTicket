@@ -116,8 +116,8 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("(getutcdate())");
 
-                    b.Property<Guid>("ItemPrice")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ItemPrice")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("ReservationState")
                         .HasColumnType("int");
@@ -125,8 +125,8 @@ namespace MovieTicket.Infrastructure.EfCore.Migrations
                     b.Property<Guid>("ScreeningId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TotalPrice")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("TotalPrice")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("TransactionId")
                         .HasColumnType("nvarchar(max)");

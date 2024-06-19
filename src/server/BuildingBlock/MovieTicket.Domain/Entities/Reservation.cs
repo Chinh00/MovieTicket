@@ -7,9 +7,9 @@ public class Reservation : EntityBase
     public Guid ScreeningId { get; set; }
     public Guid UserId { get; set; }
     
-    public Guid TotalPrice { get; set; }
+    public long TotalPrice { get; set; }
     
-    public Guid ItemPrice { get; set; }
+    public long ItemPrice { get; set; }
 
     public string TransactionId { get; set; }
     
