@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -21,26 +22,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(application:Application): AndroidViewModel(application) {
-    private var secondaryAuth: FirebaseAuth
     lateinit var googleSignInClient: GoogleSignInClient
     init{
-        val optionsSecondary = FirebaseOptions.Builder()
-            .setProjectId("phonesms-a6c92")
-            .setApplicationId("1:640150146280:android:618c89670dcb7947d40d5d")
-            .setApiKey("AIzaSyA7Yn78uSmSAzOyA7N1kzNO4OX2LYk2S68")
 
-            .build()
-        if (FirebaseApp.getApps(application).none { it.name == "secondary" }) {
-            FirebaseApp.initializeApp(application, optionsSecondary, "secondary")
-        }
-
-        // Lấy instance của FirebaseAuth từ dự án phụ
-        val secondaryApp = FirebaseApp.getInstance("secondary")
-        secondaryAuth = FirebaseAuth.getInstance(secondaryApp)
-
-        // Configure Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("640150146280-2v1qt3vfokpripp2ho6ean5bi2gmarof.apps.googleusercontent.com")
+            .requestIdToken("102542804094-s8kh8vjuv94cgvv9403eiivctg3f3c5p.apps.googleusercontent.com")
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(application.applicationContext, gso)
@@ -60,7 +46,7 @@ class AuthViewModel @Inject constructor(application:Application): AndroidViewMod
     }
     private fun firebaseAuthWithGoogle(idToken: String, onSuccess: (Boolean) -> Unit) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        secondaryAuth.signInWithCredential(credential).addOnCompleteListener { task ->
+        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 onSuccess(true)
             } else {
