@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "102542804094-jnl8l12de1e3pb4un1319e031kfm4a7d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.superman.movieticket",
+            "certificate_hash": "20ecfefe71fbb65f9efbbfd58a47331a53c15f5f"
+          }
+        },
+        {
           "client_id": "102542804094-95u4rbniifbk4pa4mjuqsnnd30oedg77.apps.googleusercontent.com",
           "client_type": 3
         }

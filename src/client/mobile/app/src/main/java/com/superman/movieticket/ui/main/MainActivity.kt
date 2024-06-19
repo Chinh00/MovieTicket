@@ -70,13 +70,17 @@ fun MainScreen () {
     val navigationBarItems = listOf<NavigationBarItemConfig>(
         NavigationBarItemConfig(
             Icons.Filled.Home,
-            onClick = {},
+            onClick = {
+                navController.navigate("home")
+            },
             title = "Trang chủ",
             path = "home"
         ),
         NavigationBarItemConfig(
             Icons.Filled.EmergencyRecording,
-            onClick = {},
+            onClick = {
+                navController.navigate("film")
+            },
             title = "Phim",
             path = "film"
         ),
@@ -85,8 +89,9 @@ fun MainScreen () {
             onClick = {
                 if (login != "true") {
                     NavigateLogin(context)
+                } else {
+                    navController.navigate("profile")
                 }
-                Log.d("Chinh", login.toString())
             },
             title = "Tài khoản",
             path = "profile"
@@ -105,7 +110,7 @@ fun MainScreen () {
                     item ->
                     NavigationBarItem(selected = 1 == 1, label = { Text(text = item.title)}, onClick = {
                         item.onClick()
-                        navController.navigate(item.path)
+
                     }, icon = { Icon(
                         imageVector = item.icon,
                         contentDescription = item.title,
