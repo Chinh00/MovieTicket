@@ -83,6 +83,7 @@ import com.facebook.login.widget.LoginButton
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.firebase.auth.FirebaseAuth
 import com.superman.movieticket.R
 import com.superman.movieticket.ui.auth.control.AuthViewModel
 import com.superman.movieticket.ui.auth.control.LoginFaceBookViewModel
@@ -110,8 +111,7 @@ fun SignInGoogleScreen(ggViewModel: AuthViewModel = viewModel()) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    viewModel.configureGoogleSignIn(context)
-    val authViewModel: AuthViewModel = viewModel()
+//    viewModel.configureGoogleSignIn(context)
 //    val signInLauncher = rememberLauncherForActivityResult(
 //        contract = ActivityResultContracts.StartActivityForResult()
 //    ) { result ->
@@ -129,8 +129,10 @@ fun SignInGoogleScreen(ggViewModel: AuthViewModel = viewModel()) {
 
     Button(
         onClick = {
-            viewModel.signOut {
+            ggViewModel.signOut {
+
                 val signInIntent = ggViewModel.googleSignInClient.signInIntent
+                Log.d("Firebase",ggViewModel.secondaryAuth.toString())
                 coroutineScope.launch {
                     (context as LoginActivity).startActivityForResult(
                         signInIntent,

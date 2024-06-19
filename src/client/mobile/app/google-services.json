@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "102542804094-s8kh8vjuv94cgvv9403eiivctg3f3c5p.apps.googleusercontent.com",
+          "client_id": "102542804094-682rfm3culhdnr150e1p9et3qfo978q2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.superman.movieticket",
+            "certificate_hash": "142e83ef00771d8b1ed6f4f7c3322d784e2b3e06"
+          }
+        },
+        {
+          "client_id": "102542804094-95u4rbniifbk4pa4mjuqsnnd30oedg77.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +35,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "102542804094-s8kh8vjuv94cgvv9403eiivctg3f3c5p.apps.googleusercontent.com",
+              "client_id": "102542804094-95u4rbniifbk4pa4mjuqsnnd30oedg77.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -129,15 +129,19 @@ public class LoginActivity : ComponentActivity() {
 
         if(requestCode ==RC_SIGN_IN){
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            Log.d("LoginActivity: ", requestCode.toString() + " réult code " + resultCode)
+
             ggviewModel.signInWithGoogle(task) { success ->
                 if (success) {
                     // Handle successful sign-in
+
                 } else {
                     // Handle sign-in failure
+
                 }
             }
         }else{
-            Log.d("request code: ", requestCode.toString() + " réult code " + resultCode)
+            Log.d("LoginActivity: ", requestCode.toString() + " réult code " + resultCode)
             viewModel.callbackManager.onActivityResult(requestCode, resultCode, data)
         }
     }

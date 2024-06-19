@@ -23,39 +23,65 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(application:Application): AndroidViewModel(application) {
     lateinit var googleSignInClient: GoogleSignInClient
+     val secondaryAuth:FirebaseAuth
     init{
+        val optionsSecondary = FirebaseOptions.Builder()
+            .setProjectId("movie-ticket-mobile")
+            .setApplicationId("1:102542804094:android:f689ea14dd4f359c97042f")
+            .setApiKey("AIzaSyBheLL2QWpWpUGbdx2JicJVRs5D34MtHhs")
 
+            .build()
+        if (FirebaseApp.getApps(application).none { it.name == "main" }) {
+            FirebaseApp.initializeApp(application, optionsSecondary, "main")
+        }
+
+        // Lấy instance của FirebaseAuth từ dự án phụ
+        val secondaryApp = FirebaseApp.getInstance("main")
+        secondaryAuth = FirebaseAuth.getInstance(secondaryApp)
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("102542804094-s8kh8vjuv94cgvv9403eiivctg3f3c5p.apps.googleusercontent.com")
+            .requestIdToken("102542804094-95u4rbniifbk4pa4mjuqsnnd30oedg77.apps.googleusercontent.com")
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(application.applicationContext, gso)
     }
     fun signInWithGoogle(task: Task<GoogleSignInAccount>, onSuccess: (Boolean) -> Unit) {
         viewModelScope.launch {
-            try {
-                val account = task.getResult(ApiException::class.java)!!
-                Log.d("GoogleSignIn",account.idToken!!)
-                firebaseAuthWithGoogle(account.idToken!!, onSuccess)
-            } catch (e: ApiException) {
-                onSuccess(false)
-                Log.d("GoogleSignIn",e.message.toString())
-
+            viewModelScope.launch {
+                try {
+                    val account = task.getResult(ApiException::class.java)!!
+                    if (account != null) {
+                        Log.d("GoogleSignIn", "Account ID Token: ${account.idToken}")
+                        firebaseAuthWithGoogle(account.idToken!!, onSuccess)
+                    } else {
+                        Log.d("GoogleSignIn", "GoogleSignInAccount is null")
+                        onSuccess(false)
+                    }
+                } catch (e: ApiException) {
+                    Log.e("GoogleSignIn", "signInResult:failed code=${e.statusCode}, message=${e.message}")
+                    onSuccess(false)
+                }
             }
         }
     }
     private fun firebaseAuthWithGoogle(idToken: String, onSuccess: (Boolean) -> Unit) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener { task ->
+        secondaryAuth.signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 onSuccess(true)
             } else {
+                task.exception?.let {
+                    Log.e("FirebaseAuth", "signInWithCredential:failure", it)
+                }
                 onSuccess(false)
             }
         }
     }
 
-
+    fun signOut(onSignOutComplete: () -> Unit) {
+        googleSignInClient.signOut().addOnCompleteListener {
+            onSignOutComplete()
+        }
+    }
 
 
 }
