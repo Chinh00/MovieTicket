@@ -24,7 +24,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhoneVerifyViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
-    private var secondaryAuth: FirebaseAuth
     private val _verificationId = MutableStateFlow("")
     val verificationId: StateFlow<String> get() = _verificationId
     fun setVerifyCode(code: String) {
@@ -39,25 +38,11 @@ class PhoneVerifyViewModel @Inject constructor(application: Application) : Andro
         _otpValue.value = otp
     }
     init {
-        // Khởi tạo Firebase cho dự án phụ
-        val optionsSecondary = FirebaseOptions.Builder()
-            .setProjectId("phonesms-a6c92")
-            .setApplicationId("1:640150146280:android:618c89670dcb7947d40d5d")
-            .setApiKey("AIzaSyA7Yn78uSmSAzOyA7N1kzNO4OX2LYk2S68")
-
-            .build()
-        if (FirebaseApp.getApps(application).none { it.name == "secondary" }) {
-            FirebaseApp.initializeApp(application, optionsSecondary, "secondary")
-        }
-
-        // Lấy instance của FirebaseAuth từ dự án phụ
-        val secondaryApp = FirebaseApp.getInstance("secondary")
-        secondaryAuth = FirebaseAuth.getInstance(secondaryApp)
     }
     fun sendOtp(phoneNumber: String, activity: Activity, onOtpSent: (Boolean, String) -> Unit) {
         viewModelScope.launch {
             try {
-                val options = PhoneAuthOptions.newBuilder(secondaryAuth)
+                val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
                     .setPhoneNumber(phoneNumber)
                     .setTimeout(60L, TimeUnit.SECONDS)
                     .setActivity(activity)
@@ -128,7 +113,7 @@ class PhoneVerifyViewModel @Inject constructor(application: Application) : Andro
     // Hàm đăng nhập bằng credential
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential, onSuccess: (Boolean) -> Unit = {}) {
         viewModelScope.launch {
-            secondaryAuth.signInWithCredential(credential)
+            FirebaseAuth.getInstance().signInWithCredential(credential)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         onSuccess(true)
