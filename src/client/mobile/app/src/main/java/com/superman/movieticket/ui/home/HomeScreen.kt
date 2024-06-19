@@ -106,7 +106,7 @@ fun HomeScreen() {
 @Composable
 fun HomeContent() {
 
-    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+    ConstraintLayout(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         HomePage()
     }
 }
@@ -369,10 +369,10 @@ fun PopularMovies(
                         )
                     }
                     Text(
-                        text = item.description,
+                        text = item.description?:"Đang cập nhật",
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodySmall,
-                        maxLines = 3,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -382,7 +382,7 @@ fun PopularMovies(
                                 append("${item.totalTime} | ${item.categories.joinToString(separator = " | ") { category -> category.name }}")
                                 Log.d("ca",item.categories.toString())
                             }
-                        }
+                        }, maxLines = 2, overflow = TextOverflow.Ellipsis,style=MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold)
                     )
 
                     Row(
@@ -505,7 +505,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                     .rotate(rotation)
                     .clip(RoundedCornerShape(16.dp))
 
-                    .background(Color(0xFF792105)),
+                    .background(MaterialTheme.colorScheme.onPrimaryContainer),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
@@ -542,7 +542,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                     fontFamily = balooFont,
                     letterSpacing = 1.sp,
                     maxLines = 1, overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.surface,
+                    color = MaterialTheme.colorScheme.background,
                     modifier = Modifier.wrapContentSize()
                 )
 
@@ -563,7 +563,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                         )
                         Text(
                             text = "9.6",
-                            color = MaterialTheme.colorScheme.surface,
+                            color = MaterialTheme.colorScheme.background,
                             style = MaterialTheme.typography.titleSmall
                         )
                     }
@@ -580,7 +580,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                         Text(
                             text = "${listViewMoviesNowing[page].totalTime} phút",
 
-                            color = MaterialTheme.colorScheme.surface,
+                            color = MaterialTheme.colorScheme.background,
                             style = MaterialTheme.typography.titleSmall
                         )
                     }
@@ -593,7 +593,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                             text = DatetimeHelper.ConvertISODatetimeToLocalDatetime(listViewMoviesNowing[page].releaseDate, "dd/MM/yyyy"),
 
 
-                            color = MaterialTheme.colorScheme.surface,
+                            color = MaterialTheme.colorScheme.background,
                             style = MaterialTheme.typography.titleSmall
                         )
                     }

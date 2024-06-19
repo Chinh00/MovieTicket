@@ -9,10 +9,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.superman.movieticket" />
+                  <option name="mobileSdkAppId" value="1:45285163111:android:e3706b6c1a007ccebad4c2" />
+                  <option name="projectId" value="android-5e2d0" />
+                  <option name="projectNumber" value="45285163111" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

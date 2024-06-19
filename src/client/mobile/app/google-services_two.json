@@ -12,7 +12,28 @@
           "package_name": "com.superman.movieticket"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "640150146280-4p0jgsti0ekk7t6a8j92jb43aslotlnn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.superman.movieticket",
+            "certificate_hash": "530a8b845b8fc7d802d9bcf0651974bd036137ca"
+          }
+        },
+        {
+          "client_id": "640150146280-tni5hin4lcgs0hio5eoc0j91bm20dhub.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.superman.movieticket",
+            "certificate_hash": "aec1fe537bf04995b4fb6d1494d7548023b4cf57"
+          }
+        },
+        {
+          "client_id": "640150146280-2v1qt3vfokpripp2ho6ean5bi2gmarof.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCt13rK9rhH-b7B7rGIlWHwOv0GT5mLUC0"
@@ -20,7 +41,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "640150146280-2v1qt3vfokpripp2ho6ean5bi2gmarof.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
