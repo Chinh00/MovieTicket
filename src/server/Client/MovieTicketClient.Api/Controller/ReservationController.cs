@@ -29,7 +29,6 @@ public class ReservationController : BaseController
     /// <param name="query"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> HandleGetReservationsAsync([FromHeader(Name = "x-query")] string query, CancellationToken cancellationToken = new ())
     {

@@ -98,19 +98,6 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
                 ReservationId = reservation.Id
             });
         }
-        /*var listServiceSpec =
-            new GetServiceByListIdSpecs(request.CreateModel.ServiceReservations.Select(e => e.ServiceId).ToList());
-        var serviceIncludes = await _gridRepositoryService.FindAsync(listServiceSpec);
-        var totalServices= await _gridRepositoryService.CountAsync(listServiceSpec);
-        if (totalServices > 0)
-        {
-            reservation.ServiceReservations.ToList().AddRange(request.CreateModel.ServiceReservations.Select(e => new ServiceReservation()
-            {
-                ServiceId = e.ServiceId,
-                Quantity = e.Quantity,
-                Price = serviceIncludes.First(t => t.Id == e.ServiceId).PriceUnit
-            }));
-        }*/
         
 
         return ResultModel<ReservationDto>.Create(_mapper.Map<ReservationDto>(reservation));
@@ -121,7 +108,7 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
 
     public async Task<ResultModel<ListResultModel<ReservationDto>>> Handle(GetReservations.Query request, CancellationToken cancellationToken)
     {
-        var spec = new GetReservationsSpec<ReservationDto>(request);
+        var spec = new GetReservationsSpec<ReservationDto>(request, Guid.Parse(_securityContextAccessor.GetUserId().ToString() ?? string.Empty));
         var reservations = await _gridRepository.FindAsync(spec);
         var reservationTotals = await _gridRepository.CountAsync(spec);
         var listResultModel = ListResultModel<ReservationDto>.Create(_mapper.Map<List<ReservationDto>>(reservations), reservationTotals,
