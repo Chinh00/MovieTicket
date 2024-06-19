@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -42,6 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import com.superman.movieticket.core.view.BaseActivity
@@ -53,11 +56,12 @@ import kotlinx.coroutines.launch
 import com.superman.movieticket.R
 import com.superman.movieticket.ui.components.ButtonLoading
 import com.superman.movieticket.ui.main.MainActivity
+import com.superman.movieticket.ui.profile.control.ProfileScreenViewModel
 
 @Composable
 fun ProfileScreen() {
     val context = LocalContext.current
-
+    val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -188,9 +192,14 @@ fun ProfileScreen() {
                     .background(Color.Gray)
             )
             Spacer(modifier = Modifier.height(10.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+
+            Button(onClick = {
+                profileScreenViewModel.HandleLogout()
+                val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+            }, modifier = Modifier.apply {
+                background(Color.Red)
+            }) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_exit_to_app_24),
                     contentDescription = "Logout",
@@ -199,12 +208,12 @@ fun ProfileScreen() {
                         .size(55.dp)
                         .padding(top = 5.dp),
                 )
-                Spacer(modifier = Modifier.width(8.dp)) // Khoảng cách giữa Icon và Text
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Logout",
+                    text = "Đăng xuất",
                     color = Color.Black,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold // Nếu muốn làm đậm chữ
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
                 )
             }
 

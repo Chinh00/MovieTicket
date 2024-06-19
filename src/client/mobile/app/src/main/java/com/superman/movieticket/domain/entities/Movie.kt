@@ -9,10 +9,10 @@ import java.util.Date
 data class Movie (
     var name: String,
     var releaseDate: String,
-    val totalTime: Number,
-    val description: String,
-    val avatar: String,
-    val trailer: String,
-    val categories: List<Category>
+    var totalTime: Number,
+    var description: String,
+    var avatar: String,
+    var trailer: String,
+    var categories: List<Category>
 ): BaseEntity(),Serializable
 

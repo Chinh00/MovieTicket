@@ -1,6 +1,7 @@
 package com.superman.movieticket.ui.order.payment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -32,6 +33,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,23 +56,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.gson.Gson
 import com.superman.movieticket.R
+import com.superman.movieticket.infrastructure.utils.ApiState
+import com.superman.movieticket.ui.main.MainActivity
+import com.superman.movieticket.ui.order.model.ReservationCreateModel
+import com.superman.movieticket.ui.order.payment.control.PaymentActivityViewModel
 import com.superman.movieticket.ui.theme.balooFont
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PaymentActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PaymentComp()
+            PaymentComp(Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java))
         }
     }
 
 }
 
-//Compose là giao diện
 @Composable
+fun PaymentComp(
+    reservationCreateModel: ReservationCreateModel
+) {
+    val paymentActivityViewModel: PaymentActivityViewModel = hiltViewModel()
+    val context = LocalContext.current
+    val loading = paymentActivityViewModel.apiLoading.collectAsState()
 
-fun PaymentComp() {
+
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -118,6 +134,11 @@ fun PaymentComp() {
                 onClicked = {
                     if(!it) Toast.makeText(context,"Bạn hãy đồng ý điều khoản đi??",Toast.LENGTH_SHORT).show()
                     if(!doneActMethod.value) Toast.makeText(context,"Bạn hãy chọn phương thức thanh toán đi??",Toast.LENGTH_SHORT).show()
+                    paymentActivityViewModel.HandleCreateReservationAsync(reservationCreateModel)
+                    if (loading.value == ApiState.SUCCESS ) {
+                        val intent = Intent(context, MainActivity::class.java)
+                        context.startActivity(intent)
+                    }
 
                 }, onClickMethod = {
                     if(it) doneActDieuKhoan.value=true else doneActDieuKhoan.value=false
@@ -132,18 +153,6 @@ fun PaymentComp() {
 }
 
 
-
-@Composable
-@Preview(showSystemUi = true)
-
-fun PaymentPre() {
-//    ConstraintLayout(modifier=Modifier.fillMaxSize()) {
-//        val (s,e,t,b) = createRefs()
-//
-//    }
-    PaymentComp()
-
-}
 
 @Composable
 fun PaymentTopComp(title: String, context: Context, img: Any?, onBackClick: (Context) -> Unit) {
@@ -204,22 +213,6 @@ fun PaymentTopComp(title: String, context: Context, img: Any?, onBackClick: (Con
 
     }
 
-
-}
-
-@Composable
-@Preview(showSystemUi = true)
-fun PaymentTopPre() {
-
-    val context = LocalContext.current
-    PaymentTopComp("King Kong GodziLa", context.applicationContext, R.drawable.trangquynh) {}
-    PaymentContentComp("Items Ordered") {
-        PaymentTotaltComp("2 x FC - Week - holiday - 2D - park : C4, C5", 180.00)
-    }
-    PaymentContentComp("Payment methods") {
-        PaymentSelectMethodPaymenttComp(listMethodPayment) { methodPayment: MethodPayment ->
-        }
-    }
 
 }
 
@@ -305,14 +298,6 @@ fun PaymentTotaltComp(list: Any, price: Double) {
 
 }
 
-@Composable
-@Preview(showSystemUi = true)
-
-fun PaymentContentPre() {
-    PaymentContentComp("Items Ordered") {
-        PaymentTotaltComp("2 x FC - Week - holiday - 2D - park : C4, C5", 180.00)
-    }
-}
 
 @Composable
 fun PaymentSelectMethodPaymenttComp(
@@ -371,15 +356,6 @@ fun PaymentSelectMethodPaymenttComp(
 
 }
 
-@Composable
-@Preview(showSystemUi = true)
-
-fun PaymentSelectMethodPaymenttPre() {
-    PaymentContentComp("Payment methods") {
-        PaymentSelectMethodPaymenttComp(listMethodPayment) { methodPayment: MethodPayment ->
-        }
-    }
-}
 
 @Composable
 fun PaymentFooterComp(
@@ -443,16 +419,7 @@ fun PaymentFooterComp(
 
 }
 
-@Composable
-@Preview(showSystemUi = true)
 
-fun PaymentFooterPre() {
-    PaymentFooterComp(false, onClicked = {
-
-    }, onClickMethod = {
-
-    })
-}
 
 data class MethodPayment(
     @DrawableRes val img: Int,

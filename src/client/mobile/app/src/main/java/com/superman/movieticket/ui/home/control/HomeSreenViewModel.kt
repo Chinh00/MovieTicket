@@ -35,9 +35,7 @@ class HomeScreenViewModel @Inject constructor(
     val listMovies = _listMovies.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            HandleGetMovie()
-        }
+        HandleGetMovie()
     }
 
 

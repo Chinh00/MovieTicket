@@ -2,6 +2,7 @@ package com.superman.movieticket.ui.home
 
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -64,13 +65,18 @@ import kotlin.math.absoluteValue
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.material3.*
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.core.graphics.scaleMatrix
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LifecycleOwner
 import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.infrastructure.utils.DatetimeHelper
@@ -101,12 +107,21 @@ fun HomeScreen() {
     }
 
 }
+@Composable
+fun rememberLifecycleOwner(context: Context): LifecycleOwner {
+    return remember(context) {
+        context as LifecycleOwner
+    }
+}
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeContent() {
 
-    ConstraintLayout(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    ConstraintLayout(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)) {
         HomePage()
     }
 }
@@ -114,8 +129,13 @@ fun HomeContent() {
 @Composable
 fun ComingPage() {
 
+
+
+
     val homeScreenModel: HomeScreenViewModel = hiltViewModel()
     val movies = homeScreenModel.listMovies.collectAsState().value
+
+
 
 
     Column(
@@ -467,10 +487,11 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
         _imgBg.value = listViewMoviesNowing[page].avatar
         Column(
             modifier = Modifier
-                .width(360.dp).height(450.dp)
+                .width(360.dp)
+                .height(450.dp)
                 .clickable {
                     val intent = Intent(context, DetailActivity::class.java)
-                    intent.putExtra("id",listViewMoviesNowing[page].id)
+                    intent.putExtra("id", listViewMoviesNowing[page].id)
 //            Log.w("idMV",it.id)
                     context.startActivity(intent)
                 }
