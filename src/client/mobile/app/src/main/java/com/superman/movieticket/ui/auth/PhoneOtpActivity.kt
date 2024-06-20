@@ -316,7 +316,7 @@ class PhoneOtpActivity : ComponentActivity() {
                         onClick = {
                             viewModelPhoneVerifyViewModel.sendOtp(
                                 phone,
-                                context as Activity,
+                                context as ComponentActivity,
                                 onOtpSent = { success, s ->
                                 })
                         }

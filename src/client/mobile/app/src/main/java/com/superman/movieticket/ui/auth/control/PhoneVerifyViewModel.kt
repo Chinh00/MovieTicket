@@ -3,6 +3,7 @@ package com.superman.movieticket.ui.auth.control
 import android.app.Activity
 import android.app.Application
 import android.util.Log
+import androidx.activity.ComponentActivity
 
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,9 +40,11 @@ class PhoneVerifyViewModel @Inject constructor(application: Application) : Andro
     }
     init {
     }
-    fun sendOtp(phoneNumber: String, activity: Activity, onOtpSent: (Boolean, String) -> Unit) {
+    fun sendOtp(phoneNumber: String, activity: ComponentActivity, onOtpSent: (Boolean, String) -> Unit) {
         viewModelScope.launch {
             try {
+                Log.d("PhoneVerifyComp1",phoneNumber)
+
                 val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
                     .setPhoneNumber(phoneNumber)
                     .setTimeout(60L, TimeUnit.SECONDS)

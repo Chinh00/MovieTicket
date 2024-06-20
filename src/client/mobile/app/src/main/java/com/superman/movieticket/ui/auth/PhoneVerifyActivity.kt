@@ -188,7 +188,7 @@ fun PhoneVerifyComp(
                         val fullPhoneNumber = selectedCode + phone
                         viewModel.sendOtp(
                             fullPhoneNumber,
-                            context as Activity
+                            context as ComponentActivity
                         ) { success, verificationId ->
                             isLoading = false
                             if (success) {

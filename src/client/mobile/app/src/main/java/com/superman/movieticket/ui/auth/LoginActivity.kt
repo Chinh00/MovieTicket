@@ -1,5 +1,7 @@
 package com.superman.movieticket.ui.auth
 
+import android.app.Activity
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +11,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,15 +26,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.RemoveRedEye
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -40,6 +56,8 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,6 +69,7 @@ import com.superman.movieticket.R
 import com.superman.movieticket.ui.auth.control.LoginGoogleViewModel
 import com.superman.movieticket.ui.auth.control.LoginFaceBookViewModel
 import com.superman.movieticket.ui.auth.control.LoginSocialViewModel
+import com.superman.movieticket.ui.auth.control.PhoneVerifyViewModel
 import com.superman.movieticket.ui.theme.CustomBlue
 import com.superman.movieticket.ui.theme.balooFont
 import kotlinx.coroutines.CoroutineScope
@@ -76,7 +95,7 @@ public class LoginActivity : ComponentActivity() {
 
 
 
-        if(requestCode == RC_SIGN_IN){
+        if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             loginGoogleViewModel.signInWithGoogle(task) {
                 if (it) {
@@ -86,16 +105,15 @@ public class LoginActivity : ComponentActivity() {
                 }
 
             }
-        }else{
+        } else {
             Log.d("LoginActivity: ", requestCode.toString() + " réult code " + resultCode)
             loginFacebookViewModel.callbackManager.onActivityResult(requestCode, resultCode, data)
         }
     }
 
 
-
     companion object {
-         const val RC_SIGN_IN = 9001
+        const val RC_SIGN_IN = 9001
     }
 }
 
@@ -103,14 +121,17 @@ public class LoginActivity : ComponentActivity() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LoginScreen(
-
 ) {
+    val codePhone = "+84"
     val loginGoogleViewModel: LoginGoogleViewModel = hiltViewModel()
+    val phoneViewModel: PhoneVerifyViewModel = hiltViewModel()
 
     val context = LocalContext.current
+    var mk by remember { mutableStateOf("") }
 
+    var phone by remember { mutableStateOf("") }
 
-    Box (modifier = Modifier.apply {
+    Box(modifier = Modifier.apply {
         fillMaxSize().background(Color.Gray)
     }, contentAlignment = Alignment.Center) {
         Column(
@@ -134,7 +155,7 @@ fun LoginScreen(
             }
             Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Weclcome Back!",
+                    text = "Welccome Back!",
                     style = MaterialTheme.typography.headlineMedium,
                     color = CustomBlue,
                     fontFamily = balooFont,
@@ -142,21 +163,98 @@ fun LoginScreen(
                 )
 
             }
-            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+            Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Enter Your Details",
+                    text = "Enter Your Phone",
                     style = MaterialTheme.typography.titleLarge,
                     fontFamily = balooFont,
                     color = Color.Gray,
                     fontWeight = FontWeight.Medium
                 )
+                OutlinedTextField(
+                    value = phone,
+                    onValueChange = { phone = it },
+                    placeholder = { Text("", color = Color.Gray) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(2.dp, Color.Gray, MaterialTheme.shapes.large)
+                        .clip(MaterialTheme.shapes.large),
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Phone,
+                            contentDescription = null
+                        )
+                    }
+
+
+                )
 
             }
-            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-                TextButton(onClick = {
-                    val intent = Intent(context.applicationContext,ForgotPasswordActivity::class.java)
+            var isShowPass by remember{ mutableStateOf(false) }
+            Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Enter Your Password",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontFamily = balooFont,
+                    color = Color.Gray,
+                    fontWeight = FontWeight.Medium
+                )
+                OutlinedTextField(
+                    value = mk,
+                    onValueChange = { mk = it },
+                    placeholder = { Text("", color = Color.Gray) }, visualTransformation = if(isShowPass) VisualTransformation.None else PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(2.dp, Color.Gray, MaterialTheme.shapes.large)
+                        .clip(MaterialTheme.shapes.large),
 
-                    context.startActivity(intent) }) {
+                            trailingIcon = {
+                        Icon(
+                             if(isShowPass) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            contentDescription = null,modifier=Modifier.clickable { isShowPass=!isShowPass }
+                        )
+                    }
+                )
+
+            }
+            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                TextButton(onClick = {
+                    val verifyID = ""
+                    val fullPhoneNumber = codePhone + phone
+                    Log.d("Phone",fullPhoneNumber)
+                    phoneViewModel.sendOtp(
+                        fullPhoneNumber,
+                        context as ComponentActivity
+                    ) { success, verificationId ->
+                        if (success) {
+                            Log.d("PhoneVerifyComp",verificationId)
+
+                            val verifyID = verificationId
+
+                            val intent = Intent(context, PhoneOtpActivity::class.java)
+                            intent.putExtra("phone", fullPhoneNumber)
+                            intent.putExtra("verifyId", verifyID)
+                            context.startActivity(intent)
+                        } else {
+                            // Handle verification failure
+                            Log.e("PhoneVerifyComp", "Failed to send OTP")
+                        }
+                    }
+                }) {
+                    Text(
+                        text = "SEND OTP",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontFamily = FontFamily.SansSerif,
+                        color = CustomBlue,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                TextButton(onClick = {
+                    val intent =
+                        Intent(context.applicationContext, ForgotPasswordActivity::class.java)
+
+                    context.startActivity(intent)
+                }) {
                     Text(
                         text = "Forget password?",
                         style = MaterialTheme.typography.labelLarge,
@@ -167,7 +265,15 @@ fun LoginScreen(
                 }
 
             }
-
+            Row(
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .fillMaxWidth(),
+            ){
+                Button(onClick = { /*TODO*/ }) {
+                    Text(text = context.getString(R.string.login))
+                }
+            }
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -225,7 +331,11 @@ fun LoginScreen(
                 ClickableText(text = annotatedText,
                     style = MaterialTheme.typography.bodyLarge,
                     onClick = { offset ->
-                        annotatedText.getStringAnnotations(tag = "SignUp", start = offset, end = offset)
+                        annotatedText.getStringAnnotations(
+                            tag = "SignUp",
+                            start = offset,
+                            end = offset
+                        )
                             .firstOrNull()?.let {
                                 Log.d("weew", "asdasdasdasdasdasd")
                             }
