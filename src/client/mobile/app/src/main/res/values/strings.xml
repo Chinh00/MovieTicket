@@ -12,6 +12,10 @@
     <string name="login">Đăng nhập</string>
 
     <string name="next">Next</string>
+    <string name="priceticket">Giá vé:</string>
+    <string name="amountticket">Số lượng vé:</string>
+    <string name="amountservice">Số lượng:</string>
+    <string name="sum">Tổng</string>
     <string name="previous">Previous</string>
 
 

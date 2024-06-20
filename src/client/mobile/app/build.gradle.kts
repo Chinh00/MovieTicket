@@ -10,10 +10,10 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = file("C:\\Users\\Ching\\keystore.jks")
-            storePassword = "@P@ssw0rd02"
+            storeFile = file("C:\\Users\\ASUS\\Documents\\GitHub\\JSK\\MovieTicket.jks")
+            storePassword = "khanh0106"
             keyAlias = "key0"
-            keyPassword = "@P@ssw0rd02"
+            keyPassword = "khanh0106"
         }
     }
     namespace = "com.superman.movieticket"
