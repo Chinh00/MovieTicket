@@ -65,26 +65,25 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.superman.movieticket.infrastructure.utils.ApiState
-import com.superman.movieticket.ui.auth.control.LoginActivityModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 import com.superman.movieticket.R
-import com.superman.movieticket.ui.auth.control.LoginGoogleViewModel
-import com.superman.movieticket.ui.auth.control.LoginFaceBookViewModel
-import com.superman.movieticket.ui.auth.control.LoginSocialViewModel
+import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.auth.control.PhoneVerifyViewModel
 import com.superman.movieticket.ui.theme.CustomBlue
 import com.superman.movieticket.ui.theme.balooFont
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 @AndroidEntryPoint
 public class LoginActivity : ComponentActivity() {
-    private val loginFacebookViewModel: LoginFaceBookViewModel by viewModels()
-    private val loginGoogleViewModel: LoginGoogleViewModel by viewModels()
+
+
+    val loginActivityViewModel: LoginActivityViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        loginActivityViewModel.InitConfigLoginGoogle(this);
 
         setContent {
             com.superman.movieticket.ui.components.BaseScreen(content = {
@@ -96,12 +95,9 @@ public class LoginActivity : ComponentActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-
-
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            loginGoogleViewModel.signInWithGoogle(task) {
+            loginActivityViewModel.signInWithGoogle(task) {
                 if (it) {
                     finish()
                 } else {
@@ -111,7 +107,7 @@ public class LoginActivity : ComponentActivity() {
             }
         } else {
             Log.d("LoginActivity: ", requestCode.toString() + " réult code " + resultCode)
-            loginFacebookViewModel.callbackManager.onActivityResult(requestCode, resultCode, data)
+            loginActivityViewModel.callbackManager.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -129,9 +125,6 @@ fun LoginScreen(
     val keyboardFocusManager = LocalFocusManager.current
 
     var isShowPass by remember { mutableStateOf(false) }
-    val codePhone = "+84"
-    val loginGoogleViewModel: LoginGoogleViewModel = hiltViewModel()
-    val phoneViewModel: PhoneVerifyViewModel = hiltViewModel()
 
     val context = LocalContext.current
     var mk by remember { mutableStateOf("") }
@@ -245,26 +238,6 @@ fun LoginScreen(
                     val intent = Intent(context, PhoneVerifyActivity::class.java)
 
                             context.startActivity(intent)
-//                    val verifyID = ""
-//                    val fullPhoneNumber = codePhone + phone
-//                    Log.d("PhoneVerifyComp", fullPhoneNumber)
-//                    phoneViewModel.sendOtp(
-//                        fullPhoneNumber,
-//                        context as ComponentActivity
-//                    ) { success, verificationId ->
-//                        if (success) {
-//                            Log.d("PhoneVerifyComp", verificationId)
-//
-//                            val verifyID = verificationId
-//
-//                            val intent = Intent(context, PhoneOtpActivity::class.java)
-//                            intent.putExtra("phone", fullPhoneNumber)
-//                            intent.putExtra("verifyId", verifyID)
-//                            context.startActivity(intent)
-//                        } else {
-//                            // Handle verification failure
-//                            Log.e("PhoneVerifyComp", "Failed to send OTP")
-//                        }
                 }) {
                     Text(
                         text = "Login OTP",
@@ -366,14 +339,6 @@ fun LoginScreen(
                             }
                     })
             }
-        }
-
-        if (loginGoogleViewModel.apiLoading.collectAsState().value == ApiState.LOADING) {
-            CircularProgressIndicator(
-                modifier = Modifier.width(70.dp),
-                color = MaterialTheme.colorScheme.secondary,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-            )
         }
     }
 

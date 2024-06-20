@@ -38,9 +38,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.superman.movieticket.domain.entities.Movie
-import com.superman.movieticket.ui.auth.control.LoginSocialViewModel
+import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.auth.hooks.NavigateLogin
-import com.superman.movieticket.ui.detail.view.DetailScreen
 import com.superman.movieticket.ui.film.FilmScreen
 import com.superman.movieticket.ui.home.HomeScreen
 import com.superman.movieticket.ui.main.model.NavigationBarItemConfig
@@ -65,7 +64,7 @@ class MainActivity : ComponentActivity() {
 fun MainScreen () {
     val navController = rememberNavController()
     val context = LocalContext.current
-    val loginSocialViewModel: LoginSocialViewModel = hiltViewModel()
+    val loginSocialViewModel: LoginActivityViewModel = hiltViewModel()
     val login by loginSocialViewModel.isLogin.collectAsState(initial = null)
     val navigationBarItems = listOf<NavigationBarItemConfig>(
         NavigationBarItemConfig(

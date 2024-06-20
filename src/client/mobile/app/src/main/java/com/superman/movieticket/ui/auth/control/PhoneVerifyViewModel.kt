@@ -40,10 +40,12 @@ class PhoneVerifyViewModel @Inject constructor(application: Application) : Andro
     }
     init {
     }
-    fun sendOtp(phoneNumber: String, activity: ComponentActivity, onOtpSent: (Boolean, String) -> Unit) {
+    fun sendOtp(phoneNumber: String, activity: Activity, onOtpSent: (Boolean, String) -> Unit) {
         viewModelScope.launch {
             try {
                 Log.d("PhoneVerifyComp1",phoneNumber)
+                //vlin cuar t vs m gionsg nhau maf sao t chayj dc aor thes
+                //  đ ai beiét thử cái facebôk đi
 
                 val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
                     .setPhoneNumber(phoneNumber)

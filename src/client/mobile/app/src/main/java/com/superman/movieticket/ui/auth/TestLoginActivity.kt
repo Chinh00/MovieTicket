@@ -63,14 +63,12 @@ import com.facebook.FacebookSdk
 import com.facebook.login.LoginManager
 
 import com.superman.movieticket.R
-import com.superman.movieticket.ui.auth.control.LoginGoogleViewModel
-import com.superman.movieticket.ui.auth.control.LoginFaceBookViewModel
-import com.superman.movieticket.ui.auth.control.LoginSocialViewModel
-import com.superman.movieticket.ui.auth.control.LoginState
+import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.theme.CustomBlue
 import com.superman.movieticket.ui.theme.balooFont
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
+@AndroidEntryPoint
 class TestLoginActivity : ComponentActivity() {
 
 
@@ -84,33 +82,19 @@ class TestLoginActivity : ComponentActivity() {
 
 //@Preview(showSystemUi = true)
 @Composable
-fun SignInGoogleScreen(ggViewModel: LoginGoogleViewModel = viewModel()) {
-    val viewModel: LoginSocialViewModel = hiltViewModel()
+fun SignInGoogleScreen() {
+    val loginActivityViewModel: LoginActivityViewModel = hiltViewModel()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-//    viewModel.configureGoogleSignIn(context)
-//    val signInLauncher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.StartActivityForResult()
-//    ) { result ->
-//        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-//        Log.d("reqCode",result.resultCode.toString())
-//        viewModel.handleSignInGoogleResult(task,
-//            onSuccess = { account ->
-//                (context as? Activity)?.finish()
-//            },
-//            onFailure = { exception ->
-//
-//            }
-//        )
-//    }
+
 
     Button(
         onClick = {
-            ggViewModel.signOut {
+            loginActivityViewModel.signOut {
 
-                val signInIntent = ggViewModel.googleSignInClient.signInIntent
-                Log.d("Firebase",ggViewModel.secondaryAuth.toString())
+                val signInIntent = loginActivityViewModel.googleSignInClient.signInIntent
+                Log.d("Firebase",loginActivityViewModel.secondaryAuth.toString())
                 coroutineScope.launch {
                     (context as LoginActivity).startActivityForResult(
                         signInIntent,
@@ -141,65 +125,44 @@ fun SignInGoogleScreen(ggViewModel: LoginGoogleViewModel = viewModel()) {
 }
 
 @Composable
-fun SignInFacebookComp(viewModel: LoginFaceBookViewModel = viewModel()) {
-    val loginState by viewModel.loginState.collectAsState()
+fun SignInFacebookComp() {
+
     val context = LocalContext.current
     FacebookSdk.sdkInitialize(context)
 
-//    val launcher =
-//        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-//            viewModel.callbackManager.onActivityResult(
-//                result.resultCode,
-//                result.resultCode,
-//                result.data
-//            )
-//        }
 
+    Button(
+        onClick = {
 
-    when (loginState) {
-        is LoginState.Idle -> {
-            Button(
-                onClick = {
+            LoginManager.getInstance().logInWithReadPermissions(
+                context as Activity,
+                listOf("email", "public_profile")
+            )
+        }, modifier = Modifier
+            .height(50.dp)
+            .shadow(
+                shape = MaterialTheme.shapes.small,
+                ambientColor = Color.Gray,
+                elevation = 8.dp
+            ), shape = MaterialTheme.shapes.small, colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White
+        )
 
-                    LoginManager.getInstance().logInWithReadPermissions(
-                        context as Activity,
-                        listOf("email", "public_profile")
-                    )
-                }, modifier = Modifier
-                    .height(50.dp)
-                    .shadow(
-                        shape = MaterialTheme.shapes.small,
-                        ambientColor = Color.Gray,
-                        elevation = 8.dp
-                    ), shape = MaterialTheme.shapes.small, colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White
-                )
-
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.facebook),
-                    modifier = Modifier.size(24.dp),
-                    contentDescription = null
-                )
-            }
-        }
-
-        is LoginState.Error -> TODO()
-        is LoginState.Loading -> {
-            CircularProgressIndicator()
-        }
-
-        is LoginState.Success -> {
-            val name = (loginState as LoginState.Success).name
-            val email = (loginState as LoginState.Success).email
-            Text(text = "Welcome, $name ($email)")
-        }
-
-        is LoginState.Error -> {
-            val message = (loginState as LoginState.Error).message
-            Text(text = "Login Failed: $message")
-        }
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.facebook),
+            modifier = Modifier.size(24.dp),
+            contentDescription = null
+        )
     }
+    // m sua luon tren day di
+    // t nghix cau hinh sai cho nao thoi
+    // chuw push di pus lai van vay ak
+
+
+// m code ma
+        // them lai di
+    //t xoa cai icon di thoi
 
 }
 

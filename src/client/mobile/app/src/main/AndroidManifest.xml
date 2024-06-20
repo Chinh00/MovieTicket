@@ -98,7 +98,7 @@
             android:name=".ui.auth.LoginActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.systems.SplashOneActivity"
+            android:name=".ui.systems.SplashActivity"
             android:exported="true"
             tools:ignore="DuplicateActivity">
             <intent-filter>

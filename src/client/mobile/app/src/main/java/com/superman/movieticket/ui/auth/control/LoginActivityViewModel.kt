@@ -1,12 +1,21 @@
 package com.superman.movieticket.ui.auth.control
 
-import android.app.Application
+import android.content.Context
+import android.os.Bundle
 import android.util.Log
+import androidx.compose.runtime.collectAsState
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.GraphRequest
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -19,43 +28,76 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.services.AuthService
-import com.superman.movieticket.infrastructure.di.CoroutineScopeIO
 import com.superman.movieticket.infrastructure.utils.ApiState
 import com.superman.movieticket.infrastructure.utils.PreferenceKey
 import com.superman.movieticket.ui.auth.model.TokenResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginGoogleViewModel @Inject constructor(
-    application: Application,
+class LoginActivityViewModel @Inject constructor(
     private val authService: AuthService,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+) : ViewModel () {
+    public lateinit var googleSignInClient: GoogleSignInClient
+    public lateinit var secondaryAuth: FirebaseAuth
 
-): AndroidViewModel(application) {
-    var googleSignInClient: GoogleSignInClient
-    val secondaryAuth:FirebaseAuth
+    val callbackManager: CallbackManager = CallbackManager.Factory.create()
+
 
     val _apiLoading = MutableStateFlow(ApiState.NONE)
     val apiLoading = _apiLoading.asStateFlow()
 
+    val isLogin = dataStore.data.map { it[PreferenceKey.IS_AUTHENTICATE]
+    }
 
-    init{
+
+
+
+    init {
+
+    }
+
+
+
+
+
+
+
+    init {
+        //config login google
+
+
+
+
+        // config login facebook
+
+        registerFacebookCallback()
+
+
+
+
+
+    }
+
+
+
+    public fun InitConfigLoginGoogle (context: Context) {
         val optionsSecondary = FirebaseOptions.Builder()
             .setProjectId("movie-ticket-mobile")
             .setApplicationId("1:102542804094:android:f689ea14dd4f359c97042f")
             .setApiKey("AIzaSyBheLL2QWpWpUGbdx2JicJVRs5D34MtHhs")
 
             .build()
-        if (FirebaseApp.getApps(application).none { it.name == "main" }) {
-            FirebaseApp.initializeApp(application, optionsSecondary, "main")
+        if (FirebaseApp.getApps(context).none { it.name == "main" }) {
+            FirebaseApp.initializeApp(context, optionsSecondary, "main")
         }
 
         val secondaryApp = FirebaseApp.getInstance("main")
@@ -64,11 +106,22 @@ class LoginGoogleViewModel @Inject constructor(
             .requestIdToken(AppOptions.GOOGLE_CLIENT_ID)
             .requestEmail()
             .build()
-        googleSignInClient = GoogleSignIn.getClient(application.applicationContext, gso)
+        googleSignInClient = GoogleSignIn.getClient(context.applicationContext, gso)
     }
 
 
-    fun signInWithGoogle(task: Task<GoogleSignInAccount>, onSuccess: (Boolean) -> Unit) {
+
+
+
+
+
+
+
+
+
+
+
+    public fun signInWithGoogle(task: Task<GoogleSignInAccount>, onSuccess: (Boolean) -> Unit) {
         viewModelScope.launch {
             _apiLoading.value = ApiState.LOADING
             val account = task.getResult(ApiException::class.java)!!
@@ -123,6 +176,50 @@ class LoginGoogleViewModel @Inject constructor(
             onSignOutComplete()
         }
     }
+
+
+
+    private fun registerFacebookCallback() {
+        LoginManager.getInstance()
+            .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult) {
+                    result?.accessToken?.let { token ->
+                        fetchFacebookUserProfile(token)
+
+                    }
+                    _apiLoading.value = ApiState.SUCCESS
+                }
+
+                override fun onCancel() {
+                    _apiLoading.value = ApiState.FAIL
+                }
+
+                override fun onError(error: FacebookException) {
+                    _apiLoading.value = ApiState.FAIL
+                }
+            })
+    }
+
+    private fun fetchFacebookUserProfile(accessToken: AccessToken) {
+        viewModelScope.launch {
+            try {
+                val request = GraphRequest.newMeRequest(
+                    accessToken
+                ) { jsonObject, _ ->
+                    val name = jsonObject!!.getString("name")
+                    val email = jsonObject!!.getString("email")
+                    Log.d("e",email)
+                }
+                val parameters = Bundle()
+                parameters.putString("fields", "id,name,email")
+                request.parameters = parameters
+                request.executeAsync()
+            } catch (e: Exception) {
+            }
+        }
+    }
+
+
 
 
 }

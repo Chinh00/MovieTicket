@@ -48,8 +48,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import com.superman.movieticket.core.view.BaseActivity
-import com.superman.movieticket.ui.auth.control.LoginActivityModel
-import com.superman.movieticket.ui.auth.control.LoginActivityModelImpl
 import com.superman.movieticket.ui.auth.model.UserLoginModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
