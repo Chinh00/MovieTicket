@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.RemoveRedEye
@@ -56,6 +58,8 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
@@ -122,6 +126,9 @@ public class LoginActivity : ComponentActivity() {
 @Composable
 fun LoginScreen(
 ) {
+    val keyboardFocusManager = LocalFocusManager.current
+
+    var isShowPass by remember { mutableStateOf(false) }
     val codePhone = "+84"
     val loginGoogleViewModel: LoginGoogleViewModel = hiltViewModel()
     val phoneViewModel: PhoneVerifyViewModel = hiltViewModel()
@@ -167,14 +174,19 @@ fun LoginScreen(
                 Text(
                     text = "Enter Your Phone",
                     style = MaterialTheme.typography.titleLarge,
-                    fontFamily = balooFont,
                     color = Color.Gray,
                     fontWeight = FontWeight.Medium
                 )
                 OutlinedTextField(
-                    value = phone,
+                    value = phone, textStyle = MaterialTheme.typography.bodyLarge,
                     onValueChange = { phone = it },
-                    placeholder = { Text("", color = Color.Gray) },
+                    placeholder = { Text("", color = Color.Gray) },keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Phone,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(onDone = {
+                        keyboardFocusManager.clearFocus()
+                    }),
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(2.dp, Color.Gray, MaterialTheme.shapes.large)
@@ -190,44 +202,55 @@ fun LoginScreen(
                 )
 
             }
-            var isShowPass by remember{ mutableStateOf(false) }
+
             Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = "Enter Your Password",
                     style = MaterialTheme.typography.titleLarge,
-                    fontFamily = balooFont,
                     color = Color.Gray,
                     fontWeight = FontWeight.Medium
                 )
                 OutlinedTextField(
                     value = mk,
                     onValueChange = { mk = it },
-                    placeholder = { Text("", color = Color.Gray) }, visualTransformation = if(isShowPass) VisualTransformation.None else PasswordVisualTransformation(),
+                    placeholder = { Text("", color = Color.Gray) },
+                    visualTransformation = if (isShowPass) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(onDone = {
+                        keyboardFocusManager.clearFocus()
+                    }),
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(2.dp, Color.Gray, MaterialTheme.shapes.large)
                         .clip(MaterialTheme.shapes.large),
 
-                            trailingIcon = {
+                    trailingIcon = {
                         Icon(
-                             if(isShowPass) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = null,modifier=Modifier.clickable { isShowPass=!isShowPass }
+                            if (isShowPass) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            contentDescription = null,
+                            modifier = Modifier.clickable { isShowPass = !isShowPass }
                         )
                     }
                 )
 
             }
-            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 TextButton(onClick = {
                     val verifyID = ""
                     val fullPhoneNumber = codePhone + phone
-                    Log.d("Phone",fullPhoneNumber)
+                    Log.d("PhoneVerifyComp", fullPhoneNumber)
                     phoneViewModel.sendOtp(
                         fullPhoneNumber,
                         context as ComponentActivity
                     ) { success, verificationId ->
                         if (success) {
-                            Log.d("PhoneVerifyComp",verificationId)
+                            Log.d("PhoneVerifyComp", verificationId)
 
                             val verifyID = verificationId
 
@@ -269,7 +292,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .fillMaxWidth(),
-            ){
+            ) {
                 Button(onClick = { /*TODO*/ }) {
                     Text(text = context.getString(R.string.login))
                 }
