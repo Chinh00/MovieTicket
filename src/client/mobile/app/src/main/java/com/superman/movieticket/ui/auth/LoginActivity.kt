@@ -242,30 +242,32 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 TextButton(onClick = {
-                    val verifyID = ""
-                    val fullPhoneNumber = codePhone + phone
-                    Log.d("PhoneVerifyComp", fullPhoneNumber)
-                    phoneViewModel.sendOtp(
-                        fullPhoneNumber,
-                        context as ComponentActivity
-                    ) { success, verificationId ->
-                        if (success) {
-                            Log.d("PhoneVerifyComp", verificationId)
+                    val intent = Intent(context, PhoneVerifyActivity::class.java)
 
-                            val verifyID = verificationId
-
-                            val intent = Intent(context, PhoneOtpActivity::class.java)
-                            intent.putExtra("phone", fullPhoneNumber)
-                            intent.putExtra("verifyId", verifyID)
                             context.startActivity(intent)
-                        } else {
-                            // Handle verification failure
-                            Log.e("PhoneVerifyComp", "Failed to send OTP")
-                        }
-                    }
+//                    val verifyID = ""
+//                    val fullPhoneNumber = codePhone + phone
+//                    Log.d("PhoneVerifyComp", fullPhoneNumber)
+//                    phoneViewModel.sendOtp(
+//                        fullPhoneNumber,
+//                        context as ComponentActivity
+//                    ) { success, verificationId ->
+//                        if (success) {
+//                            Log.d("PhoneVerifyComp", verificationId)
+//
+//                            val verifyID = verificationId
+//
+//                            val intent = Intent(context, PhoneOtpActivity::class.java)
+//                            intent.putExtra("phone", fullPhoneNumber)
+//                            intent.putExtra("verifyId", verifyID)
+//                            context.startActivity(intent)
+//                        } else {
+//                            // Handle verification failure
+//                            Log.e("PhoneVerifyComp", "Failed to send OTP")
+//                        }
                 }) {
                     Text(
-                        text = "SEND OTP",
+                        text = "Login OTP",
                         style = MaterialTheme.typography.labelLarge,
                         fontFamily = FontFamily.SansSerif,
                         color = CustomBlue,

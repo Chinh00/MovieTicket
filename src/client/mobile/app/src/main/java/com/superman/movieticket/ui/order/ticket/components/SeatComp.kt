@@ -35,7 +35,7 @@ fun SeatComp(
     }
     Box(modifier = Modifier
         .size(32.dp)
-        .border(1.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
+        .border(1.dp, Color.Transparent, shape = RoundedCornerShape(8.dp))
         .clip(
             RoundedCornerShape(8.dp)
         )

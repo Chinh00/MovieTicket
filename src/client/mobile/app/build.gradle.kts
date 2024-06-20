@@ -164,4 +164,7 @@ dependencies {
 
     implementation("com.google.firebase:firebase-auth:21.0.1")
 
+    //make splash screen
+    implementation ("com.airbnb.android:lottie:3.4.0")
+
 }

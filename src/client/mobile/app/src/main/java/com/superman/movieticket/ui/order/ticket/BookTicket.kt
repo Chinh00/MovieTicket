@@ -208,10 +208,52 @@ fun TicketActivityComp(
                                     }
                                 )
 
-
+                                                    Spacer(modifier = Modifier.width(10.dp))
                             }
 
                         }
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                    Row(modifier = Modifier
+                        .padding(vertical = 10.dp)
+
+                        .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center) {
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .size(10.dp)
+                                    .background(Color.Gray, CircleShape)
+                            )
+                            Text(text = "Reserved", color = colorText)
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 20.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .size(10.dp)
+                                    .background(Color(0xFFEC9B24), CircleShape)
+                            )
+                            Text(text = "Selected", color = colorText)
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .size(10.dp)
+                                    .background(Color(0xFFFFFFFF), CircleShape)
+                            )
+                            Text(text = "Available", color = colorText)
+                        }
+
                     }
                 }
             }
@@ -219,50 +261,7 @@ fun TicketActivityComp(
             val t1 = createRef()
 
 
-            Row(modifier = Modifier
-                .padding(vertical = 10.dp)
-                .constrainAs(b) {
-                    bottom.linkTo(t1.top)
 
-                }
-                .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center) {
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .size(10.dp)
-                            .background(Color.Gray, CircleShape)
-                    )
-                    Text(text = "Reserved", color = colorText)
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .size(10.dp)
-                            .background(Color(0xFFEC9B24), CircleShape)
-                    )
-                    Text(text = "Selected", color = colorText)
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .size(10.dp)
-                            .background(Color(0xFFFFFFFF), CircleShape)
-                    )
-                    Text(text = "Available", color = colorText)
-                }
-
-            }
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
