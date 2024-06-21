@@ -24,7 +24,9 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.services.AuthService
@@ -185,6 +187,13 @@ class LoginActivityViewModel @Inject constructor(
                 override fun onSuccess(result: LoginResult) {
                     result?.accessToken?.let { token ->
                         fetchFacebookUserProfile(token)
+                        handleFacebookAccessToken(token,secondaryAuth, onLoginSuccess={
+                            Log.d("FaceBookSignIn", "Firebase : ${it?.email}")
+
+                        } , onLoginError={
+                            Log.d("FaceBookSignIn", "Firebase : ${it.message}")
+                        })
+                    Log.d("FaceBookSignIn", "User token: ${result.accessToken.token}")
 
                     }
                     _apiLoading.value = ApiState.SUCCESS
@@ -196,6 +205,8 @@ class LoginActivityViewModel @Inject constructor(
 
                 override fun onError(error: FacebookException) {
                     _apiLoading.value = ApiState.FAIL
+                    Log.e("FaceBookSignIn", "Firebase user email: ${error?.message}")
+
                 }
             })
     }
@@ -208,7 +219,7 @@ class LoginActivityViewModel @Inject constructor(
                 ) { jsonObject, _ ->
                     val name = jsonObject!!.getString("name")
                     val email = jsonObject!!.getString("email")
-                    Log.d("e",email)
+                    Log.d("FaceBookSignIn",email)
                 }
                 val parameters = Bundle()
                 parameters.putString("fields", "id,name,email")
@@ -217,6 +228,29 @@ class LoginActivityViewModel @Inject constructor(
             } catch (e: Exception) {
             }
         }
+    }
+    private fun handleFacebookAccessToken(
+        token: AccessToken,
+        firebaseAuth: FirebaseAuth,
+        onLoginSuccess: (FirebaseUser?) -> Unit,
+        onLoginError: (Exception) -> Unit
+    ) {
+        val credential = FacebookAuthProvider.getCredential(token.token)
+        firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = task.result?.user
+                    if (user != null) {
+                        Log.d("FaceBookSignIn", "Firebase user email: ${user.email}")
+                        onLoginSuccess(user)
+                    } else {
+                        onLoginError(Exception("User is null"))
+                    }
+                } else {
+                    Log.d("FaceBookSignIn", "Error signing in with credential: ${task.exception?.message}")
+                    onLoginError(task.exception ?: Exception("Unknown error"))
+                }
+            }
     }
 
 

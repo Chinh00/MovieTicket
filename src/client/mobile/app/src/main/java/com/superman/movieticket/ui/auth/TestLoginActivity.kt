@@ -1,6 +1,7 @@
 package com.superman.movieticket.ui.auth
 
 import android.app.Activity
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -34,6 +35,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,10 +59,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
 import com.facebook.FacebookSdk
+import com.facebook.appevents.AppEventsLogger
 import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 import com.superman.movieticket.R
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
@@ -68,6 +81,7 @@ import com.superman.movieticket.ui.theme.CustomBlue
 import com.superman.movieticket.ui.theme.balooFont
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 @AndroidEntryPoint
 class TestLoginActivity : ComponentActivity() {
 
@@ -94,7 +108,7 @@ fun SignInGoogleScreen() {
             loginActivityViewModel.signOut {
 
                 val signInIntent = loginActivityViewModel.googleSignInClient.signInIntent
-                Log.d("Firebase",loginActivityViewModel.secondaryAuth.toString())
+                Log.d("Firebase", loginActivityViewModel.secondaryAuth.toString())
                 coroutineScope.launch {
                     (context as LoginActivity).startActivityForResult(
                         signInIntent,
@@ -125,29 +139,60 @@ fun SignInGoogleScreen() {
 }
 
 @Composable
-fun SignInFacebookComp() {
-
+fun SignInFacebookComp(onLoginSuccess: (FirebaseUser?) -> Unit, onLoginError: (Exception) -> Unit) {
     val context = LocalContext.current
-    FacebookSdk.sdkInitialize(context)
+    val callbackManager = remember { CallbackManager.Factory.create() }
+    val firebaseAuth = FirebaseAuth.getInstance()
+    val loginActivityViewModel = hiltViewModel<LoginActivityViewModel>()
+
+    // Register the callback only once
+//    val loginManager = LoginManager.getInstance()
+//    loginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+//        override fun onSuccess(result: LoginResult) {
+//            Log.d("FaceBookSignIn", "Facebook access token: ${result.accessToken.token}")
+//
+//            handleFacebookAccessToken(
+//                result.accessToken,
+//                firebaseAuth,
+//                onLoginSuccess = {
+//                    Log.d("FaceBookSignIn", "Firebase user email: ${it?.email}")
+//                    onLoginSuccess(it)
+//                },
+//                onLoginError = {
+//                    Log.d("FaceBookSignIn", "Error: ${it.message}")
+//                    onLoginError(it)
+//                }
+//            )
+//        }
+//
+//        override fun onCancel() {
+//            Log.d("FaceBookSignIn", "Facebook login canceled")
+//        }
+//
+//        override fun onError(error: FacebookException) {
+//            Log.d("FaceBookSignIn", "Facebook login error: ${error.message}")
+//            onLoginError(error)
+//        }
+//    })
 
 
     Button(
         onClick = {
-
-            LoginManager.getInstance().logInWithReadPermissions(
-                context as Activity,
-                listOf("email", "public_profile")
-            )
-        }, modifier = Modifier
+            LoginManager.getInstance().logOut()
+            LoginManager.getInstance()
+                .logInWithReadPermissions(context as Activity, listOf("email", "public_profile"))
+        },
+        modifier = Modifier
             .height(50.dp)
             .shadow(
                 shape = MaterialTheme.shapes.small,
                 ambientColor = Color.Gray,
                 elevation = 8.dp
-            ), shape = MaterialTheme.shapes.small, colors = ButtonDefaults.buttonColors(
+            ),
+        shape = MaterialTheme.shapes.small,
+        colors = ButtonDefaults.buttonColors(
             containerColor = Color.White
         )
-
     ) {
         Image(
             painter = painterResource(id = R.drawable.facebook),
@@ -155,16 +200,31 @@ fun SignInFacebookComp() {
             contentDescription = null
         )
     }
-    // m sua luon tren day di
-    // t nghix cau hinh sai cho nao thoi
-    // chuw push di pus lai van vay ak
-
-
-// m code ma
-        // them lai di
-    //t xoa cai icon di thoi
-
 }
+
+private fun handleFacebookAccessToken(
+    token: AccessToken,
+    firebaseAuth: FirebaseAuth,
+    onLoginSuccess: (FirebaseUser?) -> Unit,
+    onLoginError: (Exception) -> Unit
+) {
+    val credential = FacebookAuthProvider.getCredential(token.token)
+    firebaseAuth.signInWithCredential(credential)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val user = task.result?.user
+                if (user != null) {
+                    Log.d("FaceBookSignIn", "Firebase user email: ${user.email}")
+                    onLoginSuccess(user)
+                } else {
+                    onLoginError(Exception("User is null"))
+                }
+            } else {
+                onLoginError(task.exception ?: Exception("Unknown error"))
+            }
+        }
+}
+
 
 @Preview(showSystemUi = true)
 @Composable
@@ -398,7 +458,11 @@ fun LoginSocialComp() {
             )
         }
         SignInGoogleScreen()
-        SignInFacebookComp()
+        SignInFacebookComp(onLoginSuccess = {
+            Log.d("FacebookSignIn", "Firebase user email: ${it?.email}")
+        }, onLoginError = {
+            Log.e("FacebookSignIn", "Error: ${it.message}")
+        })
     }
 }
 

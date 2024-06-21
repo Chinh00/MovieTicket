@@ -6,3 +6,11 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.google.gms.google.services) apply false
 }
+allprojects.apply {
+    buildscript.apply{
+        repositories {
+            mavenCentral()
+        }
+    }
+
+}

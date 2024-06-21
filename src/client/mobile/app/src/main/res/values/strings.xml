@@ -56,10 +56,9 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
 
-    <string name="facebook_app_id">472953128748324</string>
-    <string name="fb_login_protocol_scheme">fb472953128748324</string>
-    <string name="facebook_client_token">c705c29af243eea3e5b21dbdb8b57e08</string>
+    <string name="facebook_app_id">845335260794171</string>
+    <string name="fb_login_protocol_scheme">fb845335260794171</string>
+    <string name="facebook_client_token">db913280bf079b369afc86ba5ef9bf6f</string>
 
     <string name="server_client_id">759290814660-ueleaiokmsdq3vmseuj7kdni0au8c010.apps.googleusercontent.com</string>
-
 </resources>

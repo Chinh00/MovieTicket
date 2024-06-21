@@ -10,10 +10,17 @@ android {
 
     signingConfigs {
         getByName("debug") {
+<<<<<<< Updated upstream
             storeFile = file("C:\\Users\\ASUS\\Documents\\GitHub\\JSK\\MovieTicket.jks")
             storePassword = "khanh0106"
             keyAlias = "key0"
             keyPassword = "khanh0106"
+=======
+            storeFile = file("C:\\Users\\dongt\\keystore.jks")
+            storePassword = "123456"
+            keyAlias = "key0"
+            keyPassword = "123456"
+>>>>>>> Stashed changes
         }
     }
     namespace = "com.superman.movieticket"
@@ -64,12 +71,14 @@ android {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
 
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 }
+
 
 dependencies {
 
@@ -155,7 +164,7 @@ dependencies {
     //Login Google
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     //facebook login firebase
-    implementation("com.facebook.android:facebook-login:latest.release")
+    implementation("com.facebook.android:facebook-android-sdk:latest.release")
 
 //video exo player media
 
@@ -165,6 +174,6 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:21.0.1")
 
     //make splash screen
-    implementation ("com.airbnb.android:lottie:3.4.0")
+    implementation("com.airbnb.android:lottie:3.4.0")
 
 }

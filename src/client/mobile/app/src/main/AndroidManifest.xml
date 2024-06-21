@@ -74,11 +74,7 @@
         <activity android:name=".ui.order.ticket.TicketBookActivity" />
         <activity android:name=".ui.history.DetailOrderActivity" />
         <activity android:name=".ui.order.payment.PaymentActivity" />
-        <!--
-<activity android:name=".ui.auth.LoginActivity" android:exported="true" >
 
-        </activity>
-        -->
         <activity
             android:name=".ui.auth.ForgotPasswordActivity"
             android:exported="true"/>
