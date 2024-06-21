@@ -44,8 +44,6 @@ class PhoneVerifyViewModel @Inject constructor(application: Application) : Andro
         viewModelScope.launch {
             try {
                 Log.d("PhoneVerifyComp1",phoneNumber)
-                //vlin cuar t vs m gionsg nhau maf sao t chayj dc aor thes
-                //  đ ai beiét thử cái facebôk đi
 
                 val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
                     .setPhoneNumber(phoneNumber)

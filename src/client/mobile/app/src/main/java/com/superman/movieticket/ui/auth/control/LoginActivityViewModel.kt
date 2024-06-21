@@ -182,6 +182,9 @@ class LoginActivityViewModel @Inject constructor(
 
 
     private fun registerFacebookCallback() {
+
+
+
         LoginManager.getInstance()
             .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
                 override fun onSuccess(result: LoginResult) {

@@ -10,17 +10,10 @@ android {
 
     signingConfigs {
         getByName("debug") {
-<<<<<<< Updated upstream
-            storeFile = file("C:\\Users\\ASUS\\Documents\\GitHub\\JSK\\MovieTicket.jks")
-            storePassword = "khanh0106"
+            storeFile = file("C:\\Users\\Ching\\keystore.jks")
+            storePassword = "@P@ssw0rd02"
             keyAlias = "key0"
-            keyPassword = "khanh0106"
-=======
-            storeFile = file("C:\\Users\\dongt\\keystore.jks")
-            storePassword = "123456"
-            keyAlias = "key0"
-            keyPassword = "123456"
->>>>>>> Stashed changes
+            keyPassword = "@P@ssw0rd02"
         }
     }
     namespace = "com.superman.movieticket"
@@ -163,8 +156,11 @@ dependencies {
 
     //Login Google
     implementation("com.google.android.gms:play-services-auth:21.2.0")
+
+
     //facebook login firebase
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
+
 
 //video exo player media
 
