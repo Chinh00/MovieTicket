@@ -23,7 +23,7 @@ fun CustomButton(onClick: () -> Unit, text: String, modifier: Modifier = Modifie
     ) {
         Text(
             text = text,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.background,
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )

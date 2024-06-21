@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -81,7 +82,7 @@ fun Banners() {
             repeat(list_banner.size) {
                 val h = 12.dp
                 val w = if (it == bannerIndex) 28.dp else 12.dp
-                val c = if (it == bannerIndex) Color.Yellow else Color.Gray
+                val c = if (it == bannerIndex) MaterialTheme.colorScheme.onPrimaryContainer else Color.Gray
 
                 Surface(
                     modifier = Modifier

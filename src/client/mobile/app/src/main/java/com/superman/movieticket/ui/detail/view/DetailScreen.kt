@@ -87,6 +87,7 @@ import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.components.VideoViewer
 import com.superman.movieticket.ui.detail.control.DetailActivityViewModel
 import com.superman.movieticket.ui.home.control.HomeScreenViewModel
+import com.superman.movieticket.ui.order.screening.hooks.NavigateScreenActivity
 import com.superman.movieticket.ui.theme.CustomColor4
 import com.superman.movieticket.ui.theme.MyAppTheme
 import com.superman.movieticket.ui.theme.YoutubePlayer
@@ -131,14 +132,21 @@ class DetailActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreen(m: Movie) {
+    val context = LocalContext.current
     var isFullscreen by rememberSaveable { mutableStateOf(false) }
+    fun HandleTicket(id: String) {
+        NavigateScreenActivity(
+            context = context,
+            movieId = id
+        )
+    }
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.onSurface)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         val (s, t, e, b) = createRefs()
-
+        val context = LocalContext.current
         Box(
             modifier =  Modifier.constrainAs(s) {
                 top.linkTo(parent.top)
@@ -172,11 +180,11 @@ fun DetailScreen(m: Movie) {
             }) {
             Row() {
                 CustomButton(
-                    onClick = { /*TODO*/ },
-                    text = "Booking Tiket",
+                    onClick = { HandleTicket(m.id) },
+                    text = context.getString(R.string.txt_book_ticket),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp), CustomColor4
+                        .height(50.dp), MaterialTheme.colorScheme.onPrimaryContainer
                 )
 
             }
@@ -184,6 +192,7 @@ fun DetailScreen(m: Movie) {
 
 
     }
+
 
 }
 
@@ -197,7 +206,7 @@ fun DescriptionText(text: String, verticalScroll: ScrollState) {
             .fillMaxHeight()
             .padding(end = 15.dp, start = 15.dp, bottom = 50.dp)
     ) {
-        val gradientColors = listOf(Color.White, Color.LightGray, Color.DarkGray)
+        val gradientColors = listOf(MaterialTheme.colorScheme.onBackground, MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.secondaryContainer)
         Text(
             text = text,
             style = androidx.compose.ui.text.TextStyle(
@@ -275,13 +284,15 @@ fun DescriptionText(text: String, verticalScroll: ScrollState) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailItemScreen(m: Movie, scroll: ScrollState) {
+    val context = LocalContext.current
+    val colorText = MaterialTheme.colorScheme.onBackground
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.padding(vertical = 5.dp)) {
             Text(
                 text = "${m.name?:"Ddang caap nhat"}".uppercase(),
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.surface
+                color = colorText
             )
         }
         Row() {
@@ -303,33 +314,33 @@ fun DetailItemScreen(m: Movie, scroll: ScrollState) {
             ) {
                 Row {
                     Text(
-                        text = "Thời lượng: ", modifier = Modifier.width(80.dp),
-                        color = MaterialTheme.colorScheme.surface,
+                        text = "${context.getString(R.string.txt_duration)}}: ", modifier = Modifier.width(80.dp),
+                        color = colorText,
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
-                        text = " ${m.totalTime} phút",
-                        color = MaterialTheme.colorScheme.surface,
+                        text = " ${m.totalTime} ${context.getString(R.string.txt_minutes)}",
+                        color = colorText,
                         style = MaterialTheme.typography.titleSmall
                     )
                 }
                 Row {
                     Text(
-                        text = "Khởi chiếu: ", modifier = Modifier.width(80.dp),
-                        color = MaterialTheme.colorScheme.surface,
+                        text = "${context.getString(R.string.txt_release_date)}: ", modifier = Modifier.width(80.dp),
+                        color = colorText,
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
                         text = DatetimeHelper.ConvertISODatetimeToLocalDatetime(m.releaseDate, "dd/MM/yyyy"),
 //                        text = "__",
-                        color = MaterialTheme.colorScheme.surface,
+                        color = colorText,
                         style = MaterialTheme.typography.titleSmall
                     )
                 }
                 Row {
                     Text(
-                        text = "Thể loại: ", modifier = Modifier.width(80.dp),
-                        color = MaterialTheme.colorScheme.surface,
+                        text = "${context.getString(R.string.txt_category)}: ", modifier = Modifier.width(80.dp),
+                        color = colorText,
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
@@ -340,27 +351,27 @@ fun DetailItemScreen(m: Movie, scroll: ScrollState) {
                                 "Đang cập nhật"
                             }
                         } ",
-                        color = MaterialTheme.colorScheme.surface,
+                        color = colorText,
                         style = MaterialTheme.typography.titleSmall
                     )
                 }
                 Row {
                     Text(
                         text = "Loại: ", modifier = Modifier.width(80.dp),
-                        color = MaterialTheme.colorScheme.surface,
+                        color = colorText,
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
                         text = "2D | Normal| Normal sound",
-                        color = MaterialTheme.colorScheme.surface,
+                        color = colorText,
                         style = MaterialTheme.typography.titleSmall
                     )
 
                 }
                 Row {
                     Text(
-                        text = "Xếp hạng:",
-                        color = MaterialTheme.colorScheme.surface,
+                        text = "${context.getString(R.string.txt_rating)}:",
+                        color = colorText,
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.width(80.dp)
                     )

@@ -33,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -49,6 +50,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,9 +88,15 @@ fun FilmScreen() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TabItemComp() {
+    val context = LocalContext.current
+
     var selectedTabIndex by remember {
         mutableStateOf(0)
     }
+    val tabItems = listOf(
+        TabItem(context.getString(R.string.now_playing), Icons.Default.PlayArrow, Icons.Default.ConnectedTv),
+        TabItem(context.getString(R.string.coming_up), Icons.Default.ChangeCircle, Icons.Filled.PlaylistAdd)
+    )
     val pager = rememberPagerState(pageCount = { tabItems.size })
     LaunchedEffect(selectedTabIndex) {
         pager.animateScrollToPage(selectedTabIndex)
@@ -100,11 +108,14 @@ fun TabItemComp() {
         }
     }
 
-    Column {
-        TabRow(selectedTabIndex = selectedTabIndex,
+    Column(modifier=Modifier.background(MaterialTheme.colorScheme.background)) {
+        TabRow(selectedTabIndex = selectedTabIndex, contentColor = MaterialTheme.colorScheme.background, containerColor = MaterialTheme.colorScheme.background,
             divider = {
                 Divider(color = Color.Black)
-            }) {
+            }, indicator = { tabPositions -> TabRowDefaults.PrimaryIndicator(
+                height = 1.dp,color=MaterialTheme.colorScheme.onPrimaryContainer,
+
+            )}) {
             tabItems.forEachIndexed { index, item ->
                 Tab(
                     selected = index == selectedTabIndex,
@@ -112,12 +123,12 @@ fun TabItemComp() {
                     text = {
                         Text(
                             text = item.name,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = if(selectedTabIndex==index) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onPrimary,
                             fontWeight = if (index == selectedTabIndex) FontWeight.Bold else FontWeight.Light
                         )
                     },
-                    selectedContentColor = Color(0xFF7A6413),
-                    unselectedContentColor = Color(0xFF7A6413)
+                    selectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    unselectedContentColor = MaterialTheme.colorScheme.onPrimary
 
 
                 )
@@ -137,10 +148,6 @@ fun TabItemComp() {
 
 }
 
-val tabItems = listOf(
-    TabItem("Đang chiếu", Icons.Default.PlayArrow, Icons.Default.ConnectedTv),
-    TabItem("Sắp chiếu", Icons.Default.ChangeCircle, Icons.Filled.PlaylistAdd)
-)
 
 
 

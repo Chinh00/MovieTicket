@@ -10,10 +10,10 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = file("C:\\Users\\Ching\\keystore.jks")
-            storePassword = "@P@ssw0rd02"
+            storeFile = file("C:\\Users\\dongt\\keystore.jks")
+            storePassword = "123456"
             keyAlias = "key0"
-            keyPassword = "@P@ssw0rd02"
+            keyPassword = "123456"
         }
     }
     namespace = "com.superman.movieticket"
@@ -170,6 +170,6 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:21.0.1")
 
     //make splash screen
-    implementation("com.airbnb.android:lottie:3.4.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
 }

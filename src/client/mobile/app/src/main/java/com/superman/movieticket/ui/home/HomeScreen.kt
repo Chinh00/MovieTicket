@@ -82,6 +82,7 @@ import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.infrastructure.utils.DatetimeHelper
 import com.superman.movieticket.ui.components.ScreenLoading
 import com.superman.movieticket.ui.detail.view.DetailActivity
+import com.superman.movieticket.ui.order.screening.hooks.NavigateScreenActivity
 
 import com.superman.movieticket.ui.theme.MyAppTheme
 import com.superman.movieticket.ui.theme.balooFont
@@ -296,7 +297,7 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Now in Cinema", color = MaterialTheme.colorScheme.onBackground)
+            Text(text = context.getString(R.string.now_playing), color = MaterialTheme.colorScheme.onBackground, style = MaterialTheme.typography.headlineSmall)
 //            TextButton(onClick = {}) {
 //                Text(text = "See all", color = Color.Red)
 //            }
@@ -304,7 +305,7 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
         val cp = LocalContext.current
         Row(modifier = Modifier.wrapContentSize()) {
             NowPlayingMoviesone(listViewMoviesNowing = listViewMoviesNowing) { movie ->
-                Toast.makeText(cp, movie.avatar, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(cp, movie.avatar, Toast.LENGTH_SHORT).show()
                 val intent = Intent(context, DetailActivity::class.java)
                 intent.putExtra("id",movie.id)
 //            Log.w("idMV",it.id)
@@ -338,6 +339,7 @@ fun PopularMovies(
     listMovies: List<Movie>? = null,
     onMovieClicked: (Movie) -> Unit, onMovieFavouriteClicked: (Movie) -> Unit
 ) {
+    val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize()) {
         (listMovies)?.forEachIndexed { index, item ->
             Row(
@@ -437,7 +439,7 @@ fun PopularMovies(
                                 contentDescription = null
                             )
                             Text(
-                                text = "${item.totalTime} phút",
+                                text = "${item.totalTime} ${context.getString(R.string.txt_minutes)}",
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleSmall
                             )
@@ -535,10 +537,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                         .clip(RoundedCornerShape(16.dp))
                         .wrapContentSize()
                 ) {
-                    Log.d(
-                        "ImageURL",
-                        "Loading image from URL: ${listViewMoviesNowing[page].avatar}"
-                    )
+
                     Image(
 
                         painter = rememberAsyncImagePainter(
@@ -599,7 +598,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                             contentDescription = null
                         )
                         Text(
-                            text = "${listViewMoviesNowing[page].totalTime} phút",
+                            text = "${listViewMoviesNowing[page].totalTime} ${context.getString(R.string.txt_minutes)}",
 
                             color = MaterialTheme.colorScheme.background,
                             style = MaterialTheme.typography.titleSmall
@@ -654,13 +653,14 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                             .padding(horizontal = 15.dp)
                             .fillMaxWidth()
                     ) {
-                        Text(text = "Đặt vé", color = MaterialTheme.colorScheme.onSurface)
+                        Text(text = context.getString(R.string.txt_book_ticket), color = MaterialTheme.colorScheme.onSurface)
                     }
                 }
             }
         }
 
     }
+
 }
 
 

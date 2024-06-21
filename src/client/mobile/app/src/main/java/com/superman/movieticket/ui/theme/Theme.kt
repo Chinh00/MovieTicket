@@ -15,11 +15,12 @@ private val DarkColorPalette = darkColorScheme(
     secondary = CustomColor2,
     background = Color.Black,
     surface = Color.DarkGray,
-    onPrimary = Color.White,
     onSecondary = Color.Black,
     onBackground = Color.White,
     onSurface = Color.White,
-    onPrimaryContainer = Color(0xFFC07C66)
+    onPrimaryContainer = Color(0xFFC07C66),
+            onPrimary = Color(0xFFAD2B00)
+
 )
 
 private val LightColorPalette = lightColorScheme(
@@ -27,7 +28,8 @@ private val LightColorPalette = lightColorScheme(
     secondary = CustomColor2,
     background = Color.White,
     surface = Color.LightGray,
-    onPrimary = Color.Black,
+    onPrimary = Color(0xFFC07C66)
+    ,
     onSecondary = Color.White,
     onBackground = Color.Black,
     onSurface = Color.Black,

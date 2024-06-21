@@ -28,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberAsyncImagePainter
@@ -69,9 +70,12 @@ fun ItemMovie(
             ConstraintLayout {
                 val t = createRef()
 
-                Image(painter = rememberAsyncImagePainter(model = AppOptions.BASE_URL + "/admin-api/image" + m.avatar, error = painterResource(
-                    id = R.drawable.error_img
-                )),
+                Image(painter = rememberAsyncImagePainter(
+                    model = AppOptions.BASE_URL + "/admin-api/image" + m.avatar,
+                    error = painterResource(
+                        id = R.drawable.error_img
+                    )
+                ),
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
                         .clip(
@@ -97,6 +101,7 @@ fun ItemMovie(
 
             }
         }
+        val colorText = MaterialTheme.colorScheme.onBackground
         Column(
             verticalArrangement = Arrangement.spacedBy(5.dp),
             modifier = Modifier.padding(horizontal = 10.dp)
@@ -104,27 +109,44 @@ fun ItemMovie(
             Text(
                 text = m.name.uppercase(),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold, color = colorText
             )
             Text(
-                text = "Thời lượng: ${m.totalTime} phút",
+                text = "${context.getString(R.string.txt_duration)}: ${m.totalTime} ${
+                    context.getString(
+                        R.string.txt_minutes
+                    )
+                }",
+                style = MaterialTheme.typography.bodyMedium, color = colorText
+            )
+
+            Text(
+                text = "${context.getString(R.string.txt_release_date)}: ${
+                    DatetimeHelper.ConvertISODatetimeToLocalDatetime(
+                        m.releaseDate,
+                        "dd/MM/yyyy"
+                    )
+                }", style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "${context.getString(R.string.txt_category)}: ${m.categories.joinToString(", ") { it.name }}",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = colorText,
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            Text(text = "Khởi chiếu: ${DatetimeHelper.ConvertISODatetimeToLocalDatetime(m.releaseDate, "dd/MM/yyyy")}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Thể loại: gia đình", style = MaterialTheme.typography.bodyMedium)
-
             OutlinedButton(
                 onClick = { HandleTicket(m.id) }, colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = CustomColor6,
+                    containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
                     ), modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp))
             ) {
                 Text(
-                    text = "Đặt vé",
-                    color = MaterialTheme.colorScheme.surface,
+                    text = context.getString(R.string.txt_book_ticket),
+                    color = MaterialTheme.colorScheme.background,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )

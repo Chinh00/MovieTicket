@@ -119,7 +119,7 @@ fun SignInGoogleScreen() {
                 }
             }
         }, modifier = Modifier
-            .height(50.dp)
+            .height(70.dp).fillMaxWidth()
             .shadow(
                 shape = MaterialTheme.shapes.small,
                 ambientColor = Color.Gray,
@@ -134,6 +134,7 @@ fun SignInGoogleScreen() {
             modifier = Modifier.size(24.dp),
             contentDescription = null
         )
+        Text("  Sign in with Google", color = MaterialTheme.colorScheme.onBackground)
     }
 
 }
@@ -439,30 +440,30 @@ fun LoginSocialComp() {
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Button(
-            onClick = { /*TODO*/ }, modifier = Modifier
-                .height(50.dp)
-                .shadow(
-                    shape = MaterialTheme.shapes.small,
-                    ambientColor = Color.Gray,
-                    elevation = 8.dp
-                ), shape = MaterialTheme.shapes.small, colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White
-            )
-
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.applelogo),
-                modifier = Modifier.size(24.dp),
-                contentDescription = null
-            )
-        }
+//        Button(
+//            onClick = { /*TODO*/ }, modifier = Modifier
+//                .height(50.dp)
+//                .shadow(
+//                    shape = MaterialTheme.shapes.small,
+//                    ambientColor = Color.Gray,
+//                    elevation = 8.dp
+//                ), shape = MaterialTheme.shapes.small, colors = ButtonDefaults.buttonColors(
+//                containerColor = Color.White
+//            )
+//
+//        ) {
+//            Image(
+//                painter = painterResource(id = R.drawable.applelogo),
+//                modifier = Modifier.size(24.dp),
+//                contentDescription = null
+//            )
+//        }
         SignInGoogleScreen()
-        SignInFacebookComp(onLoginSuccess = {
-            Log.d("FacebookSignIn", "Firebase user email: ${it?.email}")
-        }, onLoginError = {
-            Log.e("FacebookSignIn", "Error: ${it.message}")
-        })
+//        SignInFacebookComp(onLoginSuccess = {
+//            Log.d("FacebookSignIn", "Firebase user email: ${it?.email}")
+//        }, onLoginError = {
+//            Log.e("FacebookSignIn", "Error: ${it.message}")
+//        })
     }
 }
 

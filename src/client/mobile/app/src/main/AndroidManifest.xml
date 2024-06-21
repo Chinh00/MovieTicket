@@ -89,9 +89,7 @@
         <activity
             android:name=".ui.auth.ForgotPasswordActivity"
             android:exported="true"/>
-        <activity
-            android:name=".ui.main.MainActivity"
-            android:exported="true" />
+
         <activity
             android:name=".ui.auth.SendEmailGetPasswordActivity"
             android:exported="true" />
@@ -105,8 +103,9 @@
             android:name=".ui.auth.LoginActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.systems.SplashActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
+            android:theme="@style/Theme.MovieTicket.MySplash"
             tools:ignore="DuplicateActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

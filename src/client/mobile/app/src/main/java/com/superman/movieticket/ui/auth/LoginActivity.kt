@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,6 +35,7 @@ import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -51,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -73,6 +76,7 @@ import com.superman.movieticket.R
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.auth.control.PhoneVerifyViewModel
 import com.superman.movieticket.ui.theme.CustomBlue
+import com.superman.movieticket.ui.theme.MyAppTheme
 import com.superman.movieticket.ui.theme.balooFont
 
 @AndroidEntryPoint
@@ -87,8 +91,10 @@ public class LoginActivity : ComponentActivity() {
 
         setContent {
             com.superman.movieticket.ui.components.BaseScreen(content = {
-                LoginScreen()
-            }, title = "")
+                MyAppTheme {
+                    LoginScreen()
+                }
+            }, title = "", onNavigateUp = {finish()})
         }
 
     }
@@ -141,7 +147,7 @@ fun LoginScreen(
         ) {
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Login",
+                    text = context.getString(R.string.login),
                     style = MaterialTheme.typography.titleLarge,
                     fontFamily = balooFont,
                     fontWeight = FontWeight.Bold
@@ -156,7 +162,7 @@ fun LoginScreen(
             }
             Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Welccome Back!",
+                    text = context.getString(R.string.txt_welcome),
                     style = MaterialTheme.typography.headlineMedium,
                     color = CustomBlue,
                     fontFamily = balooFont,
@@ -166,7 +172,7 @@ fun LoginScreen(
             }
             Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Enter Your Phone",
+                    text = context.getString(R.string.txt_phone),
                     style = MaterialTheme.typography.titleLarge,
                     color = Color.Gray,
                     fontWeight = FontWeight.Medium
@@ -199,7 +205,7 @@ fun LoginScreen(
 
             Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Enter Your Password",
+                    text = context.getString(R.string.txt_password),
                     style = MaterialTheme.typography.titleLarge,
                     color = Color.Gray,
                     fontWeight = FontWeight.Medium
@@ -241,7 +247,7 @@ fun LoginScreen(
                             context.startActivity(intent)
                 }) {
                     Text(
-                        text = "Login OTP",
+                        text = "${context.getString(R.string.txt_login)} OTP",
                         style = MaterialTheme.typography.labelLarge,
                         fontFamily = FontFamily.SansSerif,
                         color = CustomBlue,
@@ -255,7 +261,7 @@ fun LoginScreen(
                     context.startActivity(intent)
                 }) {
                     Text(
-                        text = "Forget password?",
+                        text = "${context.getString(R.string.txt_forgot_password)}?",
                         style = MaterialTheme.typography.labelLarge,
                         fontFamily = FontFamily.SansSerif,
                         color = CustomBlue,
@@ -267,10 +273,12 @@ fun LoginScreen(
             Row(
                 modifier = Modifier
                     .padding(top = 20.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth(), horizontalArrangement = Arrangement.Center
             ) {
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = context.getString(R.string.login))
+                Button(onClick = { /*TODO*/ },colors=ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimary), modifier = Modifier.fillMaxWidth(0.8f).clip(
+                    RoundedCornerShape(4.dp))
+                ) {
+                    Text(text = context.getString(R.string.login),color=MaterialTheme.colorScheme.background)
                 }
             }
 
@@ -288,7 +296,7 @@ fun LoginScreen(
                         .height(1.dp)
                 )
                 Text(
-                    text = "Or Continue with",
+                    text = context.getString(R.string.txt_or),
                     style = MaterialTheme.typography.titleSmall,
                     fontFamily = FontFamily.SansSerif,
                     color = CustomBlue,
@@ -318,11 +326,11 @@ fun LoginScreen(
                     .fillMaxWidth()
             ) {
                 val annotatedText = buildAnnotatedString {
-                    append("Don't have an account? ")
+                    append("${context.getString(R.string.txt_have_account)}? ")
 
                     withStyle(style = SpanStyle(color = CustomBlue)) {
                         pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
-                        append("Sign up")
+                        append(context.getString(R.string.txt_signup))
                         pop()
                     }
                 }
