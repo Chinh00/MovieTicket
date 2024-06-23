@@ -329,7 +329,7 @@ class LoginActivityViewModel @Inject constructor(
     }
 
 
-
+    // à lúc nãy chạy sai
 
     private fun getAccessToken(onTokenReceived: (String?) -> Unit) {
         val user = FirebaseAuth.getInstance().currentUser
