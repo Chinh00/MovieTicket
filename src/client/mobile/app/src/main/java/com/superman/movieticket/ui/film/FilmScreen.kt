@@ -84,7 +84,6 @@ fun FilmScreen() {
 
 
 @RequiresApi(Build.VERSION_CODES.O)
-@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TabItemComp() {

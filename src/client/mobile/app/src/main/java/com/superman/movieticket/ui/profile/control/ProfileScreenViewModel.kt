@@ -26,6 +26,7 @@ class ProfileScreenViewModel @Inject constructor(
             dataStore.edit {
                 it.remove(PreferenceKey.IS_AUTHENTICATE)
                 it.remove(PreferenceKey.ACCESS_TOKEN)
+
             }
         }
     }

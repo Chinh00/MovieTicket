@@ -49,6 +49,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.auth.hooks.NavigateLogin
@@ -70,14 +71,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
         // Chỉ gọi setContent một lần
-        if (savedInstanceState == null) {
             setContent {
                 requestNotificationPermission()
                 MyAppTheme {
                     MainScreen()
                 }
             }
-        }
     }
 
     private fun requestNotificationPermission() {
@@ -129,6 +128,8 @@ class MainActivity : AppCompatActivity() {
 fun MainScreen () {
     val navController = rememberNavController()
     val context = LocalContext.current
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     val loginSocialViewModel: LoginActivityViewModel = hiltViewModel()
     val login by loginSocialViewModel.isLogin.collectAsState(initial = null)
     val navigationBarItems = listOf<NavigationBarItemConfig>(
@@ -172,15 +173,15 @@ fun MainScreen () {
             ),title = { Text(text = "Movie Ticket") })
         },
         bottomBar = {
-            var selectedItem  = remember {
-                mutableStateOf(0)
-            }
+
             NavigationBar(containerColor = MaterialTheme.colorScheme.background, modifier = Modifier.shadow(elevation = 8.dp,shape= RectangleShape, ambientColor = Color.Gray, spotColor = Color.Gray)) {
                 navigationBarItems.forEachIndexed {
+
                    index,item ->
-                    NavigationBarItem(selected = selectedItem.value == index, label = { Text(text = item.title)}, onClick = {
+                    val isSelected = currentRoute == item.path
+                    NavigationBarItem(selected = isSelected, label = { Text(text = item.title)}, onClick = {
                         item.onClick()
-                        selectedItem.value = index
+
                     }, icon = { Icon(
                         imageVector = item.icon,
                         contentDescription = item.title,

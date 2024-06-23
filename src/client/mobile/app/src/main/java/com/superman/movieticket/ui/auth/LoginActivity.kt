@@ -40,6 +40,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -90,15 +91,16 @@ public class LoginActivity : ComponentActivity() {
 
 
         setContent {
-            com.superman.movieticket.ui.components.BaseScreen(content = {
-                MyAppTheme {
+            MyAppTheme {
+                com.superman.movieticket.ui.components.BaseScreen(content = {
                     LoginScreen()
-                }
-            }, title = "", onNavigateUp = {finish()})
+
+                }, title = "", onNavigateUp = { finish() })
+            }
+
         }
 
     }
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -140,17 +142,20 @@ fun LoginScreen(
 
     var phone by remember { mutableStateOf("") }
 
-    Box(modifier = Modifier.apply {
-        fillMaxSize().background(Color.Gray)
-    }, contentAlignment = Alignment.Center) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         Column(
             modifier = Modifier
                 .padding(horizontal = 10.dp)
+                .fillMaxSize()
         ) {
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = context.getString(R.string.login),
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleLarge.copy(color = CustomBlue),
                     fontFamily = balooFont,
                     fontWeight = FontWeight.Bold
                 )
@@ -180,9 +185,11 @@ fun LoginScreen(
                     fontWeight = FontWeight.Medium
                 )
                 OutlinedTextField(
-                    value = phone, textStyle = MaterialTheme.typography.bodyLarge,
+                    value = phone,
+                    textStyle = MaterialTheme.typography.bodyLarge,
                     onValueChange = { phone = it },
-                    placeholder = { Text("", color = Color.Gray) },keyboardOptions = KeyboardOptions(
+                    placeholder = { Text("", color = Color.Gray) },
+                    keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Done
                     ),
@@ -277,10 +284,19 @@ fun LoginScreen(
                     .padding(top = 20.dp)
                     .fillMaxWidth(), horizontalArrangement = Arrangement.Center
             ) {
-                Button(onClick = { /*TODO*/ },colors=ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimary), modifier = Modifier.fillMaxWidth(0.8f).clip(
-                    RoundedCornerShape(4.dp))
+                Button(
+                    onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimary),
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .clip(
+                            RoundedCornerShape(4.dp)
+                        )
                 ) {
-                    Text(text = context.getString(R.string.login),color=MaterialTheme.colorScheme.background)
+                    Text(
+                        text = context.getString(R.string.login),
+                        color = MaterialTheme.colorScheme.background
+                    )
                 }
             }
 

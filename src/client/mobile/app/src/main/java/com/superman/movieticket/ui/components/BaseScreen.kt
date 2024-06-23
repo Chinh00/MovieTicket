@@ -1,6 +1,7 @@
 package com.superman.movieticket.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,7 +54,7 @@ fun BaseScreen (
         },
 
     ){
-        Surface(modifier = Modifier.padding(it)) {
+        Box(modifier = Modifier.padding(it)) {
             content()
         }
     }
