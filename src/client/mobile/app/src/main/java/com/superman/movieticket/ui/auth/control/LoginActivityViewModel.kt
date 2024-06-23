@@ -1,5 +1,6 @@
 package com.superman.movieticket.ui.auth.control
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -23,11 +24,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.services.AuthService
 import com.superman.movieticket.infrastructure.utils.ApiState
@@ -36,11 +41,13 @@ import com.superman.movieticket.ui.auth.model.TokenResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,6 +66,18 @@ class LoginActivityViewModel @Inject constructor(
 
     val isLogin = dataStore.data.map { it[PreferenceKey.IS_AUTHENTICATE]
     }
+
+
+
+
+    private val _verificationId = MutableStateFlow("")
+    val verificationId: StateFlow<String> get() = _verificationId
+    fun setVerifyCode(code: String) {
+        _verificationId.value = code
+    }
+    private val _timeLeft = MutableStateFlow(0L)
+    val timeLeft: StateFlow<Long> get() = _timeLeft
+    private val _otpValue = MutableStateFlow("")
 
 
 
@@ -97,16 +116,6 @@ class LoginActivityViewModel @Inject constructor(
             .build()
         googleSignInClient = GoogleSignIn.getClient(context.applicationContext, gso)
     }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -169,9 +178,6 @@ class LoginActivityViewModel @Inject constructor(
 
 
     private fun registerFacebookCallback() {
-
-
-
         LoginManager.getInstance()
             .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
                 override fun onSuccess(result: LoginResult) {
@@ -244,6 +250,120 @@ class LoginActivityViewModel @Inject constructor(
     }
 
 
+
+
+    fun setOtpValue(otp: String) {
+        _otpValue.value = otp
+    }
+
+
+
+    fun sendOtp(phoneNumber: String, activity: Activity, onOtpSent: (Boolean, String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
+                    .setPhoneNumber(phoneNumber)
+                    .setTimeout(60L, TimeUnit.SECONDS)
+                    .setActivity(activity)
+                    .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                        override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+
+                            onOtpSent(true, "")
+                        }
+
+                        override fun onVerificationFailed(e: FirebaseException) {
+                            e.printStackTrace()
+                            onOtpSent(false, e.message ?: "Unknown error")
+                        }
+
+                        override fun onCodeSent(
+                            verificationId: String,
+                            token: PhoneAuthProvider.ForceResendingToken
+                        ) {
+                            this@LoginActivityViewModel._verificationId.value = verificationId
+                            onOtpSent(true, verificationId)
+                        }
+                    })
+                    .build()
+
+                PhoneAuthProvider.verifyPhoneNumber(options)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onOtpSent(false, e.message ?: "Unknown error")
+            }
+        }
+    }
+
+
+
+    fun verifyOtp(otp: String, onVerified: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val credential = PhoneAuthProvider.getCredential(verificationId.value, otp)
+                signInWithPhoneAuthCredential(credential) { success ->
+                    onVerified(success)
+                    getAccessToken{
+                        onVerified(success)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onVerified(false)
+            }
+        }
+    }
+
+    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential, onSuccess: (Boolean) -> Unit = {}) {
+        viewModelScope.launch {
+            FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+
+                        onSuccess(true)
+                    } else {
+                        task.exception?.printStackTrace()
+                        onSuccess(false)
+                    }
+                }
+        }
+    }
+
+
+
+
+    private fun getAccessToken(onTokenReceived: (String?) -> Unit) {
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.getIdToken(true)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val token = task.result?.token
+                    Log.d("Acctoken for mobile", token!!)
+                    authService.getTokenSocial("firebase_token", "mobile", "api profile openid", token!!, "secret", "firebase").enqueue(object:
+                        retrofit2.Callback<TokenResponse> {
+                        override fun onResponse(
+                            call: Call<TokenResponse>,
+                            response: Response<TokenResponse>
+                        ) {
+                            _apiLoading.value = ApiState.SUCCESS
+                            viewModelScope.launch(Dispatchers.IO) {
+                                dataStore.edit {
+                                    it[PreferenceKey.IS_AUTHENTICATE] = "true"
+                                    it[PreferenceKey.ACCESS_TOKEN] = response.body()?.access_token.toString()
+                                }
+                            }
+                        }
+
+                        override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+                            Log.d(call.javaClass.name, t.toString())
+                        }
+
+                    })
+                    onTokenReceived(token)
+                } else {
+                    onTokenReceived(null)
+                }
+            }
+    }
 
 
 }

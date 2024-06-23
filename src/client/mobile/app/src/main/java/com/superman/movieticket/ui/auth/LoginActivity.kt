@@ -74,7 +74,6 @@ import com.superman.movieticket.infrastructure.utils.ApiState
 import dagger.hilt.android.AndroidEntryPoint
 import com.superman.movieticket.R
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
-import com.superman.movieticket.ui.auth.control.PhoneVerifyViewModel
 import com.superman.movieticket.ui.theme.CustomBlue
 import com.superman.movieticket.ui.theme.MyAppTheme
 import com.superman.movieticket.ui.theme.balooFont
@@ -82,12 +81,13 @@ import com.superman.movieticket.ui.theme.balooFont
 @AndroidEntryPoint
 public class LoginActivity : ComponentActivity() {
 
-
     val loginActivityViewModel: LoginActivityViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         loginActivityViewModel.InitConfigLoginGoogle(this);
+
+
 
         setContent {
             com.superman.movieticket.ui.components.BaseScreen(content = {
@@ -98,6 +98,8 @@ public class LoginActivity : ComponentActivity() {
         }
 
     }
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
