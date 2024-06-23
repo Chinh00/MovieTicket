@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
@@ -129,6 +130,15 @@ class DetailActivity : ComponentActivity() {
 
             }
         }
+    }
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        // Kiểm tra nếu đang có hành động vuốt (swipe)
+        if (ev?.action == MotionEvent.ACTION_MOVE) {
+            // Chặn các hành động vuốt bằng cách trả về true
+            return true
+        }
+        // Cho phép các touch event khác (như click, long press) tiếp tục xử lý bình thường
+        return super.dispatchTouchEvent(ev)
     }
 }
 

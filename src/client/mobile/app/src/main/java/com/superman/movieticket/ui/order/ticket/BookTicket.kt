@@ -331,7 +331,7 @@ fun TicketActivityComp(
 
                     }, text = "Tiếp theo", modifier = Modifier
                         .padding(bottom = 15.dp)
-                        .fillMaxWidth(), CustomColor4
+                        .fillMaxWidth(), MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         }

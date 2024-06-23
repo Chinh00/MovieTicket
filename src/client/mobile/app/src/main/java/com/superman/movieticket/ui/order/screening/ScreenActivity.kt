@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.superman.movieticket.domain.entities.Screening
+import com.superman.movieticket.infrastructure.utils.DatetimeHelper
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.components.ScreenLoading
 import com.superman.movieticket.ui.order.model.ReservationCreateModel
@@ -186,12 +187,14 @@ fun ScreenItemComp(
                 fontWeight = FontWeight.Bold
             )
             Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                Text(
-                    text = "11:50 - 13:30 ",
-                    color = MaterialTheme.colorScheme.error,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(text = "113/200 ghế ", color = MaterialTheme.colorScheme.background)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Text(
+                        text = "${DatetimeHelper.convertIsoToTime(screening.startDate)}",
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Text(text = "counting/${screening.room.seats.size}", color = MaterialTheme.colorScheme.background)
 
             }
         }

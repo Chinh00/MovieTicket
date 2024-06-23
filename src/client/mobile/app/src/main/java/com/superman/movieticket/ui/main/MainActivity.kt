@@ -69,10 +69,13 @@ class MainActivity : AppCompatActivity() {
                 false
             }
         }
-        setContent {
-            requestNotificationPermission()
-            MyAppTheme {
-                MainScreen()
+        // Chỉ gọi setContent một lần
+        if (savedInstanceState == null) {
+            setContent {
+                requestNotificationPermission()
+                MyAppTheme {
+                    MainScreen()
+                }
             }
         }
     }
@@ -91,11 +94,11 @@ class MainActivity : AppCompatActivity() {
                 )
             } else {
                 // Quyền đã được cấp
-                Toast.makeText(this, "Quyền hiển thị thông báo đã được cấp.", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "Quyền hiển thị thông báo đã được cấp.", Toast.LENGTH_SHORT).show()
             }
         } else {
             // Không cần kiểm tra quyền với các phiên bản Android cũ hơn
-            Toast.makeText(this, "Không cần yêu cầu quyền trên Android dưới 13.", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "Không cần yêu cầu quyền trên Android dưới 13.", Toast.LENGTH_SHORT).show()
         }
     }
 

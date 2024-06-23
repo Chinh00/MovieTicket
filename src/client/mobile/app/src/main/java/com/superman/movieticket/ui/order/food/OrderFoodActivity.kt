@@ -70,6 +70,7 @@ import com.superman.movieticket.ui.order.food.control.OrderFoodActivityModel
 import com.superman.movieticket.ui.order.model.ReservationCreateModel
 import com.superman.movieticket.ui.order.model.ServiceReservationsCreateModel
 import com.superman.movieticket.ui.order.payment.hooks.NavigatePaymentTicket
+import com.superman.movieticket.ui.theme.MyAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -77,15 +78,18 @@ class OrderFoodActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BaseScreen(content = {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .safeDrawingPadding()
-                ) {
-                    OrderFoodScreen(Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java))
-                }
-            }, title = "Chọn đồ")
+            MyAppTheme {
+
+                BaseScreen(content = {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .safeDrawingPadding()
+                    ) {
+                        OrderFoodScreen(Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java))
+                    }
+                }, title = "Chọn đồ",onNavigateUp={finish()})
+            }
         }
     }
 }
@@ -140,8 +144,7 @@ fun OrderFoodScreen(reservationCreateModel: ReservationCreateModel) {
         Column(
             Modifier
                 .constrainAs(t) {
-                    top.linkTo(e.bottom)
-                    bottom.linkTo(b.top)
+                    top.linkTo(parent.top)
                 }
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -208,9 +211,9 @@ fun ItemFood(
 
     Row(
         modifier = Modifier
-            .padding(horizontal = 10.dp, vertical = 10.dp)
+            .padding(horizontal = 5.dp, vertical = 10.dp)
             .clip(RoundedCornerShape(8.dp))
-            .height(70.dp)
+            .height(80.dp)
             .background(Color.Gray)
             .fillMaxWidth()
             .padding(10.dp),

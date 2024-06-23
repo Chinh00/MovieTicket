@@ -338,6 +338,8 @@ fun PopularMovieComp(listMovies: List<Movie>? = null) {
 
             val intent = Intent(context, DetailActivity::class.java)
             intent.putExtra("id",it.id)
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK )
+
 //            Log.w("idMV",it.id)
             context.startActivity(intent)
         },
