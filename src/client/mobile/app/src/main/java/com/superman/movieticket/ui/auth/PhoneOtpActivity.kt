@@ -60,12 +60,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.superman.movieticket.R
 import com.superman.movieticket.ui.auth.control.ForgotPasswordState
+import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.auth.control.OtpViewModel
-import com.superman.movieticket.ui.auth.control.PhoneVerifyViewModel
 import com.superman.movieticket.ui.components.BaseScreen
+import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.theme.CustomBlue
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -73,21 +75,21 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PhoneOtpActivity : ComponentActivity() {
-    private val viewModelPhoneVerifyViewModel: PhoneVerifyViewModel by viewModels()
+    private val loginActivityViewModel: LoginActivityViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             BaseScreen(content = {
 
-                viewModelPhoneVerifyViewModel.setVerifyCode(
+                loginActivityViewModel.setVerifyCode(
                     intent.getStringExtra("verifyId").toString()
                 )
 
                 Log.d("code1", intent.getStringExtra("verifyId").toString())
                 Log.d("phone", intent.getStringExtra("phone").toString())
                 SendPhoneGetOtpComp(
-                    viewModel = viewModelPhoneVerifyViewModel,
                     phone = intent.getStringExtra("phone").toString(),
                     onTimeout = {
 
@@ -98,9 +100,12 @@ class PhoneOtpActivity : ComponentActivity() {
 
     @Composable
     fun OtpTextFieldCutom(
-        otpLength: Int,
-        viewModel: PhoneVerifyViewModel = viewModel(), onVerified: (Boolean) -> Unit,
+        otpLength: Int, onVerified: (Boolean) -> Unit,
+        finish: () -> Unit
     ) {
+        val loginActivityViewModel: LoginActivityViewModel = hiltViewModel()
+
+
         var otpValue by remember { mutableStateOf("") }
 
         val focusRequesters = remember { List(otpLength) { FocusRequester() } }
@@ -118,12 +123,16 @@ class PhoneOtpActivity : ComponentActivity() {
 
                 }
                 if (otpValue.length == otpLength) {
-                    viewModel.setOtpValue(otpValue)
+                    loginActivityViewModel.setOtpValue(otpValue)
                     keyboardController?.hide()
-                    viewModelPhoneVerifyViewModel.verifyOtp(otpValue) { verified ->
+                    loginActivityViewModel.verifyOtp(otpValue) { verified ->
                         onVerified(verified)
                         isVerify.value = verified
-                        Log.d("viewModelPhoneVerifyViewModel", verified.toString())
+
+                        if (verified == true) {
+                            val intent = Intent(context, MainActivity::class.java)
+                            context.startActivity(intent)
+                        }
 
                     }
                 }
@@ -170,45 +179,21 @@ class PhoneOtpActivity : ComponentActivity() {
     @SuppressLint("CoroutineCreationDuringComposition")
     @Composable
     fun SendPhoneGetOtpComp(
-        viewModel: PhoneVerifyViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
         phone: String,
-        onTimeout: () -> Unit
+        onTimeout: () -> Unit,
     ) {
+        val loginActivityViewModel: LoginActivityViewModel = hiltViewModel()
+
         val scope = rememberCoroutineScope()
-        val verifyCode by viewModel.verificationId.collectAsState()
+        val verifyCode by loginActivityViewModel.verificationId.collectAsState()
         val context = LocalContext.current
         var showDialog by remember { mutableStateOf(false) }
-        val timeLeft by viewModel.timeLeft.collectAsState()
-//        LaunchedEffect(Unit) {
-//            Log.d("OtpScreen", "Starting countdown")
-//            viewModel.startCountdown()
-//
-//
-//        }
-//
-//
-//
-//        DisposableEffect(timeLeft) {
-//
-//            onDispose {
-//                // Clean up or stop any ongoing work when the composable leaves the composition
-//                // Here, you can stop the countdown or any other background task
-//                if (timeLeft == 0L) {
-//                    viewModel.stopCountdown()
-//                    onTimeout()
-//                }
-//                // Implement a method to stop the countdown if needed
-//            }
-//        }
+        val timeLeft by loginActivityViewModel.timeLeft.collectAsState()
         Box(
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .fillMaxSize()
                 .background(Color.White)
-//                .paint(
-//                    painterResource(id = R.drawable.mobilepasswordforgot),
-//                    contentScale = ContentScale.FillWidth
-//                )
             , contentAlignment = Alignment.TopStart
         ) {
             Column(modifier = Modifier.padding(top = 50.dp)) {
@@ -250,18 +235,10 @@ class PhoneOtpActivity : ComponentActivity() {
 
                 }
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    OtpTextFieldCutom(otpLength = 6, viewModel) {
 
-                        showDialog = it
+                    OtpTextFieldCutom(otpLength = 6, onVerified = {showDialog = it}) {
+                        onTimeout()
                     }
-//                    AnimatedVisibility(visible = ) {
-//                        Text(
-//                            text = "Not valid Code verified value",
-//                            color = Color.Red.copy(alpha = 0.6f),
-//                            fontWeight = FontWeight.Bold,
-//                            style = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center)
-//                        )
-//                    }
                     if (showDialog) {
                         Dialog(
                             onDismissRequest = { showDialog = false },
@@ -278,17 +255,6 @@ class PhoneOtpActivity : ComponentActivity() {
                             ) {
                                 CircularProgressIndicator()
                             }
-                        }
-
-                        scope.launch {
-                            delay(2000)
-                            val intent = Intent(
-                                context.applicationContext,
-                                ChangePasswordActivity::class.java
-                            )
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                            context.startActivity(intent)
-
                         }
                     }
 
@@ -314,7 +280,7 @@ class PhoneOtpActivity : ComponentActivity() {
                     Text(text = "Didn't receive the OTP? ")
                     TextButton(
                         onClick = {
-                            viewModelPhoneVerifyViewModel.sendOtp(
+                            loginActivityViewModel.sendOtp(
                                 phone,
                                 context as ComponentActivity,
                                 onOtpSent = { success, s ->

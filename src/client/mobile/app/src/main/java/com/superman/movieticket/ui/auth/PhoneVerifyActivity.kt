@@ -50,21 +50,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.superman.movieticket.ui.auth.control.PhoneVerifyViewModel
+import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.components.BaseScreen
+import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.theme.CustomBlue
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PhoneVerifyActivity : ComponentActivity() {
-    private val phoneVerifyViewModel: PhoneVerifyViewModel by viewModels()
+    private var isReturning: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
+
         setContent {
             BaseScreen(content = {
-                PhoneVerifyComp(viewModel = phoneVerifyViewModel, onSendTo = { phone, code ->
+                PhoneVerifyComp(onSendTo = { phone, code ->
                     val intent = Intent(this@PhoneVerifyActivity, PhoneOtpActivity::class.java)
                     intent.putExtra("phone", phone)
                     intent.putExtra("verifyId", code)
@@ -74,22 +79,32 @@ class PhoneVerifyActivity : ComponentActivity() {
         }
     }
 
+
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhoneVerifyComp(
     onSendTo: (String, String) -> Unit,
-    viewModel: PhoneVerifyViewModel = viewModel()
 ) {
+
+    val loginActivityViewModel: LoginActivityViewModel = hiltViewModel()
+
+
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var phone by remember { mutableStateOf("") }
     var selectedCode by remember { mutableStateOf(countryCodes[4].phone) }
-    val verificationId by viewModel.verificationId.collectAsState()
+    val verificationId by loginActivityViewModel.verificationId.collectAsState()
 
     var expanded by remember { mutableStateOf(false) }
+
+
+
+
+
 
     Box(
         modifier = Modifier
@@ -186,7 +201,7 @@ fun PhoneVerifyComp(
                     onClick = {
                         isLoading = true
                         val fullPhoneNumber = selectedCode + phone
-                        viewModel.sendOtp(
+                        loginActivityViewModel.sendOtp(
                             fullPhoneNumber,
                             context as Activity
                         ) { success, verificationId ->

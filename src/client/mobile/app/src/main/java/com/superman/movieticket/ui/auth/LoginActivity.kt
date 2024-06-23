@@ -1,24 +1,14 @@
 package com.superman.movieticket.ui.auth
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
-import android.content.Context
 import android.content.Intent
-import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricPrompt
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -40,7 +30,6 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Visibility
@@ -49,13 +38,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -80,50 +67,39 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.superman.movieticket.infrastructure.utils.ApiState
 import dagger.hilt.android.AndroidEntryPoint
 import com.superman.movieticket.R
-import com.superman.movieticket.ui.auth.control.FingerLoginMagager
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
-import com.superman.movieticket.ui.auth.control.PhoneVerifyViewModel
 import com.superman.movieticket.ui.theme.CustomBlue
 import com.superman.movieticket.ui.theme.MyAppTheme
 import com.superman.movieticket.ui.theme.balooFont
-import java.util.concurrent.Executor
 
 @AndroidEntryPoint
-public class LoginActivity : AppCompatActivity() {
+public class LoginActivity : ComponentActivity() {
 
-    private lateinit var executor: Executor
-    private lateinit var biometricPrompt: BiometricPrompt
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo
     val loginActivityViewModel: LoginActivityViewModel by viewModels()
-
-    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        executor = ContextCompat.getMainExecutor(this)
-
-
-
-
 
         loginActivityViewModel.InitConfigLoginGoogle(this);
+
+
 
         setContent {
             com.superman.movieticket.ui.components.BaseScreen(content = {
                 MyAppTheme {
-                    LoginScreen(this)
+                    LoginScreen()
                 }
-            }, title = "", onNavigateUp = { finish() })
+            }, title = "", onNavigateUp = {finish()})
         }
 
     }
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -151,26 +127,18 @@ public class LoginActivity : AppCompatActivity() {
 }
 
 
-@SuppressLint("RememberReturnType")
-@RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LoginScreen(
-    activity: AppCompatActivity
 ) {
-
-    val context = LocalContext.current
     val keyboardFocusManager = LocalFocusManager.current
 
     var isShowPass by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
     var mk by remember { mutableStateOf("") }
 
     var phone by remember { mutableStateOf("") }
-
-
-
-    val loginViewModel = hiltViewModel<LoginActivityViewModel>()
 
     Box(modifier = Modifier.apply {
         fillMaxSize().background(Color.Gray)
@@ -212,11 +180,9 @@ fun LoginScreen(
                     fontWeight = FontWeight.Medium
                 )
                 OutlinedTextField(
-                    value = phone,
-                    textStyle = MaterialTheme.typography.bodyLarge,
+                    value = phone, textStyle = MaterialTheme.typography.bodyLarge,
                     onValueChange = { phone = it },
-                    placeholder = { Text("", color = Color.Gray) },
-                    keyboardOptions = KeyboardOptions(
+                    placeholder = { Text("", color = Color.Gray) },keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Done
                     ),
@@ -311,22 +277,10 @@ fun LoginScreen(
                     .padding(top = 20.dp)
                     .fillMaxWidth(), horizontalArrangement = Arrangement.Center
             ) {
-                Button(
-                    onClick = {
-//                        loginViewModel.performAuth()
-
-                              },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimary),
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .clip(
-                            RoundedCornerShape(4.dp)
-                        )
+                Button(onClick = { /*TODO*/ },colors=ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimary), modifier = Modifier.fillMaxWidth(0.8f).clip(
+                    RoundedCornerShape(4.dp))
                 ) {
-                    Text(
-                        text = context.getString(R.string.login),
-                        color = MaterialTheme.colorScheme.background
-                    )
+                    Text(text = context.getString(R.string.login),color=MaterialTheme.colorScheme.background)
                 }
             }
 
@@ -364,80 +318,7 @@ fun LoginScreen(
                     .padding(top = 20.dp)
                     .fillMaxWidth()
             ) {
-                LoginSocialComp(modifier = Modifier.weight(1f))
-                Spacer(modifier = Modifier.width(10.dp))
-                val manager by lazy {
-                    FingerLoginMagager(activity)
-                }
-                val biometricResult = manager.authResult.collectAsState(initial = "")
-                val enrollLanched =
-                    rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult(),
-                        onResult = {
-                            Log.d("Activity Result", "$it")
-                        }
-
-                    )
-                LaunchedEffect(biometricResult) {
-                    if(biometricResult.value is FingerLoginMagager.BiometricState.AuthencationNotSet){
-                        if (Build.VERSION.SDK_INT >= 30) {
-                            val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                                putExtra(
-                                    Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                                    BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
-                                )
-                            }
-                            enrollLanched.launch(enrollIntent)
-                        }
-                    }
-                }
-
-                IconButton(modifier=Modifier.weight(1f),onClick = {
-                    manager.showBiometricPrompt(
-                        "Login", "desc "
-                    )
-                }) {
-                    Icon(
-                        Icons.Default.Fingerprint,
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(30.dp)
-                    )
-
-
-                }
-                biometricResult.value.let {
-                    Text(
-                        text = when (it) {
-                            is FingerLoginMagager.BiometricState.Success -> {
-                                "Login Success"
-                            }
-
-                            is FingerLoginMagager.BiometricState.Error -> {
-                                it.message
-                            }
-
-                            is FingerLoginMagager.BiometricState.AuthencationNotSet -> {
-                                "Authencation Not Set"
-                            }
-
-                            is FingerLoginMagager.BiometricState.Failed -> {
-                                "Authentication Failed"
-                            }
-
-                            is FingerLoginMagager.BiometricState.FeatureUnavailable -> {
-                                "Feature Unavailable"
-                            }
-
-                            is FingerLoginMagager.BiometricState.HardwareUnavailable -> {
-                                "Hardware Unavailable"
-                            }
-
-                            else -> {
-                                ""
-                            }
-                        }
-                    )
-                }
+                LoginSocialComp()
             }
             Row(
                 horizontalArrangement = Arrangement.Center,
