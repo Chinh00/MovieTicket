@@ -33,7 +33,7 @@ public static class Config
             new Client
             {
                 ClientId = "mobile",
-                AllowedGrantTypes = new List<string> { "external" },
+                AllowedGrantTypes = new List<string> { "external", "firebase_token" },
                 ClientSecrets = { new Secret("secret".Sha256()) },
                 AllowedScopes =  { "openid", "profile", "api" }
             }

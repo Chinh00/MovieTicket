@@ -63,8 +63,8 @@ class PhoneVerifyViewModel @Inject constructor(application: Application) : Andro
                             verificationId: String,
                             token: PhoneAuthProvider.ForceResendingToken
                         ) {
-
                             this@PhoneVerifyViewModel._verificationId.value = verificationId
+                            Log.d("FirebaseToken", "Token: $token")
                             onOtpSent(true, verificationId)
                         }
                     })
@@ -97,14 +97,13 @@ class PhoneVerifyViewModel @Inject constructor(application: Application) : Andro
     fun verifyOtp(otp: String, onVerified: (Boolean) -> Unit) {
         viewModelScope.launch {
             try {
-                Log.d("OtpViewModel", verificationId.value)
-                Log.d("OtpViewModel", "otp: $otp")
-
                 val credential = PhoneAuthProvider.getCredential(verificationId.value, otp)
                 signInWithPhoneAuthCredential(credential) { success ->
-                    Log.d("OtpViewModel", success.toString())
-
                     onVerified(success)
+                    Log.d("OtpViewModel", success.toString())
+                    getAccessToken{
+                        Log.d("OtpViewModel", "token: $it")
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -119,6 +118,7 @@ class PhoneVerifyViewModel @Inject constructor(application: Application) : Andro
             FirebaseAuth.getInstance().signInWithCredential(credential)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+
                         onSuccess(true)
                     } else {
                         task.exception?.printStackTrace()
@@ -126,5 +126,17 @@ class PhoneVerifyViewModel @Inject constructor(application: Application) : Andro
                     }
                 }
         }
+    }
+    private fun getAccessToken(onTokenReceived: (String?) -> Unit) {
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.getIdToken(true)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val token = task.result?.token
+                    onTokenReceived(token)
+                } else {
+                    onTokenReceived(null)
+                }
+            }
     }
 }

@@ -74,19 +74,7 @@ class LoginActivityViewModel @Inject constructor(
 
 
     init {
-        //config login google
-
-
-
-
-        // config login facebook
-
         registerFacebookCallback()
-
-
-
-
-
     }
 
 
@@ -96,7 +84,6 @@ class LoginActivityViewModel @Inject constructor(
             .setProjectId("movie-ticket-mobile")
             .setApplicationId("1:102542804094:android:f689ea14dd4f359c97042f")
             .setApiKey("AIzaSyBheLL2QWpWpUGbdx2JicJVRs5D34MtHhs")
-
             .build()
         if (FirebaseApp.getApps(context).none { it.name == "main" }) {
             FirebaseApp.initializeApp(context, optionsSecondary, "main")

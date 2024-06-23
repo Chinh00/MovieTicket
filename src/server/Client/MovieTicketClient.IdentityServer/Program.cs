@@ -1,6 +1,10 @@
-using Duende.IdentityServer;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using MovieTicketClient.IdentityServer;
 using MovieTicketClient.IdentityServer.Data;
 using MovieTicketClient.IdentityServer.Data.Internal;
@@ -38,7 +42,8 @@ builder.Services.AddIdentityServer(options =>
     .AddInMemoryApiScopes(Config.ApiScopes)
     .AddAspNetIdentity<User>()
     .AddDeveloperSigningCredential()
-    .AddExtensionGrantValidator<ExternalGrantValidator>();
+    .AddExtensionGrantValidator<ExternalGrantValidator>()
+    .AddExtensionGrantValidator<FirebaseGrantValidator>();
     ;
 
 builder.Services.AddAuthentication()
@@ -48,10 +53,23 @@ builder.Services.AddAuthentication()
             options.ClientSecret = builder.Configuration.GetValue<string>("Authentication:Google:ClientSecret");
         });
 
-
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration.GetValue<string>("Identity:Url");
+        options.RequireHttpsMetadata = false;
+        options.Audience = "api";
+        options.TokenValidationParameters.ValidateAudience = false;
+        options.TokenValidationParameters.ValidateIssuer = false;
+        options.TokenValidationParameters.SignatureValidator = (token, parameters) => new JsonWebToken(token);
+    });
 
 builder.Services.AddScoped<IFacadeResolver>(provider => provider.GetService<AppDbContext>());
-
+builder.Services.AddControllers();
 
 
 builder.Services.AddHostedService<DbMigrationHostedService>();
@@ -61,5 +79,15 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
 app.UseIdentityServer();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+
+FirebaseApp.Create(new AppOptions()
+{
+    
+    Credential = GoogleCredential.FromFile("./android-5e2d0-firebase-adminsdk-p2ikp-adbe0b9280.json")
+});
+
 
 app.Run();
