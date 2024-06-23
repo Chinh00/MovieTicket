@@ -2,11 +2,15 @@ package com.superman.movieticket.ui.order.payment
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.SurfaceControl.Transaction
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,6 +36,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -72,9 +77,8 @@ class PaymentActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BaseScreen(content = { PaymentComp() }, title = "",
+            BaseScreen(content = { PaymentComp(Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java)) }, title = "",
                 onNavigateUp = {
-                    //PaymentComp(Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java))
                     finish()
                 })
         }
@@ -82,14 +86,22 @@ class PaymentActivity : ComponentActivity() {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun PaymentComp(
-//    reservationCreateModel: ReservationCreateModel
+    reservationCreateModel: ReservationCreateModel
 ) {
     val paymentActivityViewModel: PaymentActivityViewModel = hiltViewModel()
     val context = LocalContext.current
     val loading = paymentActivityViewModel.apiLoading.collectAsState()
 
+    LaunchedEffect(key1 = Unit) {
+        paymentActivityViewModel.HandleCreateTransactionAsync(60000)
+        paymentActivityViewModel.hubConnection.start().blockingAwait()
+        paymentActivityViewModel.hubConnection.on("ConfirmPayment", { transaction: Transaction ->
+            Log.d("Chinh", transaction.toString())
+        }, Transaction::class.java)
+    }
 
 
     ConstraintLayout(
@@ -136,11 +148,6 @@ fun PaymentComp(
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.size(300.dp)
             )
-//            PaymentContentComp("Payment methods") {
-//                PaymentSelectMethodPaymenttComp(listMethodPayment) { methodPayment ->
-//                    if(methodPayment!=null) doneActMethod.value=true else doneActMethod.value=false
-//                }
-//            }
         }
         Column(modifier = Modifier.constrainAs(b) {
             top.linkTo(t.bottom)
@@ -149,13 +156,6 @@ fun PaymentComp(
         }) {
             PaymentFooterComp(false,
                 onClicked = {
-//                    if(!it) Toast.makeText(context,"Bạn hãy đồng ý điều khoản đi??",Toast.LENGTH_SHORT).show()
-//                    if(!doneActMethod.value) Toast.makeText(context,"Bạn hãy chọn phương thức thanh toán đi??",Toast.LENGTH_SHORT).show()
-//                    paymentActivityViewModel.HandleCreateReservationAsync(reservationCreateModel)
-//                    if (loading.value == ApiState.SUCCESS ) {
-//                        val intent = Intent(context, MainActivity::class.java)
-//                        context.startActivity(intent)
-//                    }
 
                 }, onClickMethod = {
 

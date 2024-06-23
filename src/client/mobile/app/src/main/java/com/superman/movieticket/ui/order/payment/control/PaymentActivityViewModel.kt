@@ -3,8 +3,13 @@ package com.superman.movieticket.ui.order.payment.control
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.microsoft.signalr.HubConnection
+import com.microsoft.signalr.HubConnectionBuilder
 import com.superman.movieticket.domain.entities.Reservation
+import com.superman.movieticket.domain.entities.Transaction
+import com.superman.movieticket.domain.services.RegisterTransactionModel
 import com.superman.movieticket.domain.services.ReservationService
+import com.superman.movieticket.domain.services.TransactionService
 import com.superman.movieticket.infrastructure.utils.ApiState
 import com.superman.movieticket.infrastructure.utils.SuccessResponse
 import com.superman.movieticket.ui.order.model.ReservationCreateModel
@@ -13,16 +18,44 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
 class PaymentActivityViewModel @Inject constructor(
-    private val reservationService: ReservationService
+    private val reservationService: ReservationService,
+    private val transactionService: TransactionService
 
 ) : ViewModel () {
     val _apiLoading = MutableStateFlow(ApiState.NONE)
     val apiLoading = _apiLoading.asStateFlow()
+    lateinit var hubConnection: HubConnection
+
+
+
+
+    public fun HandleCreateTransactionAsync (total: Long) {
+        viewModelScope.launch {
+            transactionService.HandleRegisterTransactionAsync(RegisterTransactionModel(
+                total
+            )).enqueue(object: Callback<SuccessResponse<Transaction>> {
+                override fun onResponse(
+                    call: Call<SuccessResponse<Transaction>>,
+                    response: Response<SuccessResponse<Transaction>>
+                ) {
+                    val transactionId = response?.body()?.data?.id
+                    hubConnection = HubConnectionBuilder.create("http://localhost:5006/paymentHub?transactionId=$transactionId").build()
+                }
+
+                override fun onFailure(call: Call<SuccessResponse<Transaction>>, t: Throwable) {
+                    Log.d("Chinh", t.toString())
+                }
+
+            })
+        }
+    }
+
 
 
     fun HandleCreateReservationAsync (reservationCreateModel: ReservationCreateModel) {

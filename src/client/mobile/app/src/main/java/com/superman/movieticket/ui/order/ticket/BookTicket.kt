@@ -83,7 +83,8 @@ class TicketBookActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BaseScreen(content = { TicketActivityComp(
-                Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java)
+                Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java),
+                intent.getStringExtra("roomId")!!
             ) }, title = "Chọn ghế ")
         }
     }
@@ -93,7 +94,8 @@ class TicketBookActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TicketActivityComp(
-    reservationCreateModel: ReservationCreateModel
+    reservationCreateModel: ReservationCreateModel,
+    roomId: String
 
 ) {
     val context = LocalContext.current
@@ -122,7 +124,7 @@ fun TicketActivityComp(
 
 
     LaunchedEffect(key1 = Unit) {
-        bookTicketViewModel.GetAllSeatsOfRoomAsync(reservationCreateModel.screeningId.roomId)
+        bookTicketViewModel.GetAllSeatsOfRoomAsync(roomId)
     }
 
 

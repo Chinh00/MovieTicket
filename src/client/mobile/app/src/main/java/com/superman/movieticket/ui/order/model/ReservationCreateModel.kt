@@ -3,7 +3,7 @@ package com.superman.movieticket.ui.order.model
 import com.superman.movieticket.domain.entities.Screening
 
 data class ReservationCreateModel(
-    var screeningId: Screening,
+    var screeningId: String,
     var seatReservations: MutableList<SeatReservationsCreateModel> = mutableListOf(),
     var serviceReservations: MutableList<ServiceReservationsCreateModel> = mutableListOf(),
     var transactionId: String = "",

@@ -153,7 +153,7 @@ fun ScreenItemComp(
 
     val reservationCreateModel = remember {
         mutableStateOf(ReservationCreateModel(
-            screeningId = screening,
+            screeningId = screening.id,
             seatReservations = mutableListOf(),
             serviceReservations = mutableListOf(),
             ))
@@ -166,7 +166,7 @@ fun ScreenItemComp(
             .clip(MaterialTheme.shapes.small)
             .clickable {
                 NavigateBookTicket(
-                    context, reservationCreateModel.value
+                    context, reservationCreateModel.value, screening.roomId
                 )
             }
             .background(MaterialTheme.colorScheme.onBackground),

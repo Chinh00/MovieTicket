@@ -12,9 +12,11 @@ import com.superman.movieticket.ui.order.ticket.TicketBookActivity
 
 fun NavigateBookTicket (
     context: Context,
-    reservationCreateModel: ReservationCreateModel
+    reservationCreateModel: ReservationCreateModel,
+    roomId: String
 ) {
     val intent = Intent(context, TicketBookActivity::class.java)
     intent.putExtra("ReservationCreateModel", Gson().toJson(reservationCreateModel))
+    intent.putExtra("roomId", roomId)
     context.startActivity(intent)
 }

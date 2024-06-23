@@ -16,6 +16,7 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
     
    public DbSet<Service> Services { get; init; }
    public DbSet<ServiceReservation> ServiceReservations { get; init; }
+   public DbSet<Transaction> Transactions { get; init; }
     
     
     
@@ -96,6 +97,15 @@ public class AppBaseContext(DbContextOptions contextOptions) : DbContext(context
         modelBuilder.Entity<ServiceReservation>().HasIndex(e => e.Id).IsUnique();
 
         modelBuilder.Entity<ServiceReservation>().Property(e => e.CreatedDate).HasDefaultValueSql("(getutcdate())");
+        
+        /*Transaction*/
+        modelBuilder.Entity<Transaction>().ToTable("Transactions", Schema).HasKey(e => e.Id);
+        modelBuilder.Entity<Transaction>().Property(e => e.Id)
+            .HasDefaultValueSql("(newsequentialid())");
+        modelBuilder.Entity<Transaction>().HasIndex(e => e.Id).IsUnique();
+
+        modelBuilder.Entity<Transaction>().Property(e => e.CreatedDate).HasDefaultValueSql("(getutcdate())");
+
 
         
         

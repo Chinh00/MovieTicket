@@ -7,6 +7,7 @@ import com.superman.movieticket.domain.services.ReservationService
 import com.superman.movieticket.domain.services.RoomService
 import com.superman.movieticket.domain.services.ScreeningService
 import com.superman.movieticket.domain.services.ServiceService
+import com.superman.movieticket.domain.services.TransactionService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,5 +49,10 @@ object ServiceProvider {
     @Provides
     @Singleton
     fun AddReservationService(retrofit: Retrofit) = retrofit.create(ReservationService::class.java)
+
+
+    @Provides
+    @Singleton
+    fun AddTransactionService(retrofit: Retrofit) = retrofit.create(TransactionService::class.java)
 
 }

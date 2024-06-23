@@ -7,6 +7,7 @@ using MovieTicket.Infrastructure.Files;
 using MovieTicket.Infrastructure.Logger;
 using MovieTicket.Infrastructure.Security;
 using MovieTicket.Infrastructure.Swagger;
+using MovieTicketClient.Api.Extensions;
 using MovieTicketClient.Application;
 
 
@@ -51,6 +52,7 @@ app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseWebSockets();
+app.MapHub<PaymentHub>("/paymentHub");
 
 app.Run();
 
