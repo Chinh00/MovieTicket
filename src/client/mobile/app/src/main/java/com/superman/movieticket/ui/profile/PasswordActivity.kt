@@ -1,19 +1,31 @@
 package com.superman.movieticket.ui.profile
 
-import android.app.DatePickerDialog
-import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,8 +39,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.superman.movieticket.R
-import com.superman.movieticket.ui.theme.MyAppTheme
-import java.util.*
 
 @Composable
 fun PasswordActivity() {
@@ -119,10 +129,9 @@ fun PasswordActivity() {
                 )
 
             }
-
             Spacer(modifier = Modifier.height(20.dp))
 
-            var passwordText by remember { mutableStateOf("") }
+            var currentpasswordText by remember { mutableStateOf("") }
 
             Box(
                 modifier = Modifier
@@ -132,13 +141,38 @@ fun PasswordActivity() {
                     .padding(1.dp) // Padding nhỏ để tránh nội dung bị cắt
             ) {
                 TextField(
-                    value = passwordText, colors = TextFieldDefaults.colors(
+                    value = currentpasswordText, colors = TextFieldDefaults.colors(
                         disabledIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         unfocusedContainerColor = Color.LightGray
                     ),
-                    onValueChange = { passwordText = it },
-                    placeholder = { Text("Password", color = Color.Gray) },
+                    onValueChange = { currentpasswordText = it },
+                    placeholder = { Text("Current Password", color = Color.Gray) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Transparent)
+                        .clip(RoundedCornerShape(13.dp)),
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+
+            var newpasswordText by remember { mutableStateOf("") }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 5.dp, end = 5.dp)
+                    .background(Color.LightGray, shape = RoundedCornerShape(13.dp))
+                    .padding(1.dp) // Padding nhỏ để tránh nội dung bị cắt
+            ) {
+                TextField(
+                    value = newpasswordText, colors = TextFieldDefaults.colors(
+                        disabledIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        unfocusedContainerColor = Color.LightGray
+                    ),
+                    onValueChange = { newpasswordText = it },
+                    placeholder = { Text("New Password", color = Color.Gray) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.Transparent)
@@ -170,6 +204,7 @@ fun PasswordActivity() {
                         .clip(RoundedCornerShape(13.dp)),
                 )
             }
+
 
             Spacer(modifier = Modifier.height(210.dp))
             Button(

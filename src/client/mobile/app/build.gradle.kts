@@ -10,7 +10,7 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = file("C:\\Users\\dongt\\keystore.jks")
+            storeFile = file("C:\\Users\\ASUS\\Documents\\GitHub\\JSK\\MovieTicket.jks")
             storePassword = "123456"
             keyAlias = "key0"
             keyPassword = "123456"
