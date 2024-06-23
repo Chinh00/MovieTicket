@@ -183,7 +183,7 @@ class LoginActivityViewModel @Inject constructor(
                         } , onLoginError={
                             Log.d("FaceBookSignIn", "Firebase : ${it.message}")
                         })
-                    Log.d("FaceBookSignIn", "User token: ${result.accessToken.token}")
+                        Log.d("FaceBookSignIn", "User token: ${result.accessToken.token}")
 
                     }
                     _apiLoading.value = ApiState.SUCCESS

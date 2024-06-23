@@ -21,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -31,12 +33,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.R
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.infrastructure.utils.DatetimeHelper
+import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
+import com.superman.movieticket.ui.auth.hooks.NavigateLogin
 import com.superman.movieticket.ui.components.CustomButton
+import com.superman.movieticket.ui.detail.view.DetailActivity
 import com.superman.movieticket.ui.order.screening.ScreenActivity
 import com.superman.movieticket.ui.order.screening.hooks.NavigateScreenActivity
 import com.superman.movieticket.ui.theme.CustomColor4
@@ -53,7 +59,8 @@ fun ItemMovie(
     m: Movie,
 ) {
     val context = LocalContext.current
-
+    val loginSocialViewModel: LoginActivityViewModel = hiltViewModel()
+    val login by loginSocialViewModel.isLogin.collectAsState(initial = null)
     fun HandleTicket(id: String) {
         NavigateScreenActivity(
             context = context,
@@ -64,7 +71,12 @@ fun ItemMovie(
 
     Row(modifier = Modifier
         .padding(horizontal = 10.dp, vertical = 8.dp)
-        .clickable { }
+        .clickable {
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra("id",m.id)
+//            Log.w("idMV",it.id)
+            context.startActivity(intent)
+        }
         .fillMaxWidth()) {
         Column(modifier = Modifier.size(170.dp, 270.dp)) {
             ConstraintLayout {
@@ -137,7 +149,13 @@ fun ItemMovie(
             )
 
             OutlinedButton(
-                onClick = { HandleTicket(m.id) }, colors = ButtonDefaults.outlinedButtonColors(
+                onClick = {
+                          if(login!="true"){
+                              NavigateLogin(context)
+                          }else{
+                              HandleTicket(m.id)
+                          }
+                }, colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
                     ), modifier = Modifier

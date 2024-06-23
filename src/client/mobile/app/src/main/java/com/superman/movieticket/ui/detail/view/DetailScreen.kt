@@ -40,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
@@ -81,6 +82,8 @@ import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Category
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.infrastructure.utils.DatetimeHelper
+import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
+import com.superman.movieticket.ui.auth.hooks.NavigateLogin
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.components.CustomButton
 
@@ -133,6 +136,10 @@ class DetailActivity : ComponentActivity() {
 @Composable
 fun DetailScreen(m: Movie) {
     val context = LocalContext.current
+    val loginSocialViewModel: LoginActivityViewModel = hiltViewModel()
+    val login by loginSocialViewModel.isLogin.collectAsState(initial = null)
+
+
     var isFullscreen by rememberSaveable { mutableStateOf(false) }
     fun HandleTicket(id: String) {
         NavigateScreenActivity(
@@ -148,12 +155,14 @@ fun DetailScreen(m: Movie) {
         val (s, t, e, b) = createRefs()
         val context = LocalContext.current
         Box(
-            modifier =  Modifier.constrainAs(s) {
+            modifier = Modifier.constrainAs(s) {
                 top.linkTo(parent.top)
             }
         ) {
             VideoViewer(
-                url = AppOptions.BASE_URL + m.trailer, image = AppOptions.BASE_URL +m.avatar, onFullscreenToggle = { isFullscreen = it }
+                url = AppOptions.BASE_URL + m.trailer,
+                image = AppOptions.BASE_URL + m.avatar,
+                onFullscreenToggle = { isFullscreen = it }
             )
 
 //            YoutubePlayer(
@@ -180,7 +189,13 @@ fun DetailScreen(m: Movie) {
             }) {
             Row() {
                 CustomButton(
-                    onClick = { HandleTicket(m.id) },
+                    onClick = {
+                        if (login != "true") {
+                            NavigateLogin(context)
+                        } else {
+                            HandleTicket(m.id)
+                        }
+                    },
                     text = context.getString(R.string.txt_book_ticket),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -206,7 +221,11 @@ fun DescriptionText(text: String, verticalScroll: ScrollState) {
             .fillMaxHeight()
             .padding(end = 15.dp, start = 15.dp, bottom = 50.dp)
     ) {
-        val gradientColors = listOf(MaterialTheme.colorScheme.onBackground, MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.secondaryContainer)
+        val gradientColors = listOf(
+            MaterialTheme.colorScheme.onBackground,
+            MaterialTheme.colorScheme.secondary,
+            MaterialTheme.colorScheme.secondaryContainer
+        )
         Text(
             text = text,
             style = androidx.compose.ui.text.TextStyle(
@@ -289,7 +308,7 @@ fun DetailItemScreen(m: Movie, scroll: ScrollState) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.padding(vertical = 5.dp)) {
             Text(
-                text = "${m.name?:"Ddang caap nhat"}".uppercase(),
+                text = "${m.name ?: "Ddang caap nhat"}".uppercase(),
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium,
                 color = colorText
@@ -314,7 +333,8 @@ fun DetailItemScreen(m: Movie, scroll: ScrollState) {
             ) {
                 Row {
                     Text(
-                        text = "${context.getString(R.string.txt_duration)}}: ", modifier = Modifier.width(80.dp),
+                        text = "${context.getString(R.string.txt_duration)}: ",
+                        modifier = Modifier.width(80.dp),
                         color = colorText,
                         style = MaterialTheme.typography.titleSmall
                     )
@@ -326,12 +346,16 @@ fun DetailItemScreen(m: Movie, scroll: ScrollState) {
                 }
                 Row {
                     Text(
-                        text = "${context.getString(R.string.txt_release_date)}: ", modifier = Modifier.width(80.dp),
+                        text = "${context.getString(R.string.txt_release_date)}: ",
+                        modifier = Modifier.width(80.dp),
                         color = colorText,
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
-                        text = DatetimeHelper.ConvertISODatetimeToLocalDatetime(m.releaseDate, "dd/MM/yyyy"),
+                        text = DatetimeHelper.ConvertISODatetimeToLocalDatetime(
+                            m.releaseDate,
+                            "dd/MM/yyyy"
+                        ),
 //                        text = "__",
                         color = colorText,
                         style = MaterialTheme.typography.titleSmall
@@ -339,7 +363,8 @@ fun DetailItemScreen(m: Movie, scroll: ScrollState) {
                 }
                 Row {
                     Text(
-                        text = "${context.getString(R.string.txt_category)}: ", modifier = Modifier.width(80.dp),
+                        text = "${context.getString(R.string.txt_category)}: ",
+                        modifier = Modifier.width(80.dp),
                         color = colorText,
                         style = MaterialTheme.typography.titleSmall
                     )

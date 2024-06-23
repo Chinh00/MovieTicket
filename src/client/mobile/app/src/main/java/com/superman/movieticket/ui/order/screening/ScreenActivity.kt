@@ -69,7 +69,7 @@ class ScreenActivity : ComponentActivity() {
                     finish()
                 }
             }, title = "Chọn phòng ", onNavigateUp = {
-                onBackPressedDispatcher
+                finish()
             })
         }
 

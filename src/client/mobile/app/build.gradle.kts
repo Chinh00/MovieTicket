@@ -48,6 +48,7 @@ android {
 
         }
     }
+    compileSdkPreview = "VanillaIceCream"
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -171,5 +172,10 @@ dependencies {
 
     //make splash screen
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+
+
+    // fingerprint
+    implementation("androidx.biometric:biometric:1.4.0-alpha01")
 
 }

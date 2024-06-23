@@ -1,6 +1,8 @@
 package com.superman.movieticket.ui.main
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -40,17 +43,13 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.datastore.core.DataStore
-import androidx.datastore.dataStoreFile
-import androidx.datastore.preferences.core.Preferences
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.auth.hooks.NavigateLogin
 import com.superman.movieticket.ui.film.FilmScreen
@@ -61,7 +60,7 @@ import com.superman.movieticket.ui.theme.MyAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,12 +70,51 @@ class MainActivity : ComponentActivity() {
             }
         }
         setContent {
+            requestNotificationPermission()
             MyAppTheme {
                 MainScreen()
             }
         }
     }
 
+    private fun requestNotificationPermission() {
+        // Kiểm tra quyền POST_NOTIFICATIONS nếu là Android 13 trở lên
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+                // Nếu chưa có quyền, yêu cầu người dùng cấp quyền
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    REQUEST_NOTIFICATION_PERMISSION_CODE
+                )
+            } else {
+                // Quyền đã được cấp
+                Toast.makeText(this, "Quyền hiển thị thông báo đã được cấp.", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            // Không cần kiểm tra quyền với các phiên bản Android cũ hơn
+            Toast.makeText(this, "Không cần yêu cầu quyền trên Android dưới 13.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Xử lý kết quả yêu cầu quyền
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_NOTIFICATION_PERMISSION_CODE) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // Quyền đã được cấp
+                Toast.makeText(this, "Quyền hiển thị thông báo đã được cấp.", Toast.LENGTH_SHORT).show()
+            } else {
+                // Quyền bị từ chối
+                Toast.makeText(this, "Quyền hiển thị thông báo bị từ chối.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    companion object {
+        const val REQUEST_NOTIFICATION_PERMISSION_CODE = 1001
+    }
 }
 
 

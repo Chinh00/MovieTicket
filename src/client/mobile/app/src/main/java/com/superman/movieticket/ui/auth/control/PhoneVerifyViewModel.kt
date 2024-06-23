@@ -3,6 +3,7 @@ package com.superman.movieticket.ui.auth.control
 import android.app.Activity
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 
 import androidx.lifecycle.AndroidViewModel
@@ -99,6 +100,11 @@ class PhoneVerifyViewModel @Inject constructor(application: Application) : Andro
             try {
                 val credential = PhoneAuthProvider.getCredential(verificationId.value, otp)
                 signInWithPhoneAuthCredential(credential) { success ->
+
+                    Log.d("OtpViewModel", success.toString())
+                    getAccessToken{
+                        Log.d("OtpViewModel", "token: $it")
+                    }
                     onVerified(success)
                     Log.d("OtpViewModel", success.toString())
                     getAccessToken{
@@ -117,9 +123,12 @@ class PhoneVerifyViewModel @Inject constructor(application: Application) : Andro
         viewModelScope.launch {
             FirebaseAuth.getInstance().signInWithCredential(credential)
                 .addOnCompleteListener { task ->
+
                     if (task.isSuccessful) {
 
                         onSuccess(true)
+
+
                     } else {
                         task.exception?.printStackTrace()
                         onSuccess(false)

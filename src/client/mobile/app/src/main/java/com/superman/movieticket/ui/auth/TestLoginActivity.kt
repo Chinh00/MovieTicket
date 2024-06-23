@@ -2,9 +2,16 @@ package com.superman.movieticket.ui.auth
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
+import android.content.Intent
+import android.hardware.biometrics.BiometricManager
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
@@ -38,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -60,6 +69,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.facebook.AccessToken
@@ -76,6 +88,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 import com.superman.movieticket.R
+import com.superman.movieticket.ui.auth.control.FingerLoginMagager
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.theme.CustomBlue
 import com.superman.movieticket.ui.theme.balooFont
@@ -119,7 +132,8 @@ fun SignInGoogleScreen() {
                 }
             }
         }, modifier = Modifier
-            .height(70.dp).fillMaxWidth()
+            .height(70.dp)
+            .fillMaxWidth()
             .shadow(
                 shape = MaterialTheme.shapes.small,
                 ambientColor = Color.Gray,
@@ -435,10 +449,15 @@ fun LoginTemp() {
 }
 
 @Composable
-fun LoginSocialComp() {
+fun FingerprintLoginScreen(modifier: Modifier? = Modifier, context: Context) {
+
+}
+
+@Composable
+fun LoginSocialComp(modifier: Modifier = Modifier) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically, modifier = modifier
     ) {
 //        Button(
 //            onClick = { /*TODO*/ }, modifier = Modifier
