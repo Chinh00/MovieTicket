@@ -60,6 +60,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.gson.Gson
 import com.superman.movieticket.R
 import com.superman.movieticket.infrastructure.utils.ApiState
+import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.order.model.ReservationCreateModel
 import com.superman.movieticket.ui.order.payment.control.PaymentActivityViewModel
@@ -71,7 +72,11 @@ class PaymentActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PaymentComp(Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java))
+            BaseScreen(content = { PaymentComp() }, title = "",
+                onNavigateUp = {
+                    //PaymentComp(Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java))
+                    finish()
+                })
         }
     }
 
@@ -79,7 +84,7 @@ class PaymentActivity : ComponentActivity() {
 
 @Composable
 fun PaymentComp(
-    reservationCreateModel: ReservationCreateModel
+//    reservationCreateModel: ReservationCreateModel
 ) {
     val paymentActivityViewModel: PaymentActivityViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -93,10 +98,10 @@ fun PaymentComp(
             .background(Color.Black)
     ) {
         val context = LocalContext.current
-    val doneActMethod = remember{
-        mutableStateOf(false)
-    }
-        val doneActDieuKhoan = remember{
+        val doneActMethod = remember {
+            mutableStateOf(false)
+        }
+        val doneActDieuKhoan = remember {
             mutableStateOf(false)
         }
         val (s, e, t, b) = createRefs()
@@ -116,14 +121,26 @@ fun PaymentComp(
                 PaymentTotaltComp("2 x FC - Week - holiday - 2D - park : C4, C5", 180.00)
             }
         }
-        Column(modifier = Modifier.constrainAs(t) {
-            top.linkTo(e.bottom)
-        }) {
-            PaymentContentComp("Payment methods") {
-                PaymentSelectMethodPaymenttComp(listMethodPayment) { methodPayment ->
-                    if(methodPayment!=null) doneActMethod.value=true else doneActMethod.value=false
-                }
-            }
+        Column(modifier = Modifier
+            .padding(top = 30.dp)
+            .constrainAs(t) {
+                top.linkTo(e.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(b.top)
+            }, horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.img_3),
+                contentDescription = "",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.size(300.dp)
+            )
+//            PaymentContentComp("Payment methods") {
+//                PaymentSelectMethodPaymenttComp(listMethodPayment) { methodPayment ->
+//                    if(methodPayment!=null) doneActMethod.value=true else doneActMethod.value=false
+//                }
+//            }
         }
         Column(modifier = Modifier.constrainAs(b) {
             top.linkTo(t.bottom)
@@ -132,16 +149,15 @@ fun PaymentComp(
         }) {
             PaymentFooterComp(false,
                 onClicked = {
-                    if(!it) Toast.makeText(context,"Bạn hãy đồng ý điều khoản đi??",Toast.LENGTH_SHORT).show()
-                    if(!doneActMethod.value) Toast.makeText(context,"Bạn hãy chọn phương thức thanh toán đi??",Toast.LENGTH_SHORT).show()
-                    paymentActivityViewModel.HandleCreateReservationAsync(reservationCreateModel)
-                    if (loading.value == ApiState.SUCCESS ) {
-                        val intent = Intent(context, MainActivity::class.java)
-                        context.startActivity(intent)
-                    }
+//                    if(!it) Toast.makeText(context,"Bạn hãy đồng ý điều khoản đi??",Toast.LENGTH_SHORT).show()
+//                    if(!doneActMethod.value) Toast.makeText(context,"Bạn hãy chọn phương thức thanh toán đi??",Toast.LENGTH_SHORT).show()
+//                    paymentActivityViewModel.HandleCreateReservationAsync(reservationCreateModel)
+//                    if (loading.value == ApiState.SUCCESS ) {
+//                        val intent = Intent(context, MainActivity::class.java)
+//                        context.startActivity(intent)
+//                    }
 
                 }, onClickMethod = {
-                    if(it) doneActDieuKhoan.value=true else doneActDieuKhoan.value=false
 
                 })
         }
@@ -151,7 +167,6 @@ fun PaymentComp(
 
 
 }
-
 
 
 @Composable
@@ -324,6 +339,7 @@ fun PaymentSelectMethodPaymenttComp(
                         modifier = Modifier
                             .size(50.dp, 40.dp)
                             .clip(
+
                                 RoundedCornerShape(10.dp)
                             ),
                         contentDescription = ""
@@ -378,7 +394,9 @@ fun PaymentFooterComp(
                     withStyle(
                         SpanStyle(
                             color = Color(0xFF3EC743),
-                            textDecoration = TextDecoration.Underline, fontFamily = balooFont, fontWeight = FontWeight.Bold
+                            textDecoration = TextDecoration.Underline,
+                            fontFamily = balooFont,
+                            fontWeight = FontWeight.Bold
                         )
                     ) {
                         append("điều khoản")
@@ -407,8 +425,8 @@ fun PaymentFooterComp(
                         ambientColor = Color.Black,
                         spotColor = Color.Yellow
                     ), colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFF1DC24),
-                    contentColor = Color.Black
+                    containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    contentColor = MaterialTheme.colorScheme.background
                 )
             ) {
                 Text(text = "Finish Payment")
@@ -418,7 +436,6 @@ fun PaymentFooterComp(
 
 
 }
-
 
 
 data class MethodPayment(
