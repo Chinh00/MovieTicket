@@ -149,7 +149,7 @@ fun PaymentComp(
                 modifier = Modifier.size(300.dp)
             )
         }
-        Column(modifier = Modifier.constrainAs(b) {
+        Column(modifier = Modifier.padding(bottom = 40.dp).constrainAs(b) {
             top.linkTo(t.bottom)
             bottom.linkTo(parent.bottom)
 
@@ -379,7 +379,7 @@ fun PaymentFooterComp(
     onClickMethod: (Boolean) -> Unit, onClicked: (Boolean) -> Unit
 ) {
     val checkedState = remember { mutableStateOf(isChecked) }
-    Column {
+    Column() {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(checked = checkedState.value, onCheckedChange = {
                 checkedState.value = it

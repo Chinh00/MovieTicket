@@ -107,7 +107,7 @@ class PhoneOtpActivity : ComponentActivity() {
 
 
         var otpValue by remember { mutableStateOf("") }
-
+        val scope = rememberCoroutineScope()
         val focusRequesters = remember { List(otpLength) { FocusRequester() } }
         val focusManager = LocalFocusManager.current
         val keyboardController = LocalSoftwareKeyboardController.current
@@ -129,9 +129,14 @@ class PhoneOtpActivity : ComponentActivity() {
                         onVerified(verified)
                         isVerify.value = verified
 
-                        if (verified == true) {
-                            val intent = Intent(context, MainActivity::class.java)
-                            context.startActivity(intent)
+                        if (verified) {
+                            scope.launch {
+                                delay(1000)
+                                val intent = Intent(context, MainActivity::class.java)
+                                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP )
+                                context.startActivity(intent)
+                            }
+
                         }
 
                     }

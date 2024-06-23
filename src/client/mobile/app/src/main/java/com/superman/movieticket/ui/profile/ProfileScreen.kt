@@ -1,17 +1,10 @@
 package com.superman.movieticket.ui.profile
 
-import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,16 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,14 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.lifecycleScope
-import com.superman.movieticket.core.view.BaseActivity
-import com.superman.movieticket.ui.auth.model.UserLoginModel
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import com.superman.movieticket.R
-import com.superman.movieticket.ui.components.ButtonLoading
 import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.profile.control.ProfileScreenViewModel
 
@@ -126,6 +106,11 @@ fun ProfileScreen() {
             Spacer(modifier = Modifier.height(15.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+//                modifier = Modifier.clickable {
+//                    val intent = Intent(context, UpdateActivity::class.java)
+//                    context.startActivity(intent)
+//                }
+
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_settings_24),
@@ -157,7 +142,7 @@ fun ProfileScreen() {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.baseline_list_alt_24),
+                    painter = painterResource(id = R.drawable.padlock),
                     contentDescription = "Change Password",
                     tint = Color.Black,
                     modifier = Modifier
@@ -175,6 +160,36 @@ fun ProfileScreen() {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_arrow_forward_ios_24),
                     contentDescription = "Change Password",
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .size(40.dp)
+                )
+
+            }
+
+            Spacer(modifier = Modifier.height(15.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_list_alt_24),
+                    contentDescription = "My Order",
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .size(55.dp)
+                        .padding(top = 5.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Khoảng cách giữa Icon và Text
+                Text(
+                    text = "My Order",
+                    color = Color.Black,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold // Nếu muốn làm đậm chữ
+                )
+                Spacer(modifier = Modifier.width(165.dp)) // Khoảng cách giữa Text và Icon thứ hai
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_arrow_forward_ios_24),
+                    contentDescription = "My Order",
                     tint = Color.Black,
                     modifier = Modifier
                         .size(40.dp)
@@ -214,13 +229,9 @@ fun ProfileScreen() {
                     fontWeight = FontWeight.Bold
                 )
             }
-
         }
-
-
     }
 }
-
 
 
 @Composable

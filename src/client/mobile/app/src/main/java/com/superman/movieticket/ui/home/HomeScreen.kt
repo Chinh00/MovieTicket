@@ -64,6 +64,9 @@ import com.superman.movieticket.ui.home.control.HomeScreenViewModel
 import kotlin.math.absoluteValue
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -88,6 +91,7 @@ import com.superman.movieticket.ui.order.screening.hooks.NavigateScreenActivity
 
 import com.superman.movieticket.ui.theme.MyAppTheme
 import com.superman.movieticket.ui.theme.balooFont
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -110,6 +114,7 @@ fun HomeScreen() {
     }
 
 }
+
 @Composable
 fun rememberLifecycleOwner(context: Context): LifecycleOwner {
     return remember(context) {
@@ -122,157 +127,28 @@ fun rememberLifecycleOwner(context: Context): LifecycleOwner {
 @Composable
 fun HomeContent() {
 
-    ConstraintLayout(modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         HomePage()
     }
 }
 
-@Composable
-fun ComingPage() {
 
 
 
 
-    val homeScreenModel: HomeScreenViewModel = hiltViewModel()
-    val movies = homeScreenModel.listMovies.collectAsState().value
-
-
-
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        movies.forEach {
-            ComingPageItem(m = it)
-        }
-    }
-}
-
-
-@Composable
-fun ComingPageItem(m: Movie) {
-
-    Card(
-        onClick = {},
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-            .height(200.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onSurface,
-            contentColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-
-        ) {
-            Column() {
-
-                Image(
-                    painter = painterResource(id = R.drawable.poster_payoff_aquaman_6_1_),
-                    modifier = Modifier.clip(
-                        RoundedCornerShape(8.dp)
-                    ),
-                    contentDescription = null
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .padding(start = 10.dp)
-                    .wrapContentSize(), verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Row {
-                    val title  =m.name?: "Đang cập nhật"
-
-                    Text(
-                        title,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.star_fill),
-                            contentDescription = null,
-                            tint = Color.Yellow
-                        )
-                        Text(
-                            "7.2",
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 5.dp),
-                            color = Color.Yellow
-                        )
-                    }
-                    Column(
-                        modifier = Modifier
-
-                            .padding(start = 10.dp)
-                            .clip(
-                                RoundedCornerShape(10.dp)
-                            )
-                            .background(MaterialTheme.colorScheme.onErrorContainer)
-                    ) {
-                        Text(
-                            "IMDB: 9.3",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-
-                                .padding(5.dp),
-                            color = MaterialTheme.colorScheme.surface
-                        )
-                    }
-
-
-                }
-                Row() {
-
-                    Text(
-                        "Chinh Văn Nguyễn",
-                        style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-
-                            .padding(5.dp),
-                        color = MaterialTheme.colorScheme.surface
-                    )
-                }
-
-            }
-
-
-        }
-
-    }
-}
-
-@Composable
-//@Preview(showSystemUi = true)
-fun ComingPagePre() {
-    val homeViewModel: HomeScreenViewModel = hiltViewModel()
-    val item = homeViewModel.listMovies.collectAsState().value[0]
-    ComingPageItem(item)
-}
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun HomePage() {
+fun HomePage(movies:MutableList<Movie>? = null) {
     val homeViewModel: HomeScreenViewModel = hiltViewModel()
     val movies = homeViewModel.listMovies.collectAsState()
+    Log.i("HomePage","${movies.value}")
     val imageBg = remember {
         mutableStateOf("")
     }
@@ -301,7 +177,11 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = context.getString(R.string.now_playing), color = MaterialTheme.colorScheme.onBackground, style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = context.getString(R.string.now_playing),
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.headlineSmall
+            )
 //            TextButton(onClick = {}) {
 //                Text(text = "See all", color = Color.Red)
 //            }
@@ -316,9 +196,9 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
         Row(modifier = Modifier.wrapContentSize()) {
             NowPlayingMoviesone(listViewMoviesNowing = listViewMoviesNowing) { movie ->
                 //Toast.makeText(cp, movie.avatar, Toast.LENGTH_SHORT).show()
-                if(login!="true"){
+                if (login != "true") {
                     NavigateLogin(context)
-                }else{
+                } else {
                     HandleTicket(movie.id)
 
                 }
@@ -337,7 +217,9 @@ fun PopularMovieComp(listMovies: List<Movie>? = null) {
         onMovieClicked = {
 
             val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra("id",it.id)
+            intent.putExtra("id", it.id)
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+
 //            Log.w("idMV",it.id)
             context.startActivity(intent)
         },
@@ -354,9 +236,13 @@ fun PopularMovies(
     listMovies: List<Movie>? = null,
     onMovieClicked: (Movie) -> Unit, onMovieFavouriteClicked: (Movie) -> Unit
 ) {
+
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize()) {
         (listMovies)?.forEachIndexed { index, item ->
+            val isSaved = remember {
+                mutableStateOf(false)
+            }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
@@ -387,7 +273,7 @@ fun PopularMovies(
                 ) {
                     Box {
                         Text(
-                            text = "${item.name?: "Đang cập nhật"}".uppercase(),
+                            text = "${item.name ?: "Đang cập nhật"}".uppercase(),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             fontFamily = balooFont,
@@ -396,17 +282,20 @@ fun PopularMovies(
                                 .fillMaxWidth(), color = MaterialTheme.colorScheme.onSurface
                         )
                         Icon(
-                            painter = painterResource(id = R.drawable.bookmark),
+                            if (isSaved.value != true) Icons.Default.BookmarkBorder else Icons.Default.Bookmark,
                             modifier = Modifier
-                                .clickable { onMovieFavouriteClicked(item) }
+                                .clickable {
+                                    onMovieFavouriteClicked(item)
+                                    isSaved.value = !isSaved.value
+                                }
                                 .size(25.dp)
                                 .align(Alignment.TopEnd),
                             contentDescription = null,
-                            tint = Color.Black
+                            tint = if (isSaved.value != true) Color.Gray else MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                     Text(
-                        text = item.description?:"Đang cập nhật",
+                        text = item.description ?: "Đang cập nhật",
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodySmall,
                         maxLines = 2,
@@ -417,9 +306,12 @@ fun PopularMovies(
                         text = buildAnnotatedString {
                             withStyle(SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
                                 append("${item.totalTime} | ${item.categories.joinToString(separator = " | ") { category -> category.name }}")
-                                Log.d("ca",item.categories.toString())
+                                Log.d("ca", item.categories.toString())
                             }
-                        }, maxLines = 2, overflow = TextOverflow.Ellipsis,style=MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold)
+                        },
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold)
                     )
 
                     Row(
@@ -464,7 +356,10 @@ fun PopularMovies(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = DatetimeHelper.ConvertISODatetimeToLocalDatetime(item.releaseDate, "dd/MM/yyyy"),
+                                text = DatetimeHelper.ConvertISODatetimeToLocalDatetime(
+                                    item.releaseDate,
+                                    "dd/MM/yyyy"
+                                ),
 
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleSmall
@@ -488,7 +383,7 @@ fun PopularMovies(
 @OptIn(ExperimentalFoundationApi::class)
 
 fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movie) -> Unit) {
-        val context = LocalContext.current
+    val context = LocalContext.current
 
     val pagerState =
         androidx.compose.foundation.pager.rememberPagerState(pageCount = { listViewMoviesNowing.size })
@@ -568,7 +463,7 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
 
                 }
                 Spacer(modifier = Modifier.height(5.dp))
-                val title  =listViewMoviesNowing[page].name?: "Đang cập nhật"
+                val title = listViewMoviesNowing[page].name ?: "Đang cập nhật"
                 Text(
                     text = "$title".uppercase(),
                     textAlign = TextAlign.Justify,
@@ -625,7 +520,10 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                     ) {
 
                         Text(
-                            text = DatetimeHelper.ConvertISODatetimeToLocalDatetime(listViewMoviesNowing[page].releaseDate, "dd/MM/yyyy"),
+                            text = DatetimeHelper.ConvertISODatetimeToLocalDatetime(
+                                listViewMoviesNowing[page].releaseDate,
+                                "dd/MM/yyyy"
+                            ),
 
 
                             color = MaterialTheme.colorScheme.background,
@@ -669,7 +567,11 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                             .padding(horizontal = 15.dp)
                             .fillMaxWidth()
                     ) {
-                        Text(text = context.getString(R.string.txt_book_ticket), color = MaterialTheme.colorScheme.onSurface)
+                        Text(
+                            text = context.getString(R.string.txt_book_ticket),
+                            color = MaterialTheme.colorScheme.background,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+                        )
                     }
                 }
             }

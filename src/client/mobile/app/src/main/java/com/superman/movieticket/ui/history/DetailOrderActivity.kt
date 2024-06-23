@@ -1,14 +1,31 @@
 package com.superman.movieticket.ui.history
 
+//import com.superman.movieticket.ui.history.control.DetailOrderViewModelFactory
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,11 +38,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.lifecycleScope
 import com.superman.movieticket.R
+import com.superman.movieticket.domain.entities.Reservation
+import com.superman.movieticket.ui.history.control.DetailOrderViewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class DetailOrderActivity : ComponentActivity() {
+
+    //    private val movieViewModel: DetailOrderViewModel by viewModels {
+//        object : ViewModelProvider.Factory {
+//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                // Create Retrofit instance
+//                val retrofit = Retrofit.Builder()
+//                    .baseUrl("https://yourapi.com/") // Thay thế bằng URL cơ sở thực tế của bạn
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .build()
+//
+//                val apiService = retrofit.create(MovieService::class.java)
+//
+//                return TODO("Provide the return value")
+//            }
+//
+//        }
+//    }
+//
+    val detailOrderViewModel :DetailOrderViewModel by viewModels()
+
+
+    @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -43,7 +86,19 @@ class DetailOrderActivity : ComponentActivity() {
             val seatNumber = intent.getStringExtra("seatNumber")
 
             DetailScreen(name, formatOrderDate(orderDate), date, quantity, total, imageResId, servicename, servicePrice, serviceQuantity, ticketPrice, theaterName, seatNumber)
+
+            lifecycleScope.launch {
+                detailOrderViewModel.listOrderReservation.collect { reservations ->
+                    // Cập nhật UI khi danh sách phim đã đặt thay đổi
+                    Log.i("DetailOrderViewModel", reservations.toString())
+                    updateUI(reservations)
+                }
+            }
         }
+
+
+
+        // Gọi API để lấy danh sách phim đã đặt
     }
 
     private fun formatOrderDate(orderDate: String?): String? {
@@ -55,6 +110,10 @@ class DetailOrderActivity : ComponentActivity() {
         } else {
             null
         }
+    }
+
+    private fun updateUI(movies: List<Reservation>) {
+        // Cập nhật UI của bạn ở đây
     }
 }
 

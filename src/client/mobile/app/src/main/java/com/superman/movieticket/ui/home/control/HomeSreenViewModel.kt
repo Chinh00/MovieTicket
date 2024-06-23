@@ -28,27 +28,23 @@ import javax.inject.Inject
 class HomeScreenViewModel @Inject constructor(
     private val movieService: MovieService
 ) : ViewModel() {
-    val _apiState = MutableStateFlow(ApiState.LOADING)
+    private val _apiState = MutableStateFlow(ApiState.LOADING)
     val apiState = _apiState.asStateFlow()
 
     private val _listMovies = MutableStateFlow(emptyList<Movie>())
     val listMovies = _listMovies.asStateFlow()
 
     init {
-        HandleGetMovie()
+        handleGetMovie()
     }
 
-
-    fun HandleGetMovie() {
+    private fun handleGetMovie() {
         viewModelScope.launch {
             _apiState.emit(ApiState.LOADING)
             val getMovie = defaultXQueryHeader.copy(
                 includes = mutableListOf("Categories"),
-                        sortBy = mutableListOf("Id")
-
+                sortBy = mutableListOf("Id")
             )
-
-
 
             movieService.HandleGetMoviesAsync(getMovie.JsonSerializer())
                 .enqueue(object : Callback<SuccessResponse<ListResponse<Movie>>> {
@@ -57,13 +53,18 @@ class HomeScreenViewModel @Inject constructor(
                         response: Response<SuccessResponse<ListResponse<Movie>>>
                     ) {
                         if (response.isSuccessful) {
-                            _listMovies.value = response.body()?.data?.items!!
-                            _apiState.value = ApiState.SUCCESS
+                            val movies = response.body()?.data?.items
+                            if (movies != null && movies.isNotEmpty()) {
+                                _listMovies.value = movies
+                                _apiState.value = ApiState.SUCCESS
+                            } else {
+                                _listMovies.value = emptyList()  // Cập nhật danh sách trống nếu không có phim
+                                _apiState.value = ApiState.FAIL
+                            }
                         } else {
                             Log.d("Error response", "Unsuccessful response: ${response.code()}")
                             _apiState.value = ApiState.FAIL
                         }
-
                     }
 
                     override fun onFailure(
@@ -71,13 +72,10 @@ class HomeScreenViewModel @Inject constructor(
                         t: Throwable
                     ) {
                         Log.d("Error call api", t.message.toString())
+                        _listMovies.value = emptyList()  // Cập nhật
                         _apiState.value = ApiState.FAIL
                     }
-
                 })
-            _apiState.emit(ApiState.NONE)
         }
     }
-
-
 }
