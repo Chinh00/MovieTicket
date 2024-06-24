@@ -1,6 +1,8 @@
 package com.superman.movieticket.ui.home.control
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -21,9 +23,12 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     private val movieService: MovieService
@@ -31,51 +36,54 @@ class HomeScreenViewModel @Inject constructor(
     private val _apiState = MutableStateFlow(ApiState.LOADING)
     val apiState = _apiState.asStateFlow()
 
-    private val _listMovies = MutableStateFlow(emptyList<Movie>())
-    val listMovies = _listMovies.asStateFlow()
+    private val _listMovies1 = MutableStateFlow(emptyList<Movie>())
+    val listMovies1 = _listMovies1.asStateFlow()
 
     init {
         handleGetMovie()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun handleGetMovie() {
         viewModelScope.launch {
-            _apiState.emit(ApiState.LOADING)
-            val getMovie = defaultXQueryHeader.copy(
+            val xQueryHeader = XQueryHeader(
                 includes = mutableListOf("Categories"),
-                sortBy = mutableListOf("Id")
+                filters = mutableListOf(),
+                sortBy = mutableListOf(),
+                page = 1,
+                pageSize = 20
             )
+            val currentDateTime = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+            val filterModel = FilterModel(
+                fieldName = "releaseDate",
+                comparision = "<=",
+                fieldValue = currentDateTime.toString()
+            )
+            xQueryHeader.sortBy.add("releaseDateDesc")
+            xQueryHeader.filters.add(filterModel)
 
-            movieService.HandleGetMoviesAsync(getMovie.JsonSerializer())
-                .enqueue(object : Callback<SuccessResponse<ListResponse<Movie>>> {
-                    override fun onResponse(
-                        call: Call<SuccessResponse<ListResponse<Movie>>>,
-                        response: Response<SuccessResponse<ListResponse<Movie>>>
-                    ) {
-                        if (response.isSuccessful) {
-                            val movies = response.body()?.data?.items
-                            if (movies != null && movies.isNotEmpty()) {
-                                _listMovies.value = movies
-                                _apiState.value = ApiState.SUCCESS
-                            } else {
-                                _listMovies.value = emptyList()  // Cập nhật danh sách trống nếu không có phim
-                                _apiState.value = ApiState.FAIL
-                            }
-                        } else {
-                            Log.d("Error response", "Unsuccessful response: ${response.code()}")
-                            _apiState.value = ApiState.FAIL
-                        }
-                    }
 
-                    override fun onFailure(
-                        call: Call<SuccessResponse<ListResponse<Movie>>>,
-                        t: Throwable
-                    ) {
-                        Log.d("Error call api", t.message.toString())
-                        _listMovies.value = emptyList()  // Cập nhật
-                        _apiState.value = ApiState.FAIL
-                    }
-                })
+            _apiState.value = ApiState.LOADING
+
+            movieService.HandleGetMoviesAsync(xQueryHeader.JsonSerializer()).enqueue(object: Callback<SuccessResponse<ListResponse<Movie>>> {
+                override fun onResponse(
+                    call: Call<SuccessResponse<ListResponse<Movie>>>,
+                    response: Response<SuccessResponse<ListResponse<Movie>>>
+                ) {
+                    _listMovies1.value = response.body()?.data?.items ?: emptyList()
+
+                    _apiState.value = ApiState.SUCCESS
+                }
+
+                override fun onFailure(
+                    call: Call<SuccessResponse<ListResponse<Movie>>>,
+                    t: Throwable
+                ) {
+                    Log.d("Movie", "onFailure: ${t.message}")
+                }
+
+            })
         }
     }
 }

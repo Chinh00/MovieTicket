@@ -12,6 +12,8 @@ android {
         getByName("debug") {
             storeFile = file("C:\\Users\\Ching\\keystore.jks")
             storePassword = "@P@ssw0rd02"
+            storeFile = file("C:\\Users\\dongt\\keystore.jks")
+            storePassword = "123456"
             keyAlias = "key0"
             keyPassword = "@P@ssw0rd02"
         }

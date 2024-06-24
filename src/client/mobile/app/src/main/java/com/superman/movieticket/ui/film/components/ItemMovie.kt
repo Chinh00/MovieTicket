@@ -142,7 +142,7 @@ fun ItemMovie(
             )
             Text(
                 text = "${context.getString(R.string.txt_category)}: ${m.categories.joinToString(", ") { it.name }}",
-                maxLines = 1,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 color = colorText,
                 style = MaterialTheme.typography.bodyMedium

@@ -54,7 +54,7 @@ class FilmScreenViewModelImpl
     override fun getListFilmShowing() {
         viewModelScope.launch {
             val xQueryHeader = XQueryHeader(
-                includes = mutableListOf(),
+                includes = mutableListOf("Categories"),
                 filters = mutableListOf(),
                 sortBy = mutableListOf(),
                 page = 1,
@@ -79,6 +79,7 @@ class FilmScreenViewModelImpl
                     response: Response<SuccessResponse<ListResponse<Movie>>>
                 ) {
                     _listFilmShowing.value = response.body()?.data?.items ?: emptyList()
+
                     _apiState.value = ApiState.SUCCESS
                 }
 

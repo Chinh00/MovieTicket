@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -33,7 +32,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -68,16 +66,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material3.*
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.style.TextAlign
-import androidx.core.graphics.scaleMatrix
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
 import coil.compose.rememberAsyncImagePainter
@@ -91,24 +85,41 @@ import com.superman.movieticket.ui.order.screening.hooks.NavigateScreenActivity
 
 import com.superman.movieticket.ui.theme.MyAppTheme
 import com.superman.movieticket.ui.theme.balooFont
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-private val _imgBg = MutableStateFlow("")
-val imgBg: StateFlow<String> get() = _imgBg
 
+
+
+@SuppressLint("StateFlowValueCalledInComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(homeScreenViewModel: HomeScreenViewModel = hiltViewModel()) {
 
 
-    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+
 
     ScreenLoading(isLoading = homeScreenViewModel.apiState.collectAsState()) {
         MyAppTheme {
 
-            HomeContent()
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState()),
+
+                    ) {
+                    NowingMovieComp(homeScreenViewModel.listMovies1.collectAsState().value?: emptyList())
+                    PopularMovieComp(homeScreenViewModel.listMovies1.collectAsState().value)
+
+                }
+            }
 
         }
     }
@@ -125,15 +136,9 @@ fun rememberLifecycleOwner(context: Context): LifecycleOwner {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeContent() {
+fun HomeContent(movies: List<Movie>? = null) {
 
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        HomePage()
-    }
+
 }
 
 
@@ -142,28 +147,6 @@ fun HomeContent() {
 
 
 
-@RequiresApi(Build.VERSION_CODES.O)
-@SuppressLint("StateFlowValueCalledInComposition")
-@Composable
-fun HomePage(movies:MutableList<Movie>? = null) {
-    val homeViewModel: HomeScreenViewModel = hiltViewModel()
-    val movies = homeViewModel.listMovies.collectAsState()
-    Log.i("HomePage","${movies.value}")
-    val imageBg = remember {
-        mutableStateOf("")
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-
-        ) {
-        NowingMovieComp(movies.value)
-        PopularMovieComp(movies.value)
-
-    }
-}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -396,7 +379,6 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
         contentPadding = PaddingValues(horizontal = 60.dp),
         pageSpacing = 20.dp
     ) { page ->
-        _imgBg.value = listViewMoviesNowing[page].avatar
         Column(
             modifier = Modifier
                 .width(360.dp)

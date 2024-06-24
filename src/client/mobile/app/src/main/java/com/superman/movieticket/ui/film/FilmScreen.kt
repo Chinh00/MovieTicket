@@ -9,6 +9,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChangeCircle
@@ -77,7 +79,6 @@ import kotlinx.coroutines.delay
 fun FilmScreen() {
 
 
-
     TabItemComp()
 
 }
@@ -88,33 +89,46 @@ fun FilmScreen() {
 @Composable
 fun TabItemComp() {
     val context = LocalContext.current
-
+    val filmScreenViewModel = hiltViewModel<FilmScreenViewModelImpl>()
     var selectedTabIndex by remember {
         mutableStateOf(0)
     }
     val tabItems = listOf(
-        TabItem(context.getString(R.string.now_playing), Icons.Default.PlayArrow, Icons.Default.ConnectedTv),
-        TabItem(context.getString(R.string.coming_up), Icons.Default.ChangeCircle, Icons.Filled.PlaylistAdd)
+        TabItem(
+            context.getString(R.string.now_playing),
+            Icons.Default.PlayArrow,
+            Icons.Default.ConnectedTv
+        ),
+        TabItem(
+            context.getString(R.string.coming_up),
+            Icons.Default.ChangeCircle,
+            Icons.Filled.PlaylistAdd
+        )
     )
     val pager = rememberPagerState(pageCount = { tabItems.size })
     LaunchedEffect(selectedTabIndex) {
         pager.animateScrollToPage(selectedTabIndex)
     }
 
-    LaunchedEffect(pager.currentPage, pager.isScrollInProgress) {
-        if (!pager.isScrollInProgress) {
+    LaunchedEffect(pager.currentPage) {
+        if (pager.isScrollInProgress) {
             selectedTabIndex = pager.currentPage
         }
     }
 
-    Column(modifier=Modifier.background(MaterialTheme.colorScheme.background)) {
-        TabRow(selectedTabIndex = selectedTabIndex, contentColor = MaterialTheme.colorScheme.background, containerColor = MaterialTheme.colorScheme.background,
+    Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        TabRow(selectedTabIndex = selectedTabIndex,
+            contentColor = MaterialTheme.colorScheme.background,
+            containerColor = MaterialTheme.colorScheme.background,
             divider = {
                 Divider(color = Color.Black)
-            }, indicator = { tabPositions -> TabRowDefaults.PrimaryIndicator(
-                height = 1.dp,color=MaterialTheme.colorScheme.onPrimaryContainer,
+            },
+            indicator = { tabPositions ->
+                TabRowDefaults.PrimaryIndicator(
+                    height = 1.dp, color = MaterialTheme.colorScheme.onPrimaryContainer,
 
-            )}) {
+                    )
+            }) {
             tabItems.forEachIndexed { index, item ->
                 Tab(
                     selected = index == selectedTabIndex,
@@ -122,7 +136,7 @@ fun TabItemComp() {
                     text = {
                         Text(
                             text = item.name,
-                            color = if(selectedTabIndex==index) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onPrimary,
+                            color = if (selectedTabIndex == index) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onPrimary,
                             fontWeight = if (index == selectedTabIndex) FontWeight.Bold else FontWeight.Light
                         )
                     },
@@ -134,12 +148,17 @@ fun TabItemComp() {
             }
         }
         Banners()
+        LaunchedEffect(filmScreenViewModel.getListFilmComingSoon(), filmScreenViewModel.getListFilmShowing()) {
+            filmScreenViewModel.getListFilmComingSoon()
+            filmScreenViewModel.getListFilmShowing()
+        }
+
         HorizontalPager(state = pager, modifier = Modifier.apply {
-                                                                 fillMaxWidth().align(Alignment.CenterHorizontally)
+            fillMaxWidth().horizontalScroll(rememberScrollState())
         }) {
             when (selectedTabIndex) {
-                0 -> ListMovieShowing()
-                1 -> ListMovieComingSoon()
+                0 -> ListMovieShowing(filmScreenViewModel.listFilmShowing.collectAsState().value)
+                1 -> ListMovieComingSoon(filmScreenViewModel.listFilmComingSoon.collectAsState().value)
             }
         }
     }
@@ -148,63 +167,58 @@ fun TabItemComp() {
 }
 
 
-
-
-
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListMovieShowing(
-
+    listMovies: List<Movie>
 ) {
-    val filmScreenViewModel: FilmScreenViewModelImpl = hiltViewModel()
+//    val filmScreenViewModel: FilmScreenViewModelImpl = hiltViewModel()
+//
+//    LaunchedEffect(key1 = Unit) {
+//        filmScreenViewModel.getListFilmShowing()
+//    }
 
-    LaunchedEffect(key1 = Unit) {
-        filmScreenViewModel.getListFilmShowing()
-    }
 
-
-    val listMovies = filmScreenViewModel.listFilmShowing.collectAsState()
+//    val listMovies = filmScreenViewModel.listFilmShowing.collectAsState()
 
 
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize()
     ) {
-        ScreenLoading(isLoading = filmScreenViewModel.apiState.collectAsState()) {
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                itemsIndexed(listMovies.value) {idnex,item->
-                    ItemMovie(item)
-                }
-
+//        ScreenLoading(isLoading = filmScreenViewModel.apiState.collectAsState()) {
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            itemsIndexed(listMovies) { idnex, item ->
+                ItemMovie(item)
             }
+
         }
+//        }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListMovieComingSoon(
+    listMovies: List<Movie> = emptyList(),
 ) {
-    val filmScreenViewModel: FilmScreenViewModelImpl = hiltViewModel()
-    LaunchedEffect(key1 = Unit) {
-        filmScreenViewModel.getListFilmComingSoon()
-    }
+//    val filmScreenViewModel: FilmScreenViewModelImpl = hiltViewModel()
+//    LaunchedEffect(key1 = Unit) {
+//        filmScreenViewModel.getListFilmComingSoon()
+//    }
 
 
-    val listMovies = filmScreenViewModel.listFilmComingSoon.collectAsState()
-    Log.d("Chinh", listMovies.toString())
+//    val listMovies = filmScreenViewModel.listFilmComingSoon.collectAsState()
+//    Log.d("Chinh", listMovies.toString())
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize()
     ) {
-        ScreenLoading(isLoading = filmScreenViewModel.apiState.collectAsState()) {
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                itemsIndexed(listMovies.value) {idnex,item->
-                    ItemMovie(item)
-                }
+//        ScreenLoading(isLoading = filmScreenViewModel.apiState.collectAsState()) {
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            itemsIndexed(listMovies) { idnex, item ->
+                ItemMovie(item)
             }
         }
+//        }
     }
 }
 
