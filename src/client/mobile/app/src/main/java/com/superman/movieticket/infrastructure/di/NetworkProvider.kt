@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.services.ScreeningService
+import com.superman.movieticket.infrastructure.networks.SuspendInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,8 +26,10 @@ object NetworkProvider {
     @Provides
     @Singleton
     fun okHttpClientProvider(
+        dataStore: DataStore<Preferences>,
     ): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(SuspendInterceptor(dataStore))
             .callTimeout(5, TimeUnit.MINUTES)
             .connectTimeout(5, TimeUnit.MINUTES)
             .readTimeout(5, TimeUnit.MINUTES)

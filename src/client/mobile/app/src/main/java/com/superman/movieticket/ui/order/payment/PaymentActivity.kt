@@ -70,6 +70,7 @@ import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
 import com.microsoft.signalr.HubConnectionState
 import com.superman.movieticket.R
+import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.infrastructure.utils.ApiState
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.main.MainActivity
@@ -97,7 +98,7 @@ class PaymentActivity : ComponentActivity() {
 
 
         val reservationCreateModel = Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java)
-
+        Log.d("reservation", reservationCreateModel.toString())
         setContent {
             val transactionId = paymentActivityViewModel.transactionStatus.collectAsState()
             transactionId.value?.let { connectToHub(it, reservationCreateModel) }
@@ -109,7 +110,7 @@ class PaymentActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun connectToHub(transactionId: String, reservationCreateModel: ReservationCreateModel) {
-        hubConnection = HubConnectionBuilder.create("http://10.0.2.2:5006/paymentHub?transactionId=${transactionId}").build()
+        hubConnection = HubConnectionBuilder.create("${AppOptions.BASE_URL}/client-hub/paymentHub?transactionId=${transactionId}").build()
 
         lifecycleScope.launch {
             try {

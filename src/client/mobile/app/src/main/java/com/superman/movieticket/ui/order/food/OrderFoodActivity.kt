@@ -110,6 +110,7 @@ fun OrderFoodScreen(reservationCreateModel: ReservationCreateModel) {
     val reservationCreateModelState = remember {
         mutableStateOf(reservationCreateModel)
     }
+
     fun ChangeService (serviceId: String, changeServiceAction: ChangeServiceAction = ChangeServiceAction.ADD){
         when(changeServiceAction) {
             ChangeServiceAction.ADD -> {
@@ -154,8 +155,19 @@ fun OrderFoodScreen(reservationCreateModel: ReservationCreateModel) {
             val listFood = orderFoodActivityModel.listService.collectAsState().value
 
             listFood.forEach {
-                ItemFood(service = it, totalPrice = totalPrice.value) {
-                    totalPrice.value = it
+
+                ItemFood(service = it, totalPrice = totalPrice.value, setTotalPrice = {totalPrice.value = it}) {
+                    a, b ->
+                    val service = reservationCreateModelState.value.serviceReservations.firstOrNull {it.serviceId == a}
+                    if (service == null) {
+                        reservationCreateModelState.value.serviceReservations.add(ServiceReservationsCreateModel(
+                            a, b
+                        ))
+                    } else {
+                        service.quantity = b
+                    }
+
+
                 }
             }
 
@@ -199,7 +211,8 @@ fun OrderFoodScreen(reservationCreateModel: ReservationCreateModel) {
 fun ItemFood(
     service: Service,
     totalPrice: Int,
-    setTotalPrice: (Int) -> Unit
+    setTotalPrice: (Int) -> Unit,
+    changeService: (serviceId: String, quantity: Int) -> Unit
 ) {
     val c = Color(0xFFA8F54E)
 
@@ -246,7 +259,7 @@ fun ItemFood(
                             quantity.value -= 1
                             setTotalPrice(totalPrice - service.priceUnit)
                         }
-
+                        changeService(service.id, quantity.value)
 
                     }) {
                         Text(text = "-", fontSize = 30.sp, color = c)
@@ -259,6 +272,7 @@ fun ItemFood(
                     IconButton(onClick = {
                         quantity.value += 1
                         setTotalPrice(totalPrice + service.priceUnit)
+                        changeService(service.id, quantity.value)
                     }) {
                         Text(text = "+", fontSize = 30.sp, color = c)
                     }
