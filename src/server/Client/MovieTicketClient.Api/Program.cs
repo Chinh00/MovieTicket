@@ -1,5 +1,6 @@
 
 
+using System.Text.Json.Serialization;
 using MovieTicket.Infrastructure.Auth;
 using MovieTicket.Infrastructure.Caching;
 using MovieTicket.Infrastructure.EfCore;
@@ -27,7 +28,11 @@ builder.Services.AddAuthCustom(builder.Configuration);
 
 builder.Services.AddCustomLogger();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(opt =>
+{
+    opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    opt.JsonSerializerOptions.WriteIndented = true;
+});;
 
 builder.Services.AddCustomSwagger(typeof(MovieTicketClient.Api.Controller.Anchor));
 

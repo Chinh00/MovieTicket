@@ -35,7 +35,8 @@ public class TransactionEndpoint : IRequestHandler<TransactionCreate.Command, Re
         return ResultModel<TransactionDto>.Create(_mapper.Map<TransactionDto>(
             await _repository.AddAsync(new Transaction() {
                 Message = Guid.NewGuid().ToString(),
-                Total = request.CreateModel.Total
+                Total = request.CreateModel.Total,
+                TransactionState = TransactionState.Unpaid
                 })
         ));
     }

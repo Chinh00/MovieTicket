@@ -9,6 +9,7 @@ import android.view.SurfaceControl.Transaction
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -42,6 +43,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,46 +64,99 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import com.google.gson.Gson
+import com.microsoft.signalr.HubConnection
+import com.microsoft.signalr.HubConnectionBuilder
+import com.microsoft.signalr.HubConnectionState
 import com.superman.movieticket.R
 import com.superman.movieticket.infrastructure.utils.ApiState
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.main.MainActivity
+import com.superman.movieticket.ui.main.hooks.NavigateMainActivity
 import com.superman.movieticket.ui.order.model.ReservationCreateModel
 import com.superman.movieticket.ui.order.payment.control.PaymentActivityViewModel
 import com.superman.movieticket.ui.theme.balooFont
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class PaymentActivity : ComponentActivity() {
+
+    private lateinit var hubConnection: HubConnection
+    val paymentActivityViewModel: PaymentActivityViewModel by viewModels()
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+
+
+
+        val reservationCreateModel = Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java)
+
         setContent {
-            BaseScreen(content = { PaymentComp(Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java)) }, title = "",
-                onNavigateUp = {
-                    finish()
-                })
+            val transactionId = paymentActivityViewModel.transactionStatus.collectAsState()
+            transactionId.value?.let { connectToHub(it, reservationCreateModel) }
+
+            BaseScreen(content = { PaymentComp() }, title = "", onNavigateUp = {finish()})
         }
     }
+
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun connectToHub(transactionId: String, reservationCreateModel: ReservationCreateModel) {
+        hubConnection = HubConnectionBuilder.create("http://10.0.2.2:5006/paymentHub?transactionId=${transactionId}").build()
+
+        lifecycleScope.launch {
+            try {
+                hubConnection.start().blockingAwait()
+                if (hubConnection.connectionState == HubConnectionState.CONNECTED) {
+                    hubConnection.on("ConfirmPayment", { confirmedTransaction: String ->
+                        Log.d("Chinh ", "Payment confirmed: ${confirmedTransaction}")
+                        runOnUiThread {
+                            Toast.makeText(this@PaymentActivity, "Thanh toán thành công", Toast.LENGTH_LONG).show()
+                            paymentActivityViewModel.HandleCreateReservationAsync(ReservationCreateModel(
+                                screeningId = reservationCreateModel.screeningId,
+                                reservationState = 0,
+                                seatReservations = reservationCreateModel.seatReservations,
+                                serviceReservations = reservationCreateModel.serviceReservations,
+                                transactionId = confirmedTransaction
+                            ))
+                            val intent = Intent(this@PaymentActivity, MainActivity::class.java)
+                            startActivity(intent)
+                        }
+                    }, String::class.java)
+                }
+
+            } catch (e: Exception) {
+                Log.e("BalanceChangeReceiver", "Connection error: ${e.message}", e)
+            }
+        }
+
+        // Monitor the connection state
+        hubConnection.onClosed {
+        }
+    }
+
 
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun PaymentComp(
-    reservationCreateModel: ReservationCreateModel
 ) {
-    val paymentActivityViewModel: PaymentActivityViewModel = hiltViewModel()
-    val context = LocalContext.current
-    val loading = paymentActivityViewModel.apiLoading.collectAsState()
 
+    val paymentActivityViewModel: PaymentActivityViewModel = hiltViewModel()
     LaunchedEffect(key1 = Unit) {
+
         paymentActivityViewModel.HandleCreateTransactionAsync(60000)
-        paymentActivityViewModel.hubConnection.start().blockingAwait()
-        paymentActivityViewModel.hubConnection.on("ConfirmPayment", { transaction: Transaction ->
-            Log.d("Chinh", transaction.toString())
-        }, Transaction::class.java)
+
     }
+
 
 
     ConstraintLayout(
@@ -149,11 +204,13 @@ fun PaymentComp(
                 modifier = Modifier.size(300.dp)
             )
         }
-        Column(modifier = Modifier.padding(bottom = 40.dp).constrainAs(b) {
-            top.linkTo(t.bottom)
-            bottom.linkTo(parent.bottom)
+        Column(modifier = Modifier
+            .padding(bottom = 40.dp)
+            .constrainAs(b) {
+                top.linkTo(t.bottom)
+                bottom.linkTo(parent.bottom)
 
-        }) {
+            }) {
             PaymentFooterComp(false,
                 onClicked = {
 

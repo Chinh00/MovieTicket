@@ -8,9 +8,6 @@ public sealed class GetSeatsByIdSpec : GridSpecificationBase<Seat>
     public GetSeatsByIdSpec(List<Guid> guids)
     {
         if (guids.Count <= 0) return;
-        foreach (var guid in guids)
-        {
-            ApplyFilter(e => e.Id == guid);
-        }
+        ApplyFilter(e => guids.Contains(e.Id));
     }
 }

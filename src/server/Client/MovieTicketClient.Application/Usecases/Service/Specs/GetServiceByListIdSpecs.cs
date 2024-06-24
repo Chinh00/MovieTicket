@@ -6,9 +6,7 @@ public sealed class GetServiceByListIdSpecs : GridSpecificationBase<MovieTicket.
 {
     public GetServiceByListIdSpecs(ICollection<Guid> guids)
     {
-        foreach (var guid in guids)
-        {
-            ApplyFilter(e => e.Id == guid);
-        }
+        if (guids.Count == 0) return;
+        ApplyFilter(e => guids.Contains(e.Id));
     }
 }

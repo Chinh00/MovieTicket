@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
+import com.microsoft.signalr.HubConnectionState
 import com.superman.movieticket.domain.entities.Reservation
 import com.superman.movieticket.domain.entities.Transaction
 import com.superman.movieticket.domain.services.RegisterTransactionModel
@@ -32,6 +33,8 @@ class PaymentActivityViewModel @Inject constructor(
     val apiLoading = _apiLoading.asStateFlow()
     lateinit var hubConnection: HubConnection
 
+    val _transactionStatus = MutableStateFlow<String?>(null)
+    val transactionStatus = _transactionStatus.asStateFlow()
 
 
 
@@ -44,8 +47,9 @@ class PaymentActivityViewModel @Inject constructor(
                     call: Call<SuccessResponse<Transaction>>,
                     response: Response<SuccessResponse<Transaction>>
                 ) {
-                    val transactionId = response?.body()?.data?.id
-                    hubConnection = HubConnectionBuilder.create("http://localhost:5006/paymentHub?transactionId=$transactionId").build()
+                    _transactionStatus.value = response?.body()?.data?.id
+                    Log.d("Chinh", response?.body()?.data?.id.toString())
+
                 }
 
                 override fun onFailure(call: Call<SuccessResponse<Transaction>>, t: Throwable) {
@@ -55,6 +59,8 @@ class PaymentActivityViewModel @Inject constructor(
             })
         }
     }
+
+
 
 
 

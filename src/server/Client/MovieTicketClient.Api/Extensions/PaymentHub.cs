@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.SignalR;
 using MovieTicket.Core.Repository;
 using MovieTicket.Domain.Entities;
 using MovieTicketClient.Application.Usecases.Transactions.Specs;
@@ -26,6 +27,7 @@ public class PaymentHub : Hub
         }
 
         var jobId = httpContext.Request.Query["transactionId"];
+        Console.WriteLine($"Chinh {jobId}");
         await Groups.AddToGroupAsync(Context.ConnectionId, jobId);
     }
 
@@ -39,7 +41,9 @@ public class PaymentHub : Hub
         var transaction = await _repository.FindOneAsync(new GetTransactionByIdSpec(model.TransactionId));
         if (transaction.Total == model.Total)
         {
-            await Clients.Group(transaction.Id.ToString()).SendAsync("ConfirmPayment", transaction);
+            transaction.TransactionState = TransactionState.Paid;
+            await _repository.EditAsync(transaction);
+            await Clients.Group(model.TransactionId.ToString()).SendAsync("ConfirmPayment", transaction?.Id);
         } 
     }
     

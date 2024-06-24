@@ -64,10 +64,12 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
     private readonly IGridRepository<MovieTicket.Domain.Entities.Service> _gridRepositoryService;
     private readonly IGridRepository<MovieTicket.Domain.Entities.Reservation> _gridRepository;
     private readonly IGridRepository<Seat> _gridRepositorySeat;
+    private readonly IRepository<ServiceReservation> _repositoryServiceReservation;
     private readonly IMapper _mapper;
     private readonly ISecurityContextAccessor _securityContextAccessor;
+    private readonly int _seatPrice = 80000; 
     
-    public ReservationEndpoint(IRepository<MovieTicket.Domain.Entities.Reservation> repository, IMapper mapper, IRepository<SeatReservation> repositorySeatReservation, ISecurityContextAccessor securityContextAccessor, IGridRepository<MovieTicket.Domain.Entities.Reservation> gridRepository, IRepository<MovieTicket.Domain.Entities.Service> repositoryService, IGridRepository<MovieTicket.Domain.Entities.Service> gridRepositoryService, IGridRepository<Seat> gridRepositorySeat)
+    public ReservationEndpoint(IRepository<MovieTicket.Domain.Entities.Reservation> repository, IMapper mapper, IRepository<SeatReservation> repositorySeatReservation, ISecurityContextAccessor securityContextAccessor, IGridRepository<MovieTicket.Domain.Entities.Reservation> gridRepository, IRepository<MovieTicket.Domain.Entities.Service> repositoryService, IGridRepository<MovieTicket.Domain.Entities.Service> gridRepositoryService, IGridRepository<Seat> gridRepositorySeat, IRepository<ServiceReservation> repositoryServiceReservation)
     {
         _repository = repository;
         _mapper = mapper;
@@ -77,6 +79,7 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
         _repositoryService = repositoryService;
         _gridRepositoryService = gridRepositoryService;
         _gridRepositorySeat = gridRepositorySeat;
+        _repositoryServiceReservation = repositoryServiceReservation;
     }
 
     public async Task<ResultModel<ReservationDto>> Handle(ReservationCreate.Command request, CancellationToken cancellationToken)
@@ -87,9 +90,14 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
             ScreeningId = request.CreateModel.ScreeningId
         };
         await _repository.AddAsync(reservation);
-
+        var totalPrice = 0;
+        
+        
         var seatsByIdSpec = new GetSeatsByIdSpec(request.CreateModel.SeatReservations.Select(e => e.SeatId).ToList());
         var seatsInclude = await _gridRepositorySeat.FindAsync(seatsByIdSpec);
+        totalPrice += seatsInclude.Count * _seatPrice;
+        
+        
         foreach (var seat in seatsInclude)
         {
             await _repositorySeatReservation.AddAsync(new SeatReservation()
@@ -99,6 +107,26 @@ public class ReservationEndpoint : IRequestHandler<ReservationCreate.Command, Re
             });
         }
         
+        
+        var serviceByIdSpec = new GetServiceByListIdSpecs(request.CreateModel.ServiceReservations.Select(e => e.ServiceId).ToList());
+        var serviceInclude = await _gridRepositoryService.FindAsync(serviceByIdSpec);
+        
+        foreach (var service in serviceInclude)
+        {
+            var quantity = request.CreateModel.ServiceReservations.First(e => e.ServiceId == service.Id).Quantity;
+            totalPrice += (int) service.PriceUnit * quantity;
+            await _repositoryServiceReservation.AddAsync(new ServiceReservation()
+            {
+                ServiceId = service.Id,
+                Quantity = quantity,
+                Price = service.PriceUnit,
+                ReservationId = reservation.Id
+            });
+        }
+
+        reservation.ItemPrice = _seatPrice;
+        reservation.TotalPrice = totalPrice;
+        await _repository.EditAsync(reservation, cancellationToken: cancellationToken);
 
         return ResultModel<ReservationDto>.Create(_mapper.Map<ReservationDto>(reservation));
     }

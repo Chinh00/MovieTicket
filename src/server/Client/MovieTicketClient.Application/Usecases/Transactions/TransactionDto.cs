@@ -5,6 +5,7 @@ namespace MovieTicketClient.Application.Usecases.Transactions;
 
 public class TransactionDto
 {
+    public Guid Id { get; set; }
     public Guid? ReservationId { get; set; }
     public long Total { get; set; }
     public string Message { get; set; }
