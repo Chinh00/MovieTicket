@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -67,6 +68,7 @@ class DoneChangePasswordActivity : ComponentActivity() {
     @Composable
     @Preview(showSystemUi = true)
     private fun DoneChangePasswordComp() {
+        val context = LocalContext.current
         Box(
             modifier = Modifier
                 .padding(horizontal = 10.dp)
@@ -86,13 +88,14 @@ class DoneChangePasswordActivity : ComponentActivity() {
                     Image(
                         painter = painterResource(id = R.drawable.check),
                         modifier = Modifier
-                            .size(50.dp).clip(RoundedCornerShape(16.dp))
+                            .size(50.dp)
+                            .clip(RoundedCornerShape(16.dp))
                             .background(Color.Green.copy(alpha = 0.2f))
                             .padding(10.dp),
                         contentDescription = null
                     )
                     Text(
-                        text = "Password Changed", modifier = Modifier.padding(vertical = 10.dp),
+                        text = "Cập nhật mật khẩu thành công", modifier = Modifier.padding(vertical = 10.dp),
                         color = Color.Black.copy(alpha = 0.9f),
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleLarge,
@@ -105,12 +108,11 @@ class DoneChangePasswordActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        text = "Your password  has been changed successfully",
-                        color = Color.Gray,
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    Button(onClick = {
+
+                    }) {
+                        Text(text = "Xong")
+                    }
 
 
                 }

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using MovieTicket.Infrastructure.Files;
+using MovieTicket.Infrastructure.Security;
 using MovieTicketClient.IdentityServer;
 using MovieTicketClient.IdentityServer.Data;
 using MovieTicketClient.IdentityServer.Data.Internal;
@@ -70,7 +72,8 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IFacadeResolver>(provider => provider.GetService<AppDbContext>());
 builder.Services.AddControllers();
-
+builder.Services.AddTransient<IServerAccessor, ServerAccessor>();
+builder.Services.AddTransient<IFileHelper, FileHelper>();
 
 builder.Services.AddHostedService<DbMigrationHostedService>();
 
@@ -82,6 +85,7 @@ app.UseIdentityServer();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseStaticFiles();
 
 FirebaseApp.Create(new AppOptions()
 {

@@ -61,11 +61,15 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.superman.movieticket.R
+import com.superman.movieticket.infrastructure.utils.ApiState
 import com.superman.movieticket.ui.auth.control.ForgotPasswordState
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.auth.control.OtpViewModel
+import com.superman.movieticket.ui.auth.control.PhoneOtpActivityViewModel
+import com.superman.movieticket.ui.auth.model.TmpActivity
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.theme.CustomBlue
@@ -107,14 +111,18 @@ class PhoneOtpActivity : ComponentActivity() {
 
 
         var otpValue by remember { mutableStateOf("") }
-        val scope = rememberCoroutineScope()
-        val focusRequesters = remember { List(otpLength) { FocusRequester() } }
-        val focusManager = LocalFocusManager.current
         val keyboardController = LocalSoftwareKeyboardController.current
+
         val context = LocalContext.current
+
+
+
         val isVerify = remember {
             mutableStateOf(false)
         }
+
+
+
         BasicTextField(
             value = otpValue,
             onValueChange = {
@@ -122,21 +130,22 @@ class PhoneOtpActivity : ComponentActivity() {
                     otpValue = it
 
                 }
+
                 if (otpValue.length == otpLength) {
                     loginActivityViewModel.setOtpValue(otpValue)
                     keyboardController?.hide()
                     loginActivityViewModel.verifyOtp(otpValue) { verified ->
+                        val intent = Intent(context, TmpActivity::class.java)
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP )
+                        context.startActivity(intent)
+
+
                         onVerified(verified)
                         isVerify.value = verified
+                        if (verified ) {
+                            runOnUiThread {
 
-                        if (verified) {
-                            scope.launch {
-                                delay(1000)
-                                val intent = Intent(context, MainActivity::class.java)
-                                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP )
-                                context.startActivity(intent)
                             }
-
                         }
 
                     }

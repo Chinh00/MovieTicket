@@ -60,7 +60,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PhoneVerifyActivity : ComponentActivity() {
-    private var isReturning: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -90,6 +89,9 @@ fun PhoneVerifyComp(
 ) {
 
     val loginActivityViewModel: LoginActivityViewModel = hiltViewModel()
+
+
+
 
 
     var isLoading by remember { mutableStateOf(false) }
