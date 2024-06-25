@@ -13,6 +13,7 @@
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="login">Đăng nhập</string>
+    <string name="txt_detail">Chi tiết</string>
 
     <string name="next">Next</string>
     <string name="priceticket">Giá vé:</string>

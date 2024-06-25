@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.superman.movieticket.R
+import com.superman.movieticket.ui.history.MyOrderActivity
 import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.profile.control.ProfileScreenViewModel
 
@@ -170,6 +172,10 @@ fun ProfileScreen() {
             Spacer(modifier = Modifier.height(15.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+                modifier= Modifier.clickable {
+                    val intent = Intent(context, MyOrderActivity::class.java)
+                    context.startActivity(intent)
+                }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_list_alt_24),
@@ -216,7 +222,7 @@ fun ProfileScreen() {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_exit_to_app_24),
                     contentDescription = "Logout",
-                    tint = Color.Black,
+                    tint = MaterialTheme.colorScheme.background,
                     modifier = Modifier
                         .size(55.dp)
                         .padding(top = 5.dp),
@@ -224,7 +230,7 @@ fun ProfileScreen() {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Đăng xuất",
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.background,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )

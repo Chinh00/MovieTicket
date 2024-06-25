@@ -65,8 +65,12 @@
             android:name=".ui.profile.UpdateActivity"
             android:exported="true" />
 
-
-
+        <activity
+            android:name=".ui.history.MyOrderActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.history.DetailOrderActivity"
+            android:exported="true" />
         <activity
             android:name=".ui.detail.view.DetailActivity"
             android:exported="true">
@@ -88,7 +92,6 @@
             android:name=".ui.order.food.OrderFoodActivity"
             android:exported="true" />
         <activity android:name=".ui.order.ticket.TicketBookActivity" />
-        <activity android:name=".ui.history.DetailOrderActivity" />
         <activity android:name=".ui.order.payment.PaymentActivity" android:exported="true"/>
 
         <activity

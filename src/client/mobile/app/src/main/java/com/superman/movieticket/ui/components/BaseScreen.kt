@@ -38,7 +38,7 @@ fun BaseScreen (
                 containerColor = Color.Transparent, titleContentColor = MaterialTheme.colorScheme.background
             ),
                 title = {
-                    title?.let { Text(text = it, textAlign = TextAlign.Center) }
+                    title?.let { Text(text = it, textAlign = TextAlign.Center,color=MaterialTheme.colorScheme.onBackground) }
                 },
                 navigationIcon = {
                     IconButton(onClick = {

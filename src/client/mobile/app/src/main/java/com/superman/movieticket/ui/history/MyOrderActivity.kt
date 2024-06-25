@@ -3,81 +3,102 @@ package com.superman.movieticket.ui.history
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import java.text.SimpleDateFormat
-import java.util.*
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.R
+import com.superman.movieticket.domain.entities.Reservation
+import com.superman.movieticket.infrastructure.utils.DatetimeHelper
+import com.superman.movieticket.ui.components.BaseScreen
+import com.superman.movieticket.ui.history.control.ReservationViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.Date
 
-data class Order(
-    val movieName: String,
-    val orderDate: String,
-    val orderDateTime: Date,
-    val showStartTime: String,
-    val showEndTime: String,
-    val showStartDateTime: Date,
-    val showEndDateTime: Date,
-    val ticketPrice: Double,
-    val quantity: Int,
-    val total: Double,
-    val imageResId: Int,
-    val serviceName: String,
-    val servicePrice: Double,
-    val serviceQuantity: Int,
-    val theaterName: String,
-    val seatNumber: String
-)
-
+@AndroidEntryPoint
 class MyOrderActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyOrderActivityScreen()
+            BaseScreen(content = {
+                MyOrderComp()
+            }, title = "Lịch sử đặt vé", onNavigateUp = {
+                finish()
+            })
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MyOrderActivityScreen() {
-    val orders = fetchOrderHistory()
+fun MyOrderComp() {
+    val reservationViewModel: ReservationViewModel = hiltViewModel()
     val context = LocalContext.current
+    LaunchedEffect(reservationViewModel.fetchReservedMovies()) {
+        reservationViewModel.fetchReservedMovies()
+    }
+    Toast.makeText(
+        context,
+        reservationViewModel.listOrderReservation.collectAsState().value.toString(),
+        Toast.LENGTH_SHORT
+    ).show()
 
-    LazyColumn(
-        modifier = Modifier
+    if (reservationViewModel.listOrderReservation.collectAsState().value.isNotEmpty()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(16.dp)
+        ) {
+            items(reservationViewModel.listOrderReservation.value) { r ->
+                OrderItem(reservation = r)
+            }
+        }
+    } else {
+        Box(modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .padding(16.dp)
-    ) {
-        items(orders) { order ->
-            OrderItem(order = order, context = context)
+            .background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center) {
+
+            Text("Bạn hãy đặt vé",color=MaterialTheme.colorScheme.onBackground)
         }
     }
 }
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun OrderItem(order: Order, context: Context) {
+fun OrderItem(reservation: Reservation) {
+    val context = LocalContext.current
+    val colorText = MaterialTheme.colorScheme.onBackground
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -91,255 +112,68 @@ fun OrderItem(order: Order, context: Context) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                BoxWithConstraints(
+                Box(
                     modifier = Modifier
                         .size(100.dp)
                         .clip(RoundedCornerShape(10.dp))
                 ) {
                     Image(
-                        painter = painterResource(id = order.imageResId),
-                        contentDescription = null,
+                        painter = rememberAsyncImagePainter(
+                            reservation.screening?.movie?.avatar?:"", error = painterResource(
+                                id = R.drawable.error_img
+                            )
+                        ),
+                        contentDescription = reservation.screening.movie.name?:"Không có dữ liệu",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
                 }
                 Spacer(modifier = Modifier.width(5.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("Phim: ${order.movieName}", color = Color.Black)
-                    Text("Ngày đặt: ${order.orderDate}", color = Color.Black)
+                    Text("Phim: ${reservation.screening?.movie?.name?:"Không có dữ liệu"}", color = colorText)
+                    Text(
+                        "Ngày đặt: ${""
+//                            DatetimeHelper.ConvertISODatetimeToLocalDatetime(
+//                                reservation.seatReservations?.first()!!.createdDate.toString()?:Date().toString(),
+//                                "dd/MM/yyyy"
+//                            )
+                        }", color = colorText
+                    )
                 }
                 Button(
-                    onClick = { navigateToDetail(context, order) },
+                    colors = ButtonDefaults.buttonColors(
+
+                        contentColor = MaterialTheme.colorScheme.background,
+                        containerColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ),
+                    onClick = { navigateToDetail(context, reservation) },
                     modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
                         .padding(start = 20.dp, top = 50.dp)
+                        .border(
+                            width = 1.dp,
+                            color = Color.Black,
+                            shape = RoundedCornerShape(10.dp)
+                        )
                 ) {
-                    Text("Chi tiết")
+                    Text(context.getString(R.string.txt_detail))
                 }
             }
         }
     }
 }
 
-private fun fetchOrderHistory(): List<Order> {
-    return listOf(
-        Order(
-            "Avengers: Endgame",
-            "2024/08/05 23:45 PM",
-            parseDateTime("2024/08/05 23:45 PM"),
-            "12:30 PM",
-            "3:30 PM",
-            parseDateTime("2024/06/05 12:30 PM"),
-            parseDateTime("2024/06/05 3:30 PM"),
-            150.0,
-            2,
-            300.0,
-            R.drawable.kingkong2024,
-            "Snack vị tảo biển",
-            5.0,
-            1,
-            "Cinema 8",
-            "A-16"
-        ),
-        Order(
-            "Inception",
-            "2024/05/06 13:24 AM",
-            parseDateTime("2024/05/06 13:24 AM"),
-            "01:30 PM",
-            "03:00 PM",
-            parseDateTime("2024/06/06 01:30 PM"),
-            parseDateTime("2024/06/06 03:00 PM"),
-            120.0,
-            1,
-            120.0,
-            R.drawable.bietdoidanhthue,
-            "Bimbim khoai tây",
-            10.0,
-            2,
-            "Cinema 9",
-            "B-24"
-        ),
-        Order(
-            "Conan",
-            "2024/06/07 14:30 PM ",
-            parseDateTime("2024/06/07 14:30 PM"),
-            "03:00 PM",
-            "05:00 PM",
-            parseDateTime("2024/06/07 03:00 PM"),
-            parseDateTime("2024/06/07 05:00 PM"),
-            90.0,
-            1,
-            90.0,
-            R.drawable.conan,
-            "Pepsi",
-            15.0,
-            1,
-            "Cinema 3",
-            "B-24"
-        ),
-        Order(
-            "Doremon",
-            "2024/09/05 11:20 PM",
-            parseDateTime("2024/09/05 11:20 PM"),
-            "11:30 AM",
-            "01:00 PM",
-            parseDateTime("2024/09/07 11:30 AM"),
-            parseDateTime("2024/09/07 01:00 PM"),
-            90.0,
-            1,
-            90.0,
-            R.drawable.doremon,
-            "Snack vị tảo biển",
-            5.0,
-            1,
-            "Cinema 5",
-            "A-16"
-        ),
-        Order(
-            "Naruto",
-            "2023/09/01 13:23 PM",
-            parseDateTime("2023/09/01 13:23 PM"),
-            "10:00 AM",
-            "12:00 PM",
-            parseDateTime("2023/09/07 10:00 AM"),
-            parseDateTime("2023/09/07 12:00 PM"),
-            190.0,
-            2,
-            380.0,
-            R.drawable.naruto,
-            "Bimbim ngô",
-            10.0,
-            2,
-            "Cinema 5",
-            "A-18"
-        ),
-        Order(
-            "Spider-Man: No Way Home",
-            "2023/12/14 12:56 PM",
-            parseDateTime("2023/12/14 12:56 PM"),
-            "08:30 PM",
-            "10:00 PM",
-            parseDateTime("2023/12/17 08:30 PM"),
-            parseDateTime("2023/12/17 10:00 PM"),
-            120.0,
-            1,
-            120.0,
-            R.drawable.poster,
-            "Pepsi vị chanh ko calo",
-            15.0,
-            1,
-            "Cinema 5",
-            "A-16"
-        ),
-        Order(
-            "Toy Story 4",
-            "2024/07/09 21:56 AM",
-            parseDateTime("2024/07/09 21:56 AM"),
-            "02:15 PM",
-            "04:00 PM",
-            parseDateTime("2024/07/10 02:15 PM"),
-            parseDateTime("2024/07/10 04:00 PM"),
-            190.0,
-            2,
-            380.0,
-            R.drawable.latmat6,
-            "Snack",
-            5.0,
-            2,
-            "Cinema 3",
-            "C-26"
-        ),
-        Order(
-            "Joker",
-            "2024/08/02 15:23 PM",
-            parseDateTime("2024/08/02 15:23 PM"),
-            "07:45 PM",
-            "09:00 PM",
-            parseDateTime("2024/08/05 07:45 PM"),
-            parseDateTime("2024/08/05 09:00 PM"),
-            120.0,
-            1,
-            120.0,
-            R.drawable.coba,
-            "Bimbim",
-            10.0,
-            1,
-            "Cinema 7",
-            "D-16"
-        ),
-        Order(
-            "Frozen II",
-            "2024/11/22 16:24 AM",
-            parseDateTime("2024/11/22 16:24 AM"),
-            "01:00 PM",
-            "02:30 PM",
-            parseDateTime("2024/11/22 01:00 PM"),
-            parseDateTime("2024/11/22 02:30 PM"),
-            120.0,
-            1,
-            120.0,
-            R.drawable.exhuma,
-            "Snack",
-            5.0,
-            1,
-            "Cinema 3",
-            "H-16"
-        ),
-        Order(
-            "Black Panther",
-            "2024/02/15 21:34 PM",
-            parseDateTime("2024/02/15 21:34 PM"),
-            "05:00 PM",
-            "07:00 PM",
-            parseDateTime("2024/02/16 05:00 PM"),
-            parseDateTime("2024/02/16 07:00 PM"),
-            120.0,
-            2,
-            380.0,
-            R.drawable.vang,
-            "Pepsi",
-            15.0,
-            1,
-            "Cinema 2",
-            "G-16"
-        ),
-    )
-}
 
-private fun navigateToDetail(context: Context, order: Order) {
+private fun navigateToDetail(context: Context, reservation: Reservation) {
     val intent = Intent(context, DetailOrderActivity::class.java)
-    intent.putExtra("movieName", order.movieName)
-    intent.putExtra("orderDate", formatDateTime(order.orderDateTime)) // Sử dụng formatDateTime với orderDateTime
-    intent.putExtra("date", "${formatDateTime(order.showStartDateTime)} - ${formatDateTime(order.showEndDateTime)}")
-    intent.putExtra("total", order.total)
-    intent.putExtra("quantity", order.quantity)
-    intent.putExtra("imageResId", order.imageResId)
-    intent.putExtra("serviceName", order.serviceName)
-    intent.putExtra("servicePrice", order.servicePrice)
-    intent.putExtra("serviceQuantity", order.serviceQuantity)
-    intent.putExtra("ticketPrice", order.ticketPrice)
-    intent.putExtra("theaterName", order.theaterName) // Thêm thông tin theaterName
-    intent.putExtra("seatNumber", order.seatNumber) // Thêm thông tin seatNumber
+
     context.startActivity(intent)
 }
 
-@Composable
-@Preview(showSystemUi = true)
-fun MyOrderActivityPre() {
-    MyOrderActivityScreen()
-}
+//@Composable
+//@Preview(showSystemUi = true)
+//fun MyOrderActivityPre() {
+//    MyOrderComp()
+//}
 
-private fun parseDateTime(dateTimeString: String): Date {
-    val formatter = SimpleDateFormat("yyyy/MM/dd hh:mm a", Locale.getDefault())
-    return formatter.parse(dateTimeString) ?: Date()
-}
 
-@SuppressLint("SimpleDateFormat")
-private fun formatDateTime(dateTime: String): String {
-    val formatter = SimpleDateFormat("yyyy/MM/dd hh:mm a", Locale.getDefault())
-    return formatter.format(dateTime)
-}
-
-private fun formatDateTime(dateTime: Date): String {
-    val formatter = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
-    return formatter.format(dateTime)
-}
