@@ -10,10 +10,10 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = file(System.getenv("SIGNING_KEYSTORE_PATH"))
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            storeFile = file("C:\\Users\\admin\\keystore.jks")
+            storePassword = "@P@ssw0rd02"
+            keyAlias = "key0"
+            keyPassword = "@P@ssw0rd02"
         }
 
     }
@@ -47,7 +47,6 @@ android {
                 "BASE_URL",
                 "\"https://ce17-113-190-242-151.ngrok-free.app\""
             )
-            signingConfig = signingConfigs.getByName("release")
             isDebuggable = false
         }
     }
