@@ -7,4 +7,4 @@ data class ServiceReservation (
     var service: Service,
     var quantity: Int,
     var price: Long
-) 
+)

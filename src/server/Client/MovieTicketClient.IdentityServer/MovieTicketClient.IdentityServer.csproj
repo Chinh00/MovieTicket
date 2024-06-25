@@ -36,4 +36,12 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\BuildingBlock\MovieTicket.Infrastructure\MovieTicket.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>

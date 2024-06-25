@@ -31,6 +31,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,10 +49,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.superman.movieticket.R
+import com.superman.movieticket.ui.auth.control.PhoneOtpActivityViewModel
+import com.superman.movieticket.ui.profile.control.UpdateActivityViewModel
 import com.superman.movieticket.ui.theme.MyAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
-
+@AndroidEntryPoint
 class UpdateActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +76,15 @@ class UpdateActivity : ComponentActivity() {
 @Composable
 fun UpdateScreen() {
     val context = LocalContext.current
+    val updateActivityViewModel: UpdateActivityViewModel = hiltViewModel()
+    val user = updateActivityViewModel.userinfo.collectAsState()
+
+
+
+    var numberText by remember { mutableStateOf(user?.value?.phoneNumber) }
+    val userState = remember {
+        mutableStateOf(user)
+    }
 
     Box(
         modifier = Modifier
@@ -118,7 +133,6 @@ fun UpdateScreen() {
             )
 
             Spacer(modifier = Modifier.height(40.dp))
-            // Thêm phần thanh ngang
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -127,8 +141,7 @@ fun UpdateScreen() {
             )
             Spacer(modifier = Modifier.height(15.dp))
 
-            // Full Name
-            var text by remember { mutableStateOf("") }
+
 
             Box(
                 modifier = Modifier
@@ -137,8 +150,8 @@ fun UpdateScreen() {
                     .background(Color.LightGray, shape = RoundedCornerShape(13.dp))
                     .padding(1.dp) // Padding nhỏ để tránh nội dung bị cắt
             ) {
-                TextField(
-                    value = text, colors = TextFieldDefaults.colors(
+                /*TextField(
+                    value = text ?: "", colors = TextFieldDefaults.colors(
                         disabledIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
 //                      unfocusedContainerColor = Color(0xFFD6D1D1)
@@ -150,12 +163,11 @@ fun UpdateScreen() {
                         .fillMaxWidth()
                         .background(Color.Transparent)
                         .clip(RoundedCornerShape(13.dp)),
-                )
+                )*/
             }
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Hiển thị dropdown giới tính
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -177,7 +189,7 @@ fun UpdateScreen() {
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            var numberText by remember { mutableStateOf("") }
+
 
             Box(
                 modifier = Modifier
@@ -187,13 +199,14 @@ fun UpdateScreen() {
                     .padding(1.dp) // Padding nhỏ để tránh nội dung bị cắt
             ) {
                 TextField(
-                    value = numberText, colors = TextFieldDefaults.colors(
+                    value = user.value?.phoneNumber ?: "", colors = TextFieldDefaults.colors(
                         disabledIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         unfocusedContainerColor = Color.LightGray
                     ),
-                    onValueChange = { numberText = it },
-                    placeholder = { Text("Number", color = Color.Gray) },
+                    readOnly = true,
+                    onValueChange = { },
+                    label = { Text(text = "Số điện thoại")},
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.Transparent)
@@ -226,32 +239,6 @@ fun UpdateScreen() {
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            var usernameText by remember { mutableStateOf("") }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 5.dp, end = 5.dp)
-                    .background(Color.LightGray, shape = RoundedCornerShape(13.dp))
-                    .padding(1.dp) // Padding nhỏ để tránh nội dung bị cắt
-            ) {
-                TextField(
-                    value = usernameText, colors = TextFieldDefaults.colors(
-                        disabledIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        unfocusedContainerColor = Color.LightGray
-                    ),
-                    onValueChange = { usernameText = it },
-                    placeholder = { Text("User name", color = Color.Gray) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Transparent)
-                        .clip(RoundedCornerShape(13.dp)),
-                )
-            }
-
             Spacer(modifier = Modifier.height(80.dp))
             Button(
                 onClick = { /* Xử lý khi nút được nhấn */ },
@@ -266,17 +253,32 @@ fun UpdateScreen() {
                 ),
                 shape = RoundedCornerShape(10.dp) // Hình dạng của nút
             ) {
-                Text(text = "SAVE")
+                Text(text = "Lưu", color = MaterialTheme.colorScheme.primary)
             }
         }
     }
 }
 
+
+enum class Gender {
+    Male,
+    Female
+}
+
 @Composable
-fun GenderDropdown(onClick: (String) -> Unit, modifier: Modifier = Modifier) {
+fun GenderDropdown(onClick: (String) -> Unit, modifier: Modifier = Modifier, defaultGender: Gender? = null) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedGender by remember { mutableStateOf("Select Gender") }
-    val genderOptions = listOf("Male", "Female", "Other")
+    var selectedGender = defaultGender?.run { remember {
+        mutableStateOf("Chọn giới tính")
+    } }?.let {
+        remember {
+            mutableStateOf(if (defaultGender == Gender.Male) "Nam" else "Nữ")
+        }
+    }
+
+
+
+    val genderOptions = listOf("Nam", "Nữ")
 
     Column(
         modifier = modifier,
@@ -295,7 +297,7 @@ fun GenderDropdown(onClick: (String) -> Unit, modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = selectedGender,
+                    text = selectedGender!!.value,
                     color = Color.Gray,
                     modifier = Modifier.weight(1f)
                 )
@@ -311,12 +313,13 @@ fun GenderDropdown(onClick: (String) -> Unit, modifier: Modifier = Modifier) {
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+
         ) {
             genderOptions.forEach { gender ->
                 DropdownMenuItem(
                     onClick = {
-                        selectedGender = gender
+                        selectedGender?.value = gender
                         expanded = false
                         onClick(gender)
                     },

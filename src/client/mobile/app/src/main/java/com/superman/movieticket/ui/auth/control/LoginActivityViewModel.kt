@@ -34,7 +34,9 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.superman.movieticket.core.config.AppOptions
+import com.superman.movieticket.domain.entities.User
 import com.superman.movieticket.domain.services.AuthService
+import com.superman.movieticket.domain.services.UserUpdatePasswordModel
 import com.superman.movieticket.infrastructure.utils.ApiState
 import com.superman.movieticket.infrastructure.utils.PreferenceKey
 import com.superman.movieticket.ui.auth.model.TokenResponse
@@ -45,7 +47,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -82,6 +86,7 @@ class LoginActivityViewModel @Inject constructor(
 
 
 
+
     init {
 
     }
@@ -89,7 +94,23 @@ class LoginActivityViewModel @Inject constructor(
 
 
 
+    fun HandleUpdatePasswordAsync (model: UserUpdatePasswordModel) {
+        _apiLoading.value = ApiState.LOADING
+        viewModelScope.launch {
+            authService.HandleUpdatePassword(model).enqueue(object: retrofit2.Callback<User> {
+                override fun onResponse(call: Call<User>, response: Response<User>) {
+                    _apiLoading.value = ApiState.SUCCESS
+                }
 
+                override fun onFailure(call: Call<User>, t: Throwable) {
+                    _apiLoading.value = ApiState.FAIL
+
+                }
+            })
+        }
+        _apiLoading.value = ApiState.NONE
+
+    }
 
 
     init {
@@ -301,7 +322,6 @@ class LoginActivityViewModel @Inject constructor(
             try {
                 val credential = PhoneAuthProvider.getCredential(verificationId.value, otp)
                 signInWithPhoneAuthCredential(credential) { success ->
-                    onVerified(success)
                     getAccessToken{
                         onVerified(success)
                     }
@@ -331,13 +351,13 @@ class LoginActivityViewModel @Inject constructor(
 
     // à lúc nãy chạy sai
 
-    private fun getAccessToken(onTokenReceived: (String?) -> Unit) {
+    fun getAccessToken(onTokenReceived: (String?) -> Unit) {
         val user = FirebaseAuth.getInstance().currentUser
         user?.getIdToken(true)
             ?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val token = task.result?.token
-                    Log.d("Acctoken for mobile", token!!)
+
                     authService.getTokenSocial("firebase_token", "mobile", "api profile openid", token!!, "secret", "firebase").enqueue(object:
                         retrofit2.Callback<TokenResponse> {
                         override fun onResponse(
@@ -351,6 +371,8 @@ class LoginActivityViewModel @Inject constructor(
                                     it[PreferenceKey.ACCESS_TOKEN] = response.body()?.access_token.toString()
                                 }
                             }
+                            Log.d("access token", response.body()?.access_token.toString())
+
                         }
 
                         override fun onFailure(call: Call<TokenResponse>, t: Throwable) {

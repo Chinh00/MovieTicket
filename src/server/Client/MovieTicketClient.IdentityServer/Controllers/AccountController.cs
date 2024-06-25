@@ -2,7 +2,9 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MovieTicket.Infrastructure.Files;
 using MovieTicketClient.IdentityServer.Data;
+using MovieTicketClient.IdentityServer.Models;
 
 namespace MovieTicketClient.IdentityServer.Controllers;
 
@@ -14,11 +16,13 @@ public class AccountController : Controller
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager _userManager;
     private readonly IHttpContextAccessor _contextAccessor;
-    public AccountController(SignInManager<User> signInManager, UserManager userManager, IHttpContextAccessor contextAccessor)
+    private readonly IFileHelper _fileHelper;
+    public AccountController(SignInManager<User> signInManager, UserManager userManager, IHttpContextAccessor contextAccessor, IFileHelper fileHelper)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _contextAccessor = contextAccessor;
+        _fileHelper = fileHelper;
     }
 
     [HttpGet]
@@ -28,4 +32,32 @@ public class AccountController : Controller
         var user = await _userManager.FindByIdAsync(userId);
         return Ok(user);
     }
+
+    [HttpPut]
+    public async Task<IActionResult> HandleUpdateUserAsync(UserUpdateModel model, CancellationToken cancellationToken = new CancellationToken())
+    {
+        var userId = _contextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userManager.FindByIdAsync(userId);
+        user.FullName = model.FullName;
+        user.Birthday = model.Birthday;
+        if (!string.IsNullOrEmpty(user.Avatar))
+        {
+            await _fileHelper.RemoveFile("avatar", user.Avatar);
+        }
+        var urlAvatar = await _fileHelper.SaveFile(model.Avatar, "avatar");
+        user.Avatar = urlAvatar;
+        user.UserGender = model.UserGender;
+        await _userManager.UpdateAsync(user);
+        return Ok(user);
+    }
+
+    [HttpPost("update-password")]
+    public async Task<IActionResult> HandleUpdatePasswordAsync(UserUpdatePasswordModel model, CancellationToken cancellationToken = new CancellationToken())
+    {
+        var userId = _contextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userManager.FindByIdAsync(userId);
+        await _userManager.AddPasswordAsync(user, model.NewPassword);
+        return Ok(user);
+    }
+    
 }
