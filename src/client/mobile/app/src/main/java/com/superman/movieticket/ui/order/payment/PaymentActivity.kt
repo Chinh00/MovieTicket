@@ -75,7 +75,9 @@ import com.superman.movieticket.infrastructure.utils.ApiState
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.main.hooks.NavigateMainActivity
+import com.superman.movieticket.ui.order.food.control.OrderFoodActivityModel
 import com.superman.movieticket.ui.order.model.ReservationCreateModel
+import com.superman.movieticket.ui.order.model.ReservationExtendModel
 import com.superman.movieticket.ui.order.payment.control.PaymentActivityViewModel
 import com.superman.movieticket.ui.theme.balooFont
 import dagger.hilt.android.AndroidEntryPoint
@@ -89,7 +91,6 @@ class PaymentActivity : ComponentActivity() {
 
     private lateinit var hubConnection: HubConnection
     val paymentActivityViewModel: PaymentActivityViewModel by viewModels()
-
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -103,14 +104,17 @@ class PaymentActivity : ComponentActivity() {
             val transactionId = paymentActivityViewModel.transactionStatus.collectAsState()
             transactionId.value?.let { connectToHub(it, reservationCreateModel) }
 
-            BaseScreen(content = { PaymentComp() }, title = "", onNavigateUp = {finish()})
+            BaseScreen(content = { PaymentComp(
+                Gson().fromJson(intent.getStringExtra("TotalPrice"),ReservationExtendModel::class.java)
+            ) }, title = "", onNavigateUp = {finish()})
         }
     }
 
 
+
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun connectToHub(transactionId: String, reservationCreateModel: ReservationCreateModel) {
-        hubConnection = HubConnectionBuilder.create("${AppOptions.BASE_URL}/client-hub/paymentHub?transactionId=${transactionId}").build()
+        hubConnection = HubConnectionBuilder.create("${AppOptions.BASE_URL}/client-hub/paymentHub?transactionId=${transactionId}").shouldSkipNegotiate(true).build()
 
         lifecycleScope.launch {
             try {
@@ -149,12 +153,14 @@ class PaymentActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun PaymentComp(
+    reservationExtendModel: ReservationExtendModel
 ) {
 
     val paymentActivityViewModel: PaymentActivityViewModel = hiltViewModel()
     LaunchedEffect(key1 = Unit) {
 
-        paymentActivityViewModel.HandleCreateTransactionAsync(60000)
+        paymentActivityViewModel.HandleCreateTransactionAsync(reservationExtendModel.total)
+        Log.d("TotalPrice", reservationExtendModel.total.toString())
 
     }
 

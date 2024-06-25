@@ -69,6 +69,7 @@ import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.components.ScreenLoading
 import com.superman.movieticket.ui.order.food.hooks.NavigateOrderFood
 import com.superman.movieticket.ui.order.model.ReservationCreateModel
+import com.superman.movieticket.ui.order.model.ReservationExtendModel
 import com.superman.movieticket.ui.order.model.SeatReservationsCreateModel
 import com.superman.movieticket.ui.order.ticket.components.ScreenShape
 import com.superman.movieticket.ui.order.ticket.components.SeatComp
@@ -328,7 +329,10 @@ fun TicketActivityComp(
                         reservationCreateModelState.value.seatReservations.addAll(selectedSeat.map { SeatReservationsCreateModel(it) })
                         NavigateOrderFood(
                             context = context,
-                            reservationCreateModel = reservationCreateModelState.value
+                            reservationCreateModel = reservationCreateModelState.value,
+                            ReservationExtendModel(
+                                totalPrice.value.toLong()
+                            )
                         )
 
                     }, text = "Tiếp theo", modifier = Modifier

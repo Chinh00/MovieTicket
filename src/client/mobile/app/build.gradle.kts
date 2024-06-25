@@ -10,14 +10,14 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = file("C:\\Users\\Ching\\keystore.jks")
-            storePassword = "@P@ssw0rd02"
-            storeFile = file("C:\\Users\\dongt\\keystore.jks")
-            storePassword = "123456"
-            keyAlias = "key0"
-            keyPassword = "@P@ssw0rd02"
+            storeFile = file(System.getenv("SIGNING_KEYSTORE_PATH"))
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
         }
+
     }
+
     namespace = "com.superman.movieticket"
     compileSdk = 34
 
@@ -47,7 +47,8 @@ android {
                 "BASE_URL",
                 "\"https://ce17-113-190-242-151.ngrok-free.app\""
             )
-
+            signingConfig = signingConfigs.getByName("release")
+            isDebuggable = false
         }
     }
     compileSdkPreview = "VanillaIceCream"

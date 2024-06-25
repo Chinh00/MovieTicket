@@ -68,6 +68,7 @@ import com.superman.movieticket.domain.entities.Service
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.order.food.control.OrderFoodActivityModel
 import com.superman.movieticket.ui.order.model.ReservationCreateModel
+import com.superman.movieticket.ui.order.model.ReservationExtendModel
 import com.superman.movieticket.ui.order.model.ServiceReservationsCreateModel
 import com.superman.movieticket.ui.order.payment.hooks.NavigatePaymentTicket
 import com.superman.movieticket.ui.theme.MyAppTheme
@@ -86,7 +87,10 @@ class OrderFoodActivity : ComponentActivity() {
                             .fillMaxSize()
                             .safeDrawingPadding()
                     ) {
-                        OrderFoodScreen(Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java))
+                        OrderFoodScreen(
+                            Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java),
+                            Gson().fromJson(intent.getStringExtra("TotalPrice"),ReservationExtendModel::class.java)
+                        )
                     }
                 }, title = "Chọn đồ",onNavigateUp={finish()})
             }
@@ -99,7 +103,10 @@ enum class ChangeServiceAction {
 }
 
 @Composable
-fun OrderFoodScreen(reservationCreateModel: ReservationCreateModel) {
+fun OrderFoodScreen(
+    reservationCreateModel: ReservationCreateModel,
+    reservationExtendModel: ReservationExtendModel
+) {
     val orderFoodActivityModel: OrderFoodActivityModel = hiltViewModel()
     val context = LocalContext.current
     var totalPrice = remember {
@@ -107,33 +114,12 @@ fun OrderFoodScreen(reservationCreateModel: ReservationCreateModel) {
     }
 
 
+
+
+
     val reservationCreateModelState = remember {
         mutableStateOf(reservationCreateModel)
     }
-
-    fun ChangeService (serviceId: String, changeServiceAction: ChangeServiceAction = ChangeServiceAction.ADD){
-        when(changeServiceAction) {
-            ChangeServiceAction.ADD -> {
-                val serviceDetail = reservationCreateModelState.value.serviceReservations.firstOrNull { it.serviceId == serviceId }
-                if (serviceDetail != null) {
-                    serviceDetail.quantity += 1
-                } else {
-                    reservationCreateModelState.value.serviceReservations.add(
-                        ServiceReservationsCreateModel(serviceId, 1)
-                    )
-                }
-            }
-            ChangeServiceAction.REMOVE -> {
-                val serviceDetail = reservationCreateModelState.value.serviceReservations.firstOrNull { it.serviceId == serviceId }
-                if (serviceDetail != null) {
-                    serviceDetail.quantity -= 1
-                }
-            }
-        }
-    }
-
-
-
 
     ConstraintLayout(
         modifier = Modifier
@@ -185,7 +171,10 @@ fun OrderFoodScreen(reservationCreateModel: ReservationCreateModel) {
                 onClick = {
                     NavigatePaymentTicket(
                         context,
-                        reservationCreateModelState.value
+                        reservationCreateModelState.value,
+                        ReservationExtendModel(
+                            reservationExtendModel.total + totalPrice.value
+                        )
                     )
                 },
                 colors = ButtonDefaults.buttonColors(
