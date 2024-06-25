@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.R
+import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Reservation
 import com.superman.movieticket.infrastructure.utils.DatetimeHelper
 import com.superman.movieticket.ui.components.BaseScreen
@@ -54,25 +55,6 @@ import java.util.Locale
 
 class DetailOrderActivity : ComponentActivity() {
 
-    //    private val movieViewModel: DetailOrderViewModel by viewModels {
-//        object : ViewModelProvider.Factory {
-//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//                // Create Retrofit instance
-//                val retrofit = Retrofit.Builder()
-//                    .baseUrl("https://yourapi.com/") // Thay thế bằng URL cơ sở thực tế của bạn
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build()
-//
-//                val apiService = retrofit.create(MovieService::class.java)
-//
-//                return TODO("Provide the return value")
-//            }
-//
-//        }
-//    }
-//
-//    val detailOrderViewModel :DetailOrderViewModel by viewModels()
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CoroutineCreationDuringComposition")
@@ -82,10 +64,13 @@ class DetailOrderActivity : ComponentActivity() {
 
             BaseScreen(content = {
                 MyAppTheme {
-//                    DetailScreen(Reservation())
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        intent.getSerializableExtra("reservation",Reservation::class.java)
+                            ?.let { DetailScreen(it) }
+                    }
 
                 }
-            }, title = "", onNavigateUp = {
+            }, title = "Chi tiết vé đặt", onNavigateUp = {
                 finish()
             })
 
@@ -120,7 +105,7 @@ fun DetailScreen(
                     .clip(RoundedCornerShape(30.dp))
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(reservation.screening.movie.avatar),
+                    painter = rememberAsyncImagePainter(AppOptions.BASE_URL + "/admin-api/image/" +reservation.screening.movie.avatar),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
@@ -135,7 +120,7 @@ fun DetailScreen(
             ) {
                 Text("CGV VinCom", color = Color.Black, fontSize = 20.sp)
                 Spacer(modifier = Modifier.height(5.dp))
-                Text("Ngày đặt: ${DatetimeHelper.ConvertISODatetimeToLocalDatetime(reservation.seatReservations.first().createdDate.toString(),"dd/MM/yyyy HH:mm")}", color = Color.Black, fontSize = 20.sp)
+                Text("Ngày đặt: ${DatetimeHelper.ConvertISODatetimeToLocalDatetime(reservation.createdDate.toString(),"dd/MM/yyyy")}", color = Color.Black, fontSize = 20.sp)
                 Spacer(modifier = Modifier.height(5.dp))
                 Box(
                     modifier = Modifier
@@ -145,13 +130,13 @@ fun DetailScreen(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    "${reservation.screening.movie.name}",
+                    "${reservation.screening?.movie?.name?: "Khong co"}",
                     color = Color.Black,
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(text = "${DatetimeHelper.ConvertISODatetimeToLocalDatetime(reservation.seatReservations.first().createdDate.toString(),"dd/MM/yyyy HH:mm")}" ?: "", color = Color.Black, fontSize = 20.sp)
+                Text(text = "Thời gian: ${DatetimeHelper.ConvertISODatetimeToLocalDatetime(reservation.createdDate.toString(),"HH:mm")}" ?: "", color = Color.Black, fontSize = 20.sp)
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier
@@ -178,8 +163,10 @@ fun DetailScreen(
                 ) {
                     Text("${reservation.screening.room.roomNumber}", color = Color.Black, fontSize = 20.sp)
                     Spacer(modifier = Modifier.weight(1f))
+                    var nameSeat = ""
+                    reservation.seatReservations.forEach {s->  nameSeat = "${s.seat?.rowNumber}${s.seat?.colNumber}" }
                     Text(
-                        "${reservation.seatReservations.forEach { it.rowNumber+it.colNumber }}",
+                        nameSeat,
                         color = Color.Black,
                         fontSize = 20.sp,
                         modifier = Modifier.padding(end = 16.dp)
@@ -297,7 +284,7 @@ fun DetailScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "${reservation.totalPrice}",
+                    text = "${reservation.itemPrice}",
                     color = Color.Black,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -368,7 +355,7 @@ fun DetailScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "${reservation.serviceReservations.first().quantity}",
+                    text = "${reservation.serviceReservations.size}",
                     color = Color.Black,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,

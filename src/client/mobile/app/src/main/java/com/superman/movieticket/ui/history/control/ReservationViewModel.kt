@@ -34,7 +34,7 @@ class ReservationViewModel @Inject constructor(private val apiService: Reservati
         viewModelScope.launch {
             _apiState.value=ApiState.LOADING
             val xQueryHeader = XQueryHeader(
-                includes = mutableListOf("SeatReservations","ServiceReservations","Screening.Movie","Screening.Room"),
+                includes = mutableListOf("SeatReservations","ServiceReservations","Screening.Movie","Screening.Room","ServiceReservations.Service","SeatReservations.Seat"),
                 filters = mutableListOf(),
                 sortBy = mutableListOf("Id"),
                 page = 1,

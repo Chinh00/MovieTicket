@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,6 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.R
+import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Reservation
 import com.superman.movieticket.infrastructure.utils.DatetimeHelper
 import com.superman.movieticket.ui.components.BaseScreen
@@ -102,14 +104,14 @@ fun OrderItem(reservation: Reservation) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp).clickable { navigateToDetail(context, reservation) },
         colors = CardDefaults.cardColors(containerColor = Color.LightGray),
         shape = RoundedCornerShape(8.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(5.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Box(
@@ -119,7 +121,7 @@ fun OrderItem(reservation: Reservation) {
                 ) {
                     Image(
                         painter = rememberAsyncImagePainter(
-                            reservation.screening?.movie?.avatar?:"", error = painterResource(
+                            AppOptions.BASE_URL + "/admin-api/image/" +reservation.screening?.movie?.avatar?:"", error = painterResource(
                                 id = R.drawable.error_img
                             )
                         ),
@@ -129,35 +131,35 @@ fun OrderItem(reservation: Reservation) {
                     )
                 }
                 Spacer(modifier = Modifier.width(5.dp))
-                Column(modifier = Modifier.weight(1f)) {
+                Column() {
                     Text("Phim: ${reservation.screening?.movie?.name?:"Không có dữ liệu"}", color = colorText)
                     Text(
-                        "Ngày đặt: ${""
-//                            DatetimeHelper.ConvertISODatetimeToLocalDatetime(
-//                                reservation.seatReservations?.first()!!.createdDate.toString()?:Date().toString(),
-//                                "dd/MM/yyyy"
-//                            )
+                        "Ngày đặt: ${
+                            DatetimeHelper.ConvertISODatetimeToLocalDatetime(
+                                reservation.createdDate.toString(),
+                                "dd/MM/yyyy"
+                            )
                         }", color = colorText
                     )
                 }
-                Button(
-                    colors = ButtonDefaults.buttonColors(
-
-                        contentColor = MaterialTheme.colorScheme.background,
-                        containerColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    ),
-                    onClick = { navigateToDetail(context, reservation) },
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .padding(start = 20.dp, top = 50.dp)
-                        .border(
-                            width = 1.dp,
-                            color = Color.Black,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                ) {
-                    Text(context.getString(R.string.txt_detail))
-                }
+//                Button(
+//                    colors = ButtonDefaults.buttonColors(
+//
+//                        contentColor = MaterialTheme.colorScheme.background,
+//                        containerColor = MaterialTheme.colorScheme.onPrimaryContainer
+//                    ),
+//                    onClick = { navigateToDetail(context, reservation) },
+//                    modifier = Modifier
+//                        .clip(RoundedCornerShape(10.dp))
+//                        .padding(start = 20.dp, top = 50.dp)
+//                        .border(
+//                            width = 1.dp,
+//                            color = Color.Black,
+//                            shape = RoundedCornerShape(10.dp)
+//                        )
+//                ) {
+//                    Text(context.getString(R.string.txt_detail))
+//                }
             }
         }
     }
@@ -166,7 +168,7 @@ fun OrderItem(reservation: Reservation) {
 
 private fun navigateToDetail(context: Context, reservation: Reservation) {
     val intent = Intent(context, DetailOrderActivity::class.java)
-
+    intent.putExtra("reservation", reservation)
     context.startActivity(intent)
 }
 
