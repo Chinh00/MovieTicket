@@ -13,12 +13,15 @@ using MovieTicketClient.Application.Usecases.Service.Specs;
 namespace MovieTicketClient.Application.Usecases.Reservation;
 
 
-
+public class SeatReservationCreateModel
+{
+    public Guid SeatId { get; init; }
+}
 
 public class ReservationCreateModel
 {
     public Guid ScreeningId { get; set; }
-    public ICollection<SeatReservationDto> SeatReservations { get; set; }
+    public ICollection<SeatReservationCreateModel> SeatReservations { get; set; }
     public ICollection<ServiceReservationModel> ServiceReservations { get; set; }
     public string TransactionId { get; set; }
     public ReservationState ReservationState { get; set; }

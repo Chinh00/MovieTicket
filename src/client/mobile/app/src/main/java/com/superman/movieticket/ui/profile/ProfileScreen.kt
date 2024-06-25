@@ -3,6 +3,7 @@ package com.superman.movieticket.ui.profile
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -106,11 +107,10 @@ fun ProfileScreen() {
             Spacer(modifier = Modifier.height(15.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-//                modifier = Modifier.clickable {
-//                    val intent = Intent(context, UpdateActivity::class.java)
-//                    context.startActivity(intent)
-//                }
-
+                modifier = Modifier.clickable {
+                    val intent = Intent(context, UpdateActivity::class.java)
+                        context.startActivity(intent)
+                }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_settings_24),
@@ -120,7 +120,7 @@ fun ProfileScreen() {
                         .size(55.dp)
                         .padding(top = 5.dp),
                 )
-                Spacer(modifier = Modifier.width(8.dp)) // Khoảng cách giữa Icon và Text
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Update Account",
                     color = Color.Black,

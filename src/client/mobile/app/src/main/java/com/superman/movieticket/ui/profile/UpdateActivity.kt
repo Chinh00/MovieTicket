@@ -51,7 +51,7 @@ import com.superman.movieticket.R
 import com.superman.movieticket.ui.theme.MyAppTheme
 import java.util.Calendar
 
-class MainActivity : ComponentActivity() {
+class UpdateActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ){
-                    UpdateActivity()
+                    UpdateScreen()
                 }
             }
         }
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun UpdateActivity() {
+fun UpdateScreen() {
     val context = LocalContext.current
 
     Box(

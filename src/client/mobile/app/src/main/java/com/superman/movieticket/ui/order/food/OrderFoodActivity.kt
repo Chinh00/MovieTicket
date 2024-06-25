@@ -97,10 +97,6 @@ class OrderFoodActivity : ComponentActivity() {
         }
     }
 }
-enum class ChangeServiceAction {
-    ADD,
-    REMOVE
-}
 
 @Composable
 fun OrderFoodScreen(
@@ -109,6 +105,8 @@ fun OrderFoodScreen(
 ) {
     val orderFoodActivityModel: OrderFoodActivityModel = hiltViewModel()
     val context = LocalContext.current
+
+
     var totalPrice = remember {
         mutableStateOf(0)
     }
@@ -141,20 +139,27 @@ fun OrderFoodScreen(
             val listFood = orderFoodActivityModel.listService.collectAsState().value
 
             listFood.forEach {
-
-                ItemFood(service = it, totalPrice = totalPrice.value, setTotalPrice = {totalPrice.value = it}) {
-                    a, b ->
-                    val service = reservationCreateModelState.value.serviceReservations.firstOrNull {it.serviceId == a}
-                    if (service == null) {
-                        reservationCreateModelState.value.serviceReservations.add(ServiceReservationsCreateModel(
-                            a, b
-                        ))
-                    } else {
-                        service.quantity = b
+                ItemFood(service = it) {
+                    a, b -> when(b) {
+                    ChangeServiceAction.ADD -> {
+                        val service = reservationCreateModelState.value.serviceReservations.firstOrNull {t -> t.serviceId == a}
+                        if (service == null) {
+                            reservationCreateModelState.value.serviceReservations.add(ServiceReservationsCreateModel(a, 1))
+                        } else {
+                            service.quantity += 1
+                        }
+                        totalPrice.value += it.priceUnit
                     }
-
-
+                    ChangeServiceAction.REMOVE -> {
+                        val service = reservationCreateModelState.value.serviceReservations.firstOrNull {t -> t.serviceId == a}
+                        if (service != null) {
+                            service.quantity -= 1
+                            totalPrice.value -= it.priceUnit
+                        }
+                    }
                 }
+                }
+
             }
 
         }
@@ -195,13 +200,15 @@ fun OrderFoodScreen(
         }
     }
 }
+enum class ChangeServiceAction {
+    ADD,
+    REMOVE
+}
 
 @Composable
 fun ItemFood(
     service: Service,
-    totalPrice: Int,
-    setTotalPrice: (Int) -> Unit,
-    changeService: (serviceId: String, quantity: Int) -> Unit
+    changeService: (String, ChangeServiceAction) -> Unit
 ) {
     val c = Color(0xFFA8F54E)
 
@@ -246,10 +253,8 @@ fun ItemFood(
                     IconButton(onClick = {
                         if (quantity.value > 0) {
                             quantity.value -= 1
-                            setTotalPrice(totalPrice - service.priceUnit)
+                            changeService(service.id, ChangeServiceAction.REMOVE)
                         }
-                        changeService(service.id, quantity.value)
-
                     }) {
                         Text(text = "-", fontSize = 30.sp, color = c)
                     }
@@ -260,8 +265,7 @@ fun ItemFood(
                 Column {
                     IconButton(onClick = {
                         quantity.value += 1
-                        setTotalPrice(totalPrice + service.priceUnit)
-                        changeService(service.id, quantity.value)
+                        changeService(service.id, ChangeServiceAction.ADD)
                     }) {
                         Text(text = "+", fontSize = 30.sp, color = c)
                     }

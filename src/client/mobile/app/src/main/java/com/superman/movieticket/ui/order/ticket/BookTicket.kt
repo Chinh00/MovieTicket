@@ -117,7 +117,7 @@ fun TicketActivityComp(
 
 
     val totalPrice = rememberSaveable {
-        mutableStateOf(180)
+        mutableStateOf(80000)
 
     }
 
@@ -282,7 +282,7 @@ fun TicketActivityComp(
                     .padding(20.dp)
             ) {
                 Column {
-                    Text(text = "Total", fontSize = 18.sp, color = colorText)
+                    Text(text = "Giá tiền", fontSize = 18.sp, color = colorText)
                     Text(
                         text = "${totalPrice.value * selectedSeat.size}đ",
                         fontSize = 18.sp,
@@ -290,7 +290,7 @@ fun TicketActivityComp(
                     )
                 }
                 Column {
-                    Text(text = "Selected Seats", fontSize = 18.sp, color = colorText)
+                    Text(text = "Ghế chọn", fontSize = 18.sp, color = colorText)
 
                     Row {
 
@@ -331,7 +331,7 @@ fun TicketActivityComp(
                             context = context,
                             reservationCreateModel = reservationCreateModelState.value,
                             ReservationExtendModel(
-                                totalPrice.value.toLong()
+                                (totalPrice.value * selectedSeat.size).toLong()
                             )
                         )
 
