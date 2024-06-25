@@ -4,6 +4,6 @@ import java.util.Date
 
 open class BaseEntity {
     lateinit var id: String
-    lateinit var createdDate: Date
-    var updateDate: Date? = null
+    lateinit var createdDate: String
+    var updateDate: String? = null
 }
