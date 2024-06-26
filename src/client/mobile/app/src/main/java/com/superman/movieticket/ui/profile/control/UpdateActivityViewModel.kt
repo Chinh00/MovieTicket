@@ -53,7 +53,7 @@ class UpdateActivityViewModel @Inject constructor(
                 override fun onResponse(call: Call<User>, response: Response<User>) {
                     _userinfo.value = response?.body()
                     Log.d("Chinh", response?.body().toString())
-                    _apiLoading.value = ApiState.LOADING
+                    _apiLoading.value = ApiState.SUCCESS
                 }
 
                 override fun onFailure(call: Call<User>, t: Throwable) {

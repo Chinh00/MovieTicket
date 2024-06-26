@@ -235,14 +235,15 @@ fun UpdateScreen(
 
     var avatar by remember { mutableStateOf(user?.avatar ?: "") }
     var fullname by remember { mutableStateOf(user?.fullName ?: "") }
+
     var birthday by remember {
         mutableStateOf(
-            if (user?.birthday != null || user?.birthday != "") DatetimeHelper.ConvertISODatetimeToLocalDatetime(
-                user!!.birthday,
-                "dd/MM/yyyy"
-            ) else ""
+            user?.birthday?.let {
+                DatetimeHelper.ConvertISODatetimeToLocalDatetime(it, "dd/MM/yyyy")
+            } ?: ""
         )
     }
+
     var uploadUrl by remember { mutableStateOf<String?>(avatar) }
 
     var gen by remember { mutableStateOf(user!!.userGender ?: 1) }

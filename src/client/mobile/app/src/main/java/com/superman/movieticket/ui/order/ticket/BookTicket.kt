@@ -218,39 +218,41 @@ fun TicketActivityComp(
                                     isEnable = true,
                                     isSelected = selectedSeat.contains(j.id),
                                     onClick = {
-                                        bookTicketViewModel.HandleGetSeatState(roomId, reservationCreateModel.screeningId, j.id) {
-                                            when(it) {
-                                                true -> {
-                                                    Log.d("Locking", "Thực hiện đăng ký khoá ghế")
+                                        if (selectedSeat.contains(j.id)) {
+                                            selectedSeat.remove(j.id)
+                                            bookTicketViewModel.HandleUnLockSeatPlace(list_lock.first {it.first == j.id}.second) {}
 
-                                                    bookTicketViewModel.HandleRegisterSeatPlace(roomId, reservationCreateModel.screeningId, j.id) {
-                                                        Log.d("Locking", "Đăng ký khoá ghế thành công")
-                                                        list_lock.add(Pair(j.id, it))
-                                                    }
-                                                }
-                                                false -> {
-                                                    Log.d("Locking", "Ghế đã bị người khác khoá trước. Vui lòng chọn lại")
-                                                    Toast.makeText(context, "Ghế đã bị người khác khoá trước. Vui lòng chọn lại", Toast.LENGTH_SHORT).show()
-                                                    selectedSeat.forEach {
-                                                        bookTicketViewModel.HandleUnLockSeatPlace(it) {
-                                                            Log.d("Locking", "Mở khoá lại ghế")
+                                        } else {
+                                            bookTicketViewModel.HandleGetSeatState(roomId, reservationCreateModel.screeningId, j.id) {
+                                                when(it) {
+                                                    true -> {
+                                                        Log.d("Locking", "Thực hiện đăng ký khoá ghế")
 
+                                                        bookTicketViewModel.HandleRegisterSeatPlace(roomId, reservationCreateModel.screeningId, j.id) {
+                                                            Log.d("Locking", "Đăng ký khoá ghế thành công")
+                                                            list_lock.add(Pair(j.id, it))
                                                         }
+                                                        selectedSeat.add(j.id)
                                                     }
-                                                    list_lock.forEach { bookTicketViewModel.HandleUnLockSeatPlace(it.second) {} }
-                                                    selectedSeat.clear()
+                                                    false -> {
+                                                        Log.d("Locking", "Ghế đã bị người khác khoá trước. Vui lòng chọn lại")
+                                                        Toast.makeText(context, "Ghế đã bị người khác khoá trước. Vui lòng chọn lại", Toast.LENGTH_SHORT).show()
+                                                        /*val item = list_lock.first { it.first == j.id }
+                                                        bookTicketViewModel.HandleUnLockSeatPlace(item.second) {}
+                                                        list_lock.remove(item)
+                                                        selectedSeat.remove(j.id)*/
 
+
+                                                    }
                                                 }
                                             }
                                         }
 
 
-                                        if (selectedSeat.contains(j.id)) {
-                                            selectedSeat.remove(j.id)
-                                            bookTicketViewModel.HandleUnLockSeatPlace(list_lock.first {it.first == j.id}.second) {}
 
-                                        } else
-                                            selectedSeat.add(j.id)
+
+
+
 
                                     }
                                 )

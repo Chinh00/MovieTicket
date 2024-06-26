@@ -13,6 +13,9 @@ import com.superman.movieticket.domain.services.NotificationDeviceCreateModel
 import com.superman.movieticket.domain.services.NotificationService
 import com.superman.movieticket.ui.systems.ErrorActivity
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.ZoneId
@@ -34,29 +37,8 @@ class MovieTicketApplication : Application() {
         }
 
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.systemDefault()))
-        getFcmToken()
     }
-    private fun getFcmToken () {
-        val retrofit by lazy {
-            Retrofit.Builder()
-                .baseUrl(AppOptions.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        }
 
-        val notificationService: NotificationService by lazy {
-            retrofit.create(NotificationService::class.java)
-        }
-        FirebaseMessaging.getInstance().token.addOnCompleteListener  { task ->
-            Log.d("Chinh", task.result)
-            notificationService.RegisterDevice(NotificationDeviceCreateModel(
-                token = task.result,
-                userId = "19585d7e-dd1f-4dab-ace3-fa485a0ac89a",
-                deviceId = ""
-            ))
-        }
-
-    }
 
 
 }

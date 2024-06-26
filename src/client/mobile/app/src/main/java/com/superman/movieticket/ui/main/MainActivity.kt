@@ -52,6 +52,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.messaging.FirebaseMessaging
+import com.superman.movieticket.domain.services.NotificationDeviceCreateModel
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.auth.hooks.NavigateLogin
 import com.superman.movieticket.ui.film.FilmScreen
@@ -79,6 +81,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
     }
+
+    init {
+
+
+    }
+
 
     private fun requestNotificationPermission() {
         // Kiểm tra quyền POST_NOTIFICATIONS nếu là Android 13 trở lên
