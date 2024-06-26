@@ -33,25 +33,15 @@ public class AccountController : Controller
         return Ok(user);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> HandleUpdateUserAsync([FromForm] UserUpdateModel model, CancellationToken cancellationToken = new CancellationToken())
+    [HttpPost]
+    public async Task<IActionResult> HandleUpdateUserAsync(UserUpdateModel model, CancellationToken cancellationToken = new CancellationToken())
     {
         var userId = _contextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
         Console.WriteLine(model);
         var user = await _userManager.FindByIdAsync(userId);
         user.FullName = model.FullName;
         user.Birthday = model.Birthday;
-        if (!string.IsNullOrEmpty(user.Avatar))
-        {
-            await _fileHelper.RemoveFile("avatar", user.Avatar);
-        }
-
-        var urlAvatar = "";
-        if (model.Avatar is not null)
-        {
-            urlAvatar = await _fileHelper.SaveFile(model.Avatar, "avatar");
-        }
-        user.Avatar = !string.IsNullOrEmpty(urlAvatar) ? urlAvatar : user.Avatar;
+        user.Avatar = model.Avatar;
         user.UserGender = model.UserGender;
         await _userManager.UpdateAsync(user);
         return Ok(user);
