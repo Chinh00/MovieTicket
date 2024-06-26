@@ -44,10 +44,11 @@ class BookTicketViewModel @Inject constructor(
 
 
     fun GetAllSeatsOfRoomAsync(
-        roomId: String
+        roomId: String,
+        screeningId: String
     ) {
         _apiState.value = ApiState.LOADING
-        roomService.HandleGetRoomByIdAsync(roomId).enqueue(object :
+        roomService.HandleGetRoomByIdAsync(roomId, screeningId).enqueue(object :
             Callback<SuccessResponse<Room>> {
             override fun onResponse(
                 call: Call<SuccessResponse<Room>>,

@@ -123,9 +123,11 @@ fun TicketActivityComp(
 
     val seats = bookTicketViewModel.roomState.collectAsState()
 
-
+    Log.d("Chinh", seats.toString())
+    Log.d("Chinh", roomId.toString())
+    Log.d("Chinh", reservationCreateModel.screeningId.toString())
     LaunchedEffect(key1 = Unit) {
-        bookTicketViewModel.GetAllSeatsOfRoomAsync(roomId)
+        bookTicketViewModel.GetAllSeatsOfRoomAsync(roomId, reservationCreateModel.screeningId)
     }
 
 

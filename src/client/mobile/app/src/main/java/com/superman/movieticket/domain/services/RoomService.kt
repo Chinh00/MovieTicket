@@ -11,7 +11,8 @@ import retrofit2.http.Path
 interface RoomService {
     @GET("/client-api/Room")
     fun HandleGetRoomsAsync(@Header("x-query") query: String): Call<SuccessResponse<ListResponse<Room>>>
-    @GET("/client-api/Room/{id}")
-    fun HandleGetRoomByIdAsync(@Path("id") id: String): Call<SuccessResponse<Room>>
+    @GET("/client-api/Room/{id}/Screening/{screeningId}")
+    fun HandleGetRoomByIdAsync(@Path("id") id: String, @Path("screeningId") screeningId: String): Call<SuccessResponse<Room>>
 
 }
+

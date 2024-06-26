@@ -6,5 +6,6 @@ import java.io.Serializable
 data class Seat (
     val id: String,
     val rowNumber: String,
-    val colNumber: Number
+    val colNumber: Number,
+    val isPlaced: Boolean
 ):Serializable

@@ -25,7 +25,7 @@ fun SeatComp(
     onClick: (String) -> Unit = { _ -> },
 ) {
     val seatColor = when {
-        !isEnable -> Color.Gray
+        !seat.isPlaced -> Color.Gray
         isSelected -> Color(0xFFAF6D0C)
         else -> Color.White
     }
@@ -40,7 +40,7 @@ fun SeatComp(
             RoundedCornerShape(8.dp)
         )
         .background(seatColor)
-        .clickable(enabled = isEnable) { onClick(seat.id) }
+        .clickable(enabled = !seat.isPlaced) { onClick(seat.id) }
         .padding(5.dp),
         contentAlignment = Alignment.Center
 

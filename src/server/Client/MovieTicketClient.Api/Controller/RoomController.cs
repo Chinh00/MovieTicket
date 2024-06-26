@@ -27,12 +27,14 @@ public class RoomController : BaseController
     /// Get detail room by id
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="screeningId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> HandleGetRoomByIdAsync(Guid id, CancellationToken cancellationToken = new ())
+    [HttpGet("{id:guid}/Screening/{screeningId:guid}")]
+    public async Task<IActionResult> HandleGetRoomByIdAsync(Guid id, Guid screeningId, CancellationToken cancellationToken = new ())
     {
-        return Ok(await Mediator.Send(new GetRoomById.Query() { Id = id }, cancellationToken));
+        return Ok(await Mediator.Send(new QueryRoom() { RoomId = id, ScreeningId = screeningId}, cancellationToken));
     }
+    
     
 }

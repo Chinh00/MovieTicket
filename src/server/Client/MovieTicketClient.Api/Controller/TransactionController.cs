@@ -13,6 +13,7 @@ public class TransactionController : BaseController
     /// <param name="model"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
+    [HttpPost]
     public async Task<IActionResult> HandleTransactionCreateAsync(TransactionCreateModel model, CancellationToken cancellationToken = new CancellationToken())
     {
         return Ok(await Mediator.Send(new TransactionCreate.Command() { CreateModel = model }, cancellationToken));
