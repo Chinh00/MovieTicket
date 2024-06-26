@@ -24,8 +24,9 @@ fun SeatComp(
     seat: Seat,
     onClick: (String) -> Unit = { _ -> },
 ) {
+    // isPlace == true => Da dat
     val seatColor = when {
-        !seat.isPlaced -> Color.Gray
+        seat.isPlaced -> Color.Gray
         isSelected -> Color(0xFFAF6D0C)
         else -> Color.White
     }

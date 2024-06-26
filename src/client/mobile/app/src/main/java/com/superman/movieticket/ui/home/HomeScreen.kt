@@ -77,6 +77,7 @@ import androidx.lifecycle.LifecycleOwner
 import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.infrastructure.utils.DatetimeHelper
+import com.superman.movieticket.infrastructure.utils.saveStringToSharedPreferences
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.auth.hooks.NavigateLogin
 import com.superman.movieticket.ui.components.ScreenLoading
@@ -170,19 +171,22 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
 //            }
         }
         val cp = LocalContext.current
-        fun HandleTicket(id: String) {
+        fun HandleTicket(id: String,avatar:String) {
             NavigateScreenActivity(
                 context = context,
-                movieId = id
+                movieId = id,
+                image = avatar
             )
         }
         Row(modifier = Modifier.wrapContentSize()) {
             NowPlayingMoviesone(listViewMoviesNowing = listViewMoviesNowing) { movie ->
                 //Toast.makeText(cp, movie.avatar, Toast.LENGTH_SHORT).show()
+                saveStringToSharedPreferences(context,"my_title_payment",movie.name)
+
                 if (login != "true") {
                     NavigateLogin(context)
                 } else {
-                    HandleTicket(movie.id)
+                    HandleTicket(movie.id,movie.avatar)
 
                 }
 
@@ -541,7 +545,9 @@ fun NowPlayingMoviesone(listViewMoviesNowing: List<Movie>, onMovieClicked: (Movi
                         .fillMaxWidth()
                 ) {
                     Button(
-                        onClick = { onMovieClicked(listViewMoviesNowing[page]) },
+                        onClick = { onMovieClicked(listViewMoviesNowing[page])
+                            saveStringToSharedPreferences(context,"my_title_payment",listViewMoviesNowing[page].name)
+                                  },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0x4FCECECE)
                         ),

@@ -84,7 +84,7 @@ class ScreenActivityViewModel @Inject constructor(
                         fieldValue = endDate.toString()
                     ),
                 )
-                includes = mutableListOf("Room")
+                includes = mutableListOf("Room","Room.Seats")
             }
             screeningService.HandleGetScreeningsAsync(getRoomWithMovieAndDate.JsonSerializer()).enqueue(object: Callback<SuccessResponse<ListResponse<Screening>>> {
                 override fun onResponse(
@@ -92,6 +92,7 @@ class ScreenActivityViewModel @Inject constructor(
                     response: Response<SuccessResponse<ListResponse<Screening>>>
                 ) {
                     _listRoom.value = response.body()?.data?.items ?: emptyList()
+                    Log.i("Dong","${response.body()?.data?.items}")
                     _apiState.value = ApiState.SUCCESS
                 }
 

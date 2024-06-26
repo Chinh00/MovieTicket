@@ -1,6 +1,6 @@
 package com.superman.movieticket.ui.order.screening
 
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -32,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +40,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.superman.movieticket.domain.entities.Screening
@@ -48,12 +48,14 @@ import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.components.ScreenLoading
 import com.superman.movieticket.ui.order.model.ReservationCreateModel
 import com.superman.movieticket.ui.order.screening.control.ScreenActivityViewModel
-import com.superman.movieticket.ui.order.ticket.TicketBookActivity
+import com.superman.movieticket.ui.order.ticket.control.BookTicketViewModel
 import com.superman.movieticket.ui.order.ticket.hooks.NavigateBookTicket
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -133,8 +135,24 @@ fun ScreensComp(
                     columns = GridCells.Fixed(3),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    itemsIndexed(screenings.value) { index, item ->
-                        ScreenItemComp(item)
+                    val targetFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+                    val nowPlus15Minutes = LocalDateTime.now().plusMinutes(15)
+
+                    val filteredScreenings = screenings.value.filter {
+
+                        // Parse start date of the screening
+                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+                        val timeStart = LocalDateTime.parse(DatetimeHelper.convertIsoToTime(it.startDate, "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"), formatter)
+                        timeStart.isBefore(nowPlus15Minutes)
+
+                    }
+
+                    itemsIndexed(filteredScreenings) { index, item ->
+                        val bookTicketViewModel: BookTicketViewModel = hiltViewModel()
+                        bookTicketViewModel.GetAllSeatsOfRoomAsync(item.roomId, item.id)
+                        val seats = bookTicketViewModel.roomState.collectAsState()
+
+                        ScreenItemComp(item, seatIplace = seats.value.seats.count { it.isPlaced })
                     }
                 }
             }
@@ -149,8 +167,10 @@ fun ScreensComp(
 @Composable
 fun ScreenItemComp(
     screening: Screening,
+    seatIplace: Int
 ) {
     val context = LocalContext.current
+
 
     val reservationCreateModel = remember {
         mutableStateOf(ReservationCreateModel(
@@ -194,7 +214,9 @@ fun ScreenItemComp(
                         fontWeight = FontWeight.Bold
                     )
                 }
-                Text(text = "counting/${screening.room.seats.size}", color = MaterialTheme.colorScheme.background)
+                var count = seatIplace;
+
+                Text(text = "$count/${screening.room.seats.size}", color = MaterialTheme.colorScheme.background)
 
             }
         }

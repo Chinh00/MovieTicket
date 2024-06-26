@@ -39,6 +39,7 @@ import com.superman.movieticket.R
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.infrastructure.utils.DatetimeHelper
+import com.superman.movieticket.infrastructure.utils.saveStringToSharedPreferences
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.auth.hooks.NavigateLogin
 import com.superman.movieticket.ui.components.CustomButton
@@ -58,13 +59,15 @@ import java.time.format.DateTimeFormatter
 fun ItemMovie(
     m: Movie,
 ) {
+
     val context = LocalContext.current
     val loginSocialViewModel: LoginActivityViewModel = hiltViewModel()
     val login by loginSocialViewModel.isLogin.collectAsState(initial = null)
+
     fun HandleTicket(id: String) {
         NavigateScreenActivity(
             context = context,
-            movieId = id
+            movieId = id,m.avatar
         )
     }
 
@@ -150,6 +153,8 @@ fun ItemMovie(
 
             OutlinedButton(
                 onClick = {
+                    saveStringToSharedPreferences(context,"my_title_payment",m.name)
+
                           if(login!="true"){
                               NavigateLogin(context)
                           }else{

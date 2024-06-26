@@ -83,6 +83,7 @@ import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Category
 import com.superman.movieticket.domain.entities.Movie
 import com.superman.movieticket.infrastructure.utils.DatetimeHelper
+import com.superman.movieticket.infrastructure.utils.saveStringToSharedPreferences
 import com.superman.movieticket.ui.auth.control.LoginActivityViewModel
 import com.superman.movieticket.ui.auth.hooks.NavigateLogin
 import com.superman.movieticket.ui.components.BaseScreen
@@ -154,7 +155,8 @@ fun DetailScreen(m: Movie) {
     fun HandleTicket(id: String) {
         NavigateScreenActivity(
             context = context,
-            movieId = id
+            movieId = id,
+            image=m.avatar,
         )
     }
     ConstraintLayout(
@@ -200,6 +202,7 @@ fun DetailScreen(m: Movie) {
             Row() {
                 CustomButton(
                     onClick = {
+                        saveStringToSharedPreferences(context,"my_title_payment",m.name)
                         if (login != "true") {
                             NavigateLogin(context)
                         } else {

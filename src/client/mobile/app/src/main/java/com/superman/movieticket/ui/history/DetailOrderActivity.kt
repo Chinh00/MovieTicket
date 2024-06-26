@@ -136,7 +136,7 @@ fun DetailScreen(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(text = "Thời gian: ${DatetimeHelper.ConvertISODatetimeToLocalDatetime(reservation.createdDate.toString(),"HH:mm")}" ?: "", color = Color.Black, fontSize = 20.sp)
+                Text(text = "Thời gian: ${DatetimeHelper.convertIsoToTime(reservation.createdDate.toString(),"HH:mm")}" ?: "", color = Color.Black, fontSize = 20.sp)
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier

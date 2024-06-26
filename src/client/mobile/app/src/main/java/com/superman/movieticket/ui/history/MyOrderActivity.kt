@@ -69,11 +69,11 @@ fun MyOrderComp() {
     LaunchedEffect(reservationViewModel.fetchReservedMovies()) {
         reservationViewModel.fetchReservedMovies()
     }
-    Toast.makeText(
-        context,
-        reservationViewModel.listOrderReservation.collectAsState().value.toString(),
-        Toast.LENGTH_SHORT
-    ).show()
+//    Toast.makeText(
+//        context,
+//        reservationViewModel.listOrderReservation.collectAsState().value.toString(),
+//        Toast.LENGTH_SHORT
+//    ).show()
 
     if (reservationViewModel.listOrderReservation.collectAsState().value.isNotEmpty()) {
         LazyColumn(

@@ -16,10 +16,10 @@ import java.time.format.DateTimeFormatter
         return zonedDateTime.format(formatter)
     }
      @RequiresApi(Build.VERSION_CODES.O)
-     fun convertIsoToTime(isoDateTime: String): String {
+     fun convertIsoToTime(isoDateTime: String,formatterPattern: String="HH:mm"): String {
          return try {
              val inputFormat = DateTimeFormatter.ISO_ZONED_DATE_TIME
-             val outputFormat = DateTimeFormatter.ofPattern("HH:mm")
+             val outputFormat = DateTimeFormatter.ofPattern(formatterPattern)
 
              val dateTime = ZonedDateTime.parse(isoDateTime, inputFormat)
                  .withZoneSameInstant(ZoneId.systemDefault()) // Convert to local time zone

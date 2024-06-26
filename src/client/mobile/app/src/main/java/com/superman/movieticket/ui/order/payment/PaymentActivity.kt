@@ -1,5 +1,9 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.superman.movieticket.ui.order.payment
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -28,6 +32,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -35,7 +40,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RichTooltip
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ProvidableCompositionLocal
@@ -62,9 +75,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
+import coil.compose.rememberAsyncImagePainter
 import com.google.gson.Gson
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
@@ -72,6 +87,7 @@ import com.microsoft.signalr.HubConnectionState
 import com.superman.movieticket.R
 import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.infrastructure.utils.ApiState
+import com.superman.movieticket.infrastructure.utils.getStringFromSharedPreferences
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.main.hooks.NavigateMainActivity
@@ -83,6 +99,7 @@ import com.superman.movieticket.ui.theme.balooFont
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -91,30 +108,42 @@ class PaymentActivity : ComponentActivity() {
 
     private lateinit var hubConnection: HubConnection
     val paymentActivityViewModel: PaymentActivityViewModel by viewModels()
+
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
 
-
-        val reservationCreateModel = Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java)
+        val reservationCreateModel = Gson().fromJson(
+            intent.getStringExtra("ReservationCreateModel"),
+            ReservationCreateModel::class.java
+        )
         Log.d("reservation", reservationCreateModel.toString())
         setContent {
             val transactionId = paymentActivityViewModel.transactionStatus.collectAsState()
             transactionId.value?.let { connectToHub(it, reservationCreateModel) }
 
-            BaseScreen(content = { PaymentComp(
-                Gson().fromJson(intent.getStringExtra("TotalPrice"),ReservationExtendModel::class.java)
-            ) }, title = "", onNavigateUp = {finish()})
+            BaseScreen(content = {
+                PaymentComp(
+                    Gson().fromJson(
+                        intent.getStringExtra("TotalPrice"),
+                        ReservationExtendModel::class.java
+                    )
+                )
+            }, title = "Thanh toán vé phim", onNavigateUp = { finish() })
         }
     }
 
 
-
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun connectToHub(transactionId: String, reservationCreateModel: ReservationCreateModel) {
-        hubConnection = HubConnectionBuilder.create("${AppOptions.BASE_URL}/client-hub/paymentHub?transactionId=${transactionId}").shouldSkipNegotiate(true).build()
+    private fun connectToHub(
+        transactionId: String,
+        reservationCreateModel: ReservationCreateModel
+    ) {
+        hubConnection =
+            HubConnectionBuilder.create("${AppOptions.BASE_URL}/client-hub/paymentHub?transactionId=${transactionId}")
+                .shouldSkipNegotiate(true).build()
 
         lifecycleScope.launch {
             try {
@@ -123,14 +152,20 @@ class PaymentActivity : ComponentActivity() {
                     hubConnection.on("ConfirmPayment", { confirmedTransaction: String ->
                         Log.d("Chinh ", "Payment confirmed: ${confirmedTransaction}")
                         runOnUiThread {
-                            Toast.makeText(this@PaymentActivity, "Thanh toán thành công", Toast.LENGTH_LONG).show()
-                            paymentActivityViewModel.HandleCreateReservationAsync(ReservationCreateModel(
-                                screeningId = reservationCreateModel.screeningId,
-                                reservationState = 0,
-                                seatReservations = reservationCreateModel.seatReservations,
-                                serviceReservations = reservationCreateModel.serviceReservations,
-                                transactionId = confirmedTransaction
-                            ))
+                            Toast.makeText(
+                                this@PaymentActivity,
+                                "Thanh toán thành công",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            paymentActivityViewModel.HandleCreateReservationAsync(
+                                ReservationCreateModel(
+                                    screeningId = reservationCreateModel.screeningId,
+                                    reservationState = 0,
+                                    seatReservations = reservationCreateModel.seatReservations,
+                                    serviceReservations = reservationCreateModel.serviceReservations,
+                                    transactionId = confirmedTransaction
+                                )
+                            )
                             val intent = Intent(this@PaymentActivity, MainActivity::class.java)
                             startActivity(intent)
                         }
@@ -155,7 +190,10 @@ class PaymentActivity : ComponentActivity() {
 fun PaymentComp(
     reservationExtendModel: ReservationExtendModel
 ) {
-
+    var showTooltip by remember { mutableStateOf(false) }
+    var tooltipText by remember { mutableStateOf("Sao chép STK") }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val paymentActivityViewModel: PaymentActivityViewModel = hiltViewModel()
     LaunchedEffect(key1 = Unit) {
 
@@ -164,7 +202,11 @@ fun PaymentComp(
 
     }
 
-
+    fun copyToClipboard(context: Context, text: String) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("label", text)
+        clipboard.setPrimaryClip(clip)
+    }
 
     ConstraintLayout(
         modifier = Modifier
@@ -184,7 +226,7 @@ fun PaymentComp(
             start.linkTo(parent.start)
             end.linkTo(parent.end)
         }) {
-            PaymentTopComp("King Kong GodziLa", context, R.drawable.trangquynh) {}
+            getStringFromSharedPreferences(context, "my_title_payment")?.let { PaymentTopComp(it, context, R.drawable.trangquynh) {} }
         }
         Column(modifier = Modifier
             .wrapContentSize()
@@ -195,21 +237,69 @@ fun PaymentComp(
                 PaymentTotaltComp("2 x FC - Week - holiday - 2D - park : C4, C5", 180.00)
             }
         }
-        Column(modifier = Modifier
-            .padding(top = 30.dp)
-            .constrainAs(t) {
-                top.linkTo(e.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(b.top)
-            }, horizontalAlignment = Alignment.CenterHorizontally
+        Button(onClick = { /*TODO*/ }) {
+            
+        }
+        Column(
+            modifier = Modifier
+                .padding(top = 30.dp)
+                .constrainAs(t) {
+                    top.linkTo(e.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(b.top)
+                }, horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.img_3),
-                contentDescription = "",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier.size(300.dp)
-            )
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.img_4),
+                    contentDescription = "",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(300.dp)
+                        .clickable {
+                            showTooltip = true
+                            scope.launch {
+                                delay(2000)
+                                showTooltip = false
+                            }
+                        }
+                )
+
+
+                if (showTooltip) {
+                    Popup(
+                        alignment = Alignment.TopCenter,
+                        onDismissRequest = { showTooltip = false }
+                    ) {
+                        Surface(
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .clickable {
+                                    copyToClipboard(context, "109875071116")
+                                    tooltipText = "Đã sao chép"
+                                    scope.launch {
+                                        delay(1500)
+                                        showTooltip = false
+                                        tooltipText = "Sao chép STK"
+                                    }
+                                }
+                        ) {
+                            Text(
+                                text = tooltipText,
+                                modifier = Modifier.padding(8.dp),
+                                style = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.background),
+
+                                )
+                        }
+                    }
+                }
+            }
+
+
         }
         Column(modifier = Modifier
             .padding(bottom = 40.dp)
@@ -239,7 +329,14 @@ fun PaymentTopComp(title: String, context: Context, img: Any?, onBackClick: (Con
         val (s, e, t, b) = createRefs()
 
         Image(
-            painter = painterResource(id = img.toString().toInt()),
+            painter = rememberAsyncImagePainter(
+                model = AppOptions.BASE_URL + "/admin-api/image/" + getStringFromSharedPreferences(
+                    context,
+                    "my_image"
+                ), error = painterResource(
+                    id = R.drawable.error_img
+                ), contentScale = ContentScale.Crop
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(230.dp)

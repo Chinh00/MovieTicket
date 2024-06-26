@@ -86,7 +86,7 @@ class TicketBookActivity : ComponentActivity() {
             BaseScreen(content = { TicketActivityComp(
                 Gson().fromJson(intent.getStringExtra("ReservationCreateModel"),ReservationCreateModel::class.java),
                 intent.getStringExtra("roomId")!!
-            ) }, title = "Chọn ghế ")
+            ) }, title = "Chọn ghế ", onNavigateUp = {finish()})
         }
     }
 }
