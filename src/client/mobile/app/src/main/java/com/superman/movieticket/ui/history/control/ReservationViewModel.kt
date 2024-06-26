@@ -27,20 +27,19 @@ class ReservationViewModel @Inject constructor(private val apiService: Reservati
     private val _apiState = MutableStateFlow(ApiState.LOADING)
     val apiState = _apiState.asStateFlow()
 
-
-
-    fun fetchReservedMovies() {
-//        {"filters":[],"includes"🙁"SeatReservations"],"sortBy"🙁"Id"],"page":1,"pageSize": 5}
-        viewModelScope.launch {
-            _apiState.value=ApiState.LOADING
-            val xQueryHeader = XQueryHeader(
-                includes = mutableListOf("SeatReservations","ServiceReservations","Screening.Movie","Screening.Room","ServiceReservations.Service","SeatReservations.Seat"),
-                filters = mutableListOf(),
-                sortBy = mutableListOf("Id"),
-                page = 1,
-                pageSize = 5
-            )
-            val call = apiService.HandleGetReservationAsync(xQueryHeader.JsonSerializer())
+    fun fetchReservedMovies()
+    {
+    viewModelScope.launch {
+        _apiState.value=ApiState.LOADING
+        val xQueryHeader = XQueryHeader(
+            includes =
+            mutableListOf("SeatReservations","ServiceReservations","Screening.Movie","Screening.Room","ServiceReservations.Service","SeatReservations.Seat"),
+            filters = mutableListOf(),
+            sortBy = mutableListOf("Id"),
+            page = 1,
+            pageSize = 5
+        )
+        val call = apiService.HandleGetReservationAsync(xQueryHeader.JsonSerializer())
             .enqueue(object : Callback<SuccessResponse<ListResponse<Reservation>>> {
                 override fun onResponse(
                     call: Call<SuccessResponse<ListResponse<Reservation>>>,
@@ -63,5 +62,4 @@ class ReservationViewModel @Inject constructor(private val apiService: Reservati
             })
         }
     }
-
 }
