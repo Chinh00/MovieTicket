@@ -1,6 +1,7 @@
 package com.superman.movieticket.domain.entities
 
 import com.superman.movieticket.core.entity.BaseEntity
+import java.io.Serializable
 
 data class User(
     var fullName: String,
@@ -11,4 +12,4 @@ data class User(
     var email: String?,
     var phoneNumber: String,
     var passwordHash: String?
-):BaseEntity()
+):BaseEntity(), Serializable

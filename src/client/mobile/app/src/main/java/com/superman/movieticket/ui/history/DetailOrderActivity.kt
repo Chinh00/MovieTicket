@@ -2,11 +2,13 @@ package com.superman.movieticket.ui.history
 
 //import com.superman.movieticket.ui.history.control.DetailOrderViewModelFactory
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,101 +41,55 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
+import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.R
+import com.superman.movieticket.core.config.AppOptions
 import com.superman.movieticket.domain.entities.Reservation
-import com.superman.movieticket.ui.history.control.DetailOrderViewModel
+import com.superman.movieticket.infrastructure.utils.DatetimeHelper
+import com.superman.movieticket.ui.components.BaseScreen
+import com.superman.movieticket.ui.history.control.ReservationViewModel
+import com.superman.movieticket.ui.theme.MyAppTheme
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class DetailOrderActivity : ComponentActivity() {
 
-    //    private val movieViewModel: DetailOrderViewModel by viewModels {
-//        object : ViewModelProvider.Factory {
-//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//                // Create Retrofit instance
-//                val retrofit = Retrofit.Builder()
-//                    .baseUrl("https://yourapi.com/") // Thay thế bằng URL cơ sở thực tế của bạn
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build()
-//
-//                val apiService = retrofit.create(MovieService::class.java)
-//
-//                return TODO("Provide the return value")
-//            }
-//
-//        }
-//    }
-//
-    val detailOrderViewModel :DetailOrderViewModel by viewModels()
 
-
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val name = intent.getStringExtra("movieName")
-            val orderDate = intent.getStringExtra("orderDate")
-            val date = intent.getStringExtra("date")
-            val total = intent.getDoubleExtra("total", 0.0)
-            val quantity = intent.getIntExtra("quantity", 0)
-            val imageResId = intent.getIntExtra("imageResId", 0)
-            val servicename = intent.getStringExtra("serviceName")
-            val servicePrice = intent.getDoubleExtra("servicePrice", 0.0)
-            val serviceQuantity = intent.getIntExtra("serviceQuantity", 0)
-            val ticketPrice = intent.getDoubleExtra("ticketPrice", 0.0)
-            val theaterName = intent.getStringExtra("theaterName")
-            val seatNumber = intent.getStringExtra("seatNumber")
 
-            DetailScreen(name, formatOrderDate(orderDate), date, quantity, total, imageResId, servicename, servicePrice, serviceQuantity, ticketPrice, theaterName, seatNumber)
+            BaseScreen(content = {
+                MyAppTheme {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        intent.getSerializableExtra("reservation",Reservation::class.java)
+                            ?.let { DetailScreen(it) }
+                    }
 
-            lifecycleScope.launch {
-                detailOrderViewModel.listOrderReservation.collect { reservations ->
-                    // Cập nhật UI khi danh sách phim đã đặt thay đổi
-                    Log.i("DetailOrderViewModel", reservations.toString())
-                    updateUI(reservations)
                 }
-            }
-        }
+            }, title = "Chi tiết vé đặt", onNavigateUp = {
+                finish()
+            })
 
+        }
 
 
         // Gọi API để lấy danh sách phim đã đặt
     }
 
-    private fun formatOrderDate(orderDate: String?): String? {
-        return if (orderDate != null) {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("yyyy/MM/dd hh:mm a", Locale.getDefault())
-            val date = inputFormat.parse(orderDate)
-            date?.let { outputFormat.format(it) }
-        } else {
-            null
-        }
-    }
 
-    private fun updateUI(movies: List<Reservation>) {
-        // Cập nhật UI của bạn ở đây
-    }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreen(
-    movieName: String? = "",
-    orderDate: String? = "",
-    date: String? = "",
-    quantity: Int = 0,
-    totalPrice: Double = 0.0,
-    imageResId: Int = 0,
-    serviceName: String? = "",
-    servicePrice: Double = 0.0,
-    serviceQuantity: Int = 0,
-    ticketPrice: Double = 0.0,
-    theaterName: String? = "",
-    seatNumber: String? = ""
+    reservation: Reservation
 ) {
     val context = LocalContext.current
-    val totalCost = totalPrice + servicePrice
+
 
     Box(
         modifier = Modifier
@@ -149,7 +105,7 @@ fun DetailScreen(
                     .clip(RoundedCornerShape(30.dp))
             ) {
                 Image(
-                    painter = painterResource(id = imageResId),
+                    painter = rememberAsyncImagePainter(AppOptions.BASE_URL + "/admin-api/image/" +reservation.screening.movie.avatar),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
@@ -164,7 +120,7 @@ fun DetailScreen(
             ) {
                 Text("CGV VinCom", color = Color.Black, fontSize = 20.sp)
                 Spacer(modifier = Modifier.height(5.dp))
-                Text("Ngày đặt: $orderDate", color = Color.Black, fontSize = 20.sp)
+                Text("Ngày đặt: ${DatetimeHelper.ConvertISODatetimeToLocalDatetime(reservation.createdDate.toString(),"dd/MM/yyyy")}", color = Color.Black, fontSize = 20.sp)
                 Spacer(modifier = Modifier.height(5.dp))
                 Box(
                     modifier = Modifier
@@ -173,9 +129,14 @@ fun DetailScreen(
                         .background(Color.LightGray)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                Text("$movieName", color = Color.Black, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    "${reservation.screening?.movie?.name?: "Khong co"}",
+                    color = Color.Black,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(date ?: "", color = Color.Black, fontSize = 20.sp)
+                Text(text = "Thời gian: ${DatetimeHelper.ConvertISODatetimeToLocalDatetime(reservation.createdDate.toString(),"HH:mm")}" ?: "", color = Color.Black, fontSize = 20.sp)
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier
@@ -200,9 +161,16 @@ fun DetailScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("$theaterName", color = Color.Black, fontSize = 20.sp)
+                    Text("${reservation.screening.room.roomNumber}", color = Color.Black, fontSize = 20.sp)
                     Spacer(modifier = Modifier.weight(1f))
-                    Text("$seatNumber", color = Color.Black, fontSize = 20.sp, modifier = Modifier.padding(end = 16.dp))
+                    var nameSeat = ""
+                    reservation.seatReservations.forEach {s->  nameSeat = "${s.seat?.rowNumber}${s.seat?.colNumber}" }
+                    Text(
+                        nameSeat,
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(end = 16.dp)
+                    )
                 }
             }
 
@@ -293,7 +261,8 @@ fun DetailScreen(
                                     painter = painterResource(id = R.drawable.baseline_check_circle_24),
                                     contentDescription = "Success",
                                     tint = Color.Black,
-                                    modifier = Modifier.size(20.dp)
+                                    modifier = Modifier
+                                        .size(20.dp)
                                         .padding(start = 3.dp)
                                 )
                             }
@@ -315,7 +284,7 @@ fun DetailScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "$ticketPrice",
+                    text = "${reservation.itemPrice}",
                     color = Color.Black,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -336,7 +305,7 @@ fun DetailScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = quantity.toString(),
+                    text = "${reservation.seatReservations.size}",
                     color = Color.Black,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -358,14 +327,14 @@ fun DetailScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "$serviceName",
+                    text = "${reservation.serviceReservations.forEach { it.service.name }}",
                     color = Color.Black,
                     fontSize = 20.sp,
                     modifier = Modifier.padding(start = 16.dp)
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "$servicePrice",
+                    text = "${reservation.serviceReservations.forEach { it.price+it.quantity }}",
                     color = Color.Black,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -386,7 +355,7 @@ fun DetailScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = serviceQuantity.toString(),
+                    text = "${reservation.serviceReservations.size}",
                     color = Color.Black,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -407,7 +376,7 @@ fun DetailScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "$totalCost",
+                    text = "$",
                     color = Color.Black,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -427,21 +396,3 @@ fun DetailScreen(
     }
 }
 
-@Composable
-@Preview(showSystemUi = true)
-fun DetailScreenPreview() {
-    DetailScreen(
-        movieName = "Avengers: Endgame",
-        orderDate = "2024/08/05 09:45 PM",
-        date = "2024/06/05 12:30 - 2024/06/05 14:00",
-        theaterName = "Cinema 8",
-        seatNumber = " J-12",
-        serviceName = "Bắp khổng lồ",
-        quantity = 2,
-        totalPrice = 25.0,
-        imageResId = R.drawable.kingkong2024,
-        servicePrice = 5.0,
-        serviceQuantity = 1,
-        ticketPrice = 12.5
-    )
-}
