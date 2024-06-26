@@ -8,7 +8,7 @@ data class User(
     var birthday: String,
     var userGender: Int,
     var userName: String,
-    var email: String,
+    var email: String?,
     var phoneNumber: String,
     var passwordHash: String?
 ):BaseEntity()

@@ -1,9 +1,14 @@
 package com.superman.movieticket.ui.profile
 
 import android.app.DatePickerDialog
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,40 +56,53 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.superman.movieticket.R
+import com.superman.movieticket.domain.entities.User
+import com.superman.movieticket.infrastructure.utils.DatetimeHelper
 import com.superman.movieticket.ui.auth.control.PhoneOtpActivityViewModel
 import com.superman.movieticket.ui.profile.control.UpdateActivityViewModel
 import com.superman.movieticket.ui.theme.MyAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+
 @AndroidEntryPoint
 class UpdateActivity : ComponentActivity() {
+
+    private val updateActivityViewModel: UpdateActivityViewModel by viewModels()
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val user = updateActivityViewModel.userinfo.collectAsState().value
             MyAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ){
-                    UpdateScreen()
+                    if (user != null) {
+                        UpdateScreen(user) {
+
+                        }
+                    }
                 }
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun UpdateScreen() {
-    val context = LocalContext.current
-    val updateActivityViewModel: UpdateActivityViewModel = hiltViewModel()
-    val user = updateActivityViewModel.userinfo.collectAsState()
-
-
-
-    var numberText by remember { mutableStateOf(user?.value?.phoneNumber) }
-    val userState = remember {
-        mutableStateOf(user)
-    }
+fun UpdateScreen(
+    user: User,
+    onUpdateUser: (User) -> Unit
+) {
+    var name by remember { mutableStateOf(user.fullName) }
+    var email by remember { mutableStateOf(user.email ?: "") }
+    var phone by remember { mutableStateOf(user.phoneNumber) }
 
     Box(
         modifier = Modifier
@@ -111,37 +129,6 @@ fun UpdateScreen() {
                     contentScale = ContentScale.Crop
                 )
             }
-            Text(
-                text = "Dong Chinh Khanh",
-                color = Color.Black,
-                fontSize = 30.sp,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(align = Alignment.Center)
-                    .padding(top = 20.dp)
-            )
-            Text(
-                text = "@123promax",
-                color = Color.Black,
-                fontSize = 20.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(align = Alignment.Center)
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray)
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-
-
 
             Box(
                 modifier = Modifier
@@ -150,20 +137,21 @@ fun UpdateScreen() {
                     .background(Color.LightGray, shape = RoundedCornerShape(13.dp))
                     .padding(1.dp) // Padding nhỏ để tránh nội dung bị cắt
             ) {
-                /*TextField(
-                    value = text ?: "", colors = TextFieldDefaults.colors(
+                TextField(
+                    value = name, colors = TextFieldDefaults.colors(
                         disabledIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-//                      unfocusedContainerColor = Color(0xFFD6D1D1)
                         unfocusedContainerColor = Color.LightGray
                     ),
-                    onValueChange = { text = it },
-                    placeholder = { Text("Full Name", color = Color.Gray) },
+                    onValueChange = { name = it },
+                    label = { Text(text = "Họ tên")},
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.Transparent)
                         .clip(RoundedCornerShape(13.dp)),
-                )*/
+                )
+
+
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -173,19 +161,26 @@ fun UpdateScreen() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                GenderDropdown(
+                /*GenderDropdown(
                     onClick = {
+                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier
                         .weight(1f)
                         .padding(5.dp)
-                )
-                DatePickerDropdown(
+                )*/
+
+                /*DatePickerDropdown(
                     modifier = Modifier
-                        .weight(1f)
-                        .padding(5.dp)
-                )
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    defaultDate = birthDate
+                ) {
+                    birthDate = it
+                }*/
             }
+
+
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -199,7 +194,7 @@ fun UpdateScreen() {
                     .padding(1.dp) // Padding nhỏ để tránh nội dung bị cắt
             ) {
                 TextField(
-                    value = user.value?.phoneNumber ?: "", colors = TextFieldDefaults.colors(
+                    value = phone, colors = TextFieldDefaults.colors(
                         disabledIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         unfocusedContainerColor = Color.LightGray
@@ -215,7 +210,6 @@ fun UpdateScreen() {
             }
             Spacer(modifier = Modifier.height(10.dp))
 
-            var emailText by remember { mutableStateOf("") }
 
             Box(
                 modifier = Modifier
@@ -225,12 +219,12 @@ fun UpdateScreen() {
                     .padding(1.dp) // Padding nhỏ để tránh nội dung bị cắt
             ) {
                 TextField(
-                    value = emailText, colors = TextFieldDefaults.colors(
+                    value = email ?: "", colors = TextFieldDefaults.colors(
                         disabledIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         unfocusedContainerColor = Color.LightGray
                     ),
-                    onValueChange = { emailText = it },
+                    onValueChange = {  },
                     placeholder = { Text("Email", color = Color.Gray) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -241,7 +235,10 @@ fun UpdateScreen() {
 
             Spacer(modifier = Modifier.height(80.dp))
             Button(
-                onClick = { /* Xử lý khi nút được nhấn */ },
+                onClick = {
+
+
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
@@ -253,7 +250,7 @@ fun UpdateScreen() {
                 ),
                 shape = RoundedCornerShape(10.dp) // Hình dạng của nút
             ) {
-                Text(text = "Lưu", color = MaterialTheme.colorScheme.primary)
+                Text(text = "Lưu", color = Color.White)
             }
         }
     }
@@ -266,18 +263,9 @@ enum class Gender {
 }
 
 @Composable
-fun GenderDropdown(onClick: (String) -> Unit, modifier: Modifier = Modifier, defaultGender: Gender? = null) {
+fun GenderDropdown(onClick: (String) -> Unit, modifier: Modifier = Modifier, defaultGender: String? = null) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedGender = defaultGender?.run { remember {
-        mutableStateOf("Chọn giới tính")
-    } }?.let {
-        remember {
-            mutableStateOf(if (defaultGender == Gender.Male) "Nam" else "Nữ")
-        }
-    }
-
-
-
+    var selectedGender by remember { mutableStateOf(defaultGender ?: "Giới tính") }
     val genderOptions = listOf("Nam", "Nữ")
 
     Column(
@@ -297,7 +285,7 @@ fun GenderDropdown(onClick: (String) -> Unit, modifier: Modifier = Modifier, def
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = selectedGender!!.value,
+                    text = selectedGender,
                     color = Color.Gray,
                     modifier = Modifier.weight(1f)
                 )
@@ -313,13 +301,12 @@ fun GenderDropdown(onClick: (String) -> Unit, modifier: Modifier = Modifier, def
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth(),
-
+            modifier = Modifier.fillMaxWidth()
         ) {
             genderOptions.forEach { gender ->
                 DropdownMenuItem(
                     onClick = {
-                        selectedGender?.value = gender
+                        selectedGender = gender
                         expanded = false
                         onClick(gender)
                     },
@@ -333,20 +320,33 @@ fun GenderDropdown(onClick: (String) -> Unit, modifier: Modifier = Modifier, def
     }
 }
 
+
 @Composable
-fun DatePickerDropdown(modifier: Modifier = Modifier) {
+fun DatePickerDropdown(
+    modifier: Modifier = Modifier,
+    defaultDate: String? = null,
+    onClick: (String) -> Unit
+) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
+
+    // Định dạng ngày mặc định
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val initialDate = defaultDate?.let { dateFormat.parse(it) } ?: Date()
+
+    calendar.time = initialDate
+
     val year = calendar.get(Calendar.YEAR)
     val month = calendar.get(Calendar.MONTH)
     val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-    var selectedDate by remember { mutableStateOf("Select Date") }
+    var selectedDate by remember { mutableStateOf(defaultDate ?: "Ngày sinh") }
 
     val datePickerDialog = DatePickerDialog(
         context,
         { _, selectedYear, selectedMonth, selectedDay ->
             selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+            onClick(selectedDate)
         },
         year, month, day
     )
@@ -374,7 +374,7 @@ fun DatePickerDropdown(modifier: Modifier = Modifier) {
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_list_alt_24),
-                    contentDescription = "Select Date",
+                    contentDescription = "Chọn ngày",
                     tint = Color.Gray,
                     modifier = Modifier.size(30.dp)
                 )

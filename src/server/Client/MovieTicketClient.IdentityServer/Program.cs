@@ -76,11 +76,13 @@ builder.Services.AddTransient<IServerAccessor, ServerAccessor>();
 builder.Services.AddTransient<IFileHelper, FileHelper>();
 
 builder.Services.AddHostedService<DbMigrationHostedService>();
-
+builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 
 app.MapGet("/", () => "Hello World!");
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseIdentityServer();
 app.UseAuthentication();
 app.UseAuthorization();

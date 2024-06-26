@@ -34,9 +34,10 @@ public class AccountController : Controller
     }
 
     [HttpPut]
-    public async Task<IActionResult> HandleUpdateUserAsync(UserUpdateModel model, CancellationToken cancellationToken = new CancellationToken())
+    public async Task<IActionResult> HandleUpdateUserAsync([FromForm] UserUpdateModel model, CancellationToken cancellationToken = new CancellationToken())
     {
         var userId = _contextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        Console.WriteLine(model);
         var user = await _userManager.FindByIdAsync(userId);
         user.FullName = model.FullName;
         user.Birthday = model.Birthday;
@@ -44,8 +45,13 @@ public class AccountController : Controller
         {
             await _fileHelper.RemoveFile("avatar", user.Avatar);
         }
-        var urlAvatar = await _fileHelper.SaveFile(model.Avatar, "avatar");
-        user.Avatar = urlAvatar;
+
+        var urlAvatar = "";
+        if (model.Avatar is not null)
+        {
+            urlAvatar = await _fileHelper.SaveFile(model.Avatar, "avatar");
+        }
+        user.Avatar = !string.IsNullOrEmpty(urlAvatar) ? urlAvatar : user.Avatar;
         user.UserGender = model.UserGender;
         await _userManager.UpdateAsync(user);
         return Ok(user);

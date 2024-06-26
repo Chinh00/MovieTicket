@@ -3,11 +3,18 @@ package com.superman.movieticket.domain.services
 import android.telecom.Call
 import com.superman.movieticket.domain.entities.User
 import com.superman.movieticket.ui.auth.model.TokenResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
+
 
 interface AuthService {
     @FormUrlEncoded
@@ -37,9 +44,20 @@ interface AuthService {
 
     @POST("/client-identity/api/Account/update-password")
     fun HandleUpdatePassword(@Body model: UserUpdatePasswordModel): retrofit2.Call<User>
+
+    @Multipart
+    @PUT("/client-identity/api/Account")
+    fun UpdateUserInfo(
+        @Part Avatar: MultipartBody.Part?,
+        @Part("FullName") fullName: RequestBody?,
+        @Part("Birthday") birthday: RequestBody?,
+        @Part("UserGender") userGender: RequestBody?
+    ): retrofit2.Call<User>
+
 }
 
 
 data class UserUpdatePasswordModel (
     val newPassword: String
 )
+

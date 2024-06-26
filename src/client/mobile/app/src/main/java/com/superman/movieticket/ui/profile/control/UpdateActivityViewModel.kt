@@ -10,10 +10,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
+
 
 @HiltViewModel
 class UpdateActivityViewModel @Inject constructor(
@@ -50,6 +57,31 @@ class UpdateActivityViewModel @Inject constructor(
             })
             _apiLoading.value = ApiState.NONE
         }
+    }
+
+    fun HandleUpdateUseInfo (fullName: String, birthday: String, userGender: String, avatar: File?) {
+
+        val inputDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val outputDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val birthdayDate: Date? = inputDateFormat.parse(birthday)
+        val birthdayFormat: String = birthdayDate?.let { outputDateFormat.format(it) } ?: ""
+
+
+
+        val _fullname = RequestBody.create("text/plain".toMediaTypeOrNull(), fullName)
+        val _birthDate = RequestBody.create("text/plain".toMediaTypeOrNull(), birthdayFormat)
+        val _userGender = RequestBody.create("text/plain".toMediaTypeOrNull(), "Male")
+
+        authService.UpdateUserInfo(fullName = _fullname, Avatar = null, userGender = null, birthday = _birthDate).enqueue(object: Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                Log.d("Update user", response?.body().toString())
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Log.d("Update user fail", t.toString())
+            }
+
+        })
     }
 
 }
