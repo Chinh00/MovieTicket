@@ -46,12 +46,8 @@ interface AuthService {
     fun HandleUpdatePassword(@Body model: UserUpdatePasswordModel): retrofit2.Call<User>
 
     @Multipart
-    @PUT("/client-identity/api/Account")
-    fun UpdateUserInfo(
-        @Part Avatar: MultipartBody.Part?,
-        @Part("FullName") fullName: RequestBody?,
-        @Part("Birthday") birthday: RequestBody?,
-        @Part("UserGender") userGender: RequestBody?
+    @POST("/client-identity/api/Account")
+    fun UpdateUserInfo(@Body model: UserUpdateInfoModel
     ): retrofit2.Call<User>
 
 }
@@ -61,3 +57,10 @@ data class UserUpdatePasswordModel (
     val newPassword: String
 )
 
+
+data class UserUpdateInfoModel (
+    var fullName: String,
+    var birthday: String,
+    var avatar: String,
+    var userGender: Int
+)
