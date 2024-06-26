@@ -46,27 +46,29 @@ class UpdateActivityViewModel @Inject constructor(
 
     init{ HandleGetUserDetail() }
 
-    fun HandleGetUserDetail()
-    { viewModelScope.launch {
-        _apiLoading.value = ApiState.LOADING
-        authService.HandleGetUserDetail().enqueue(object: Callback<User> {
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                _userinfo.value = response?.body()
-                Log.d("Chinh", response?.body().toString())
-                _apiLoading.value = ApiState.LOADING
-            }
+    fun HandleGetUserDetail() {
+        viewModelScope.launch {
+            _apiLoading.value = ApiState.LOADING
+            authService.HandleGetUserDetail().enqueue(object : Callback<User> {
+                override fun onResponse(call: Call<User>, response: Response<User>) {
+                    _userinfo.value = response?.body()
+                    Log.d("Chinh", response?.body().toString())
+                    _apiLoading.value = ApiState.LOADING
+                }
 
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                _apiLoading.value = ApiState.FAIL
-                Log.d(
-                    "Chinh fail get accoount detail",
-                    t.toString()
-                )
+                override fun onFailure(call: Call<User>, t: Throwable) {
+                    _apiLoading.value = ApiState.FAIL
+                    Log.d(
+                        "Chinh fail get accoount detail",
+                        t.toString()
+                    )
+                }
             }
-        })
-        _apiLoading.value = ApiState.NONE
+            )
+            _apiLoading.value = ApiState.NONE
+        }
     }
-    }
+
     @SuppressLint("NewApi")
     fun HandleUpdateUseInfo (fullName: String, birthday: String, userGender: Int, avatar: String?) {
         _apiLoading.value = ApiState.LOADING
