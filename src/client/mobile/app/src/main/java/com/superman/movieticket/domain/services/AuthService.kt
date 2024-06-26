@@ -45,7 +45,6 @@ interface AuthService {
     @POST("/client-identity/api/Account/update-password")
     fun HandleUpdatePassword(@Body model: UserUpdatePasswordModel): retrofit2.Call<User>
 
-    @Multipart
     @POST("/client-identity/api/Account")
     fun UpdateUserInfo(@Body model: UserUpdateInfoModel
     ): retrofit2.Call<User>
