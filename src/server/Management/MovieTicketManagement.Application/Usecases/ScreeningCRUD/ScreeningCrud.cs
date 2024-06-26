@@ -63,7 +63,7 @@ public class ScreeningCrud : IRequestHandler<GetScreenings.Query, ResultModel<Li
         {
             MovieId = request.CreateModel.MovieId,
             RoomId = request.CreateModel.RoomId,
-            StartDate = DateTime.ParseExact(request.CreateModel.StartDate, "yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal)
+            StartDate = DateTime.ParseExact(request.CreateModel.StartDate, "yyyy-MM-ddTHH:mm:ss.fffZ", null, DateTimeStyles.None)
         };
         await _repository.AddAsync(screening);
         return ResultModel<ScreeningDto>.Create(_mapper.Map<ScreeningDto>(screening));

@@ -66,4 +66,26 @@ class BookTicketViewModel @Inject constructor(
         })
         _apiState.value = ApiState.NONE
     }
+
+
+    fun GetAllSeatsOfRoomAsyncWithCallBack(
+        roomId: String,
+        screeningId: String,
+        onSuccess: (Room) -> Unit
+    ) {
+        roomService.HandleGetRoomByIdAsync(roomId, screeningId).enqueue(object :
+            Callback<SuccessResponse<Room>> {
+            override fun onResponse(
+                call: Call<SuccessResponse<Room>>,
+                response: Response<SuccessResponse<Room>>
+            ) {
+                onSuccess(response?.body()?.data!!)
+            }
+
+            override fun onFailure(call: Call<SuccessResponse<Room>>, t: Throwable) {
+                _apiState.value = ApiState.FAIL
+                Log.d("Fail", t.message.toString())
+            }
+        })
+    }
 }

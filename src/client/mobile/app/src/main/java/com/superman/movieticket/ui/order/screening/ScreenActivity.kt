@@ -1,6 +1,5 @@
 package com.superman.movieticket.ui.order.screening
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -32,7 +31,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,7 +41,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.superman.movieticket.domain.entities.Screening
-import com.superman.movieticket.infrastructure.utils.DatetimeHelper
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.components.ScreenLoading
 import com.superman.movieticket.ui.order.model.ReservationCreateModel
@@ -51,7 +48,6 @@ import com.superman.movieticket.ui.order.screening.control.ScreenActivityViewMod
 import com.superman.movieticket.ui.order.ticket.control.BookTicketViewModel
 import com.superman.movieticket.ui.order.ticket.hooks.NavigateBookTicket
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -138,21 +134,25 @@ fun ScreensComp(
                     val targetFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
                     val nowPlus15Minutes = LocalDateTime.now().plusMinutes(15)
 
-                    val filteredScreenings = screenings.value.filter {
+                    val filteredScreenings = screenings.value.sortedBy { it.startDate }
 
-                        // Parse start date of the screening
-                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
-                        val timeStart = LocalDateTime.parse(DatetimeHelper.convertIsoToTime(it.startDate, "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"), formatter)
-                        timeStart.isBefore(nowPlus15Minutes)
 
-                    }
+                        .filter {
 
+
+                            val now = LocalDateTime.now().toString()
+                            val target = LocalDateTime.parse(it.startDate, DateTimeFormatter.ISO_DATE_TIME).toString()
+
+
+
+                            Log.d("Chinh targetTime", LocalDateTime.parse(it.startDate, DateTimeFormatter.ISO_DATE_TIME).toString())
+                            Log.d("now", LocalDateTime.now().toString())
+
+                            now < target
+
+                        }
                     itemsIndexed(filteredScreenings) { index, item ->
-                        val bookTicketViewModel: BookTicketViewModel = hiltViewModel()
-                        bookTicketViewModel.GetAllSeatsOfRoomAsync(item.roomId, item.id)
-                        val seats = bookTicketViewModel.roomState.collectAsState()
-
-                        ScreenItemComp(item, seatIplace = seats.value.seats.count { it.isPlaced })
+                        ScreenItemComp(item)
                     }
                 }
             }
@@ -164,14 +164,13 @@ fun ScreensComp(
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ScreenItemComp(
     screening: Screening,
-    seatIplace: Int
 ) {
     val context = LocalContext.current
-
-
+    val bookTicketViewModel: BookTicketViewModel = hiltViewModel()
     val reservationCreateModel = remember {
         mutableStateOf(ReservationCreateModel(
             screeningId = screening.id,
@@ -179,6 +178,17 @@ fun ScreenItemComp(
             serviceReservations = mutableListOf(),
             ))
     }
+
+    val count = remember {
+        mutableStateOf(0)
+    }
+    LaunchedEffect(screening.roomId, screening.id) {
+        bookTicketViewModel.GetAllSeatsOfRoomAsyncWithCallBack(screening.roomId, screening.id) {
+            count.value = it.seats.count { it.isPlaced }
+        }
+    }
+
+
 
     Column(
         modifier = Modifier
@@ -201,22 +211,36 @@ fun ScreenItemComp(
             verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "${"Screen ${screening?.room?.roomNumber}"}".uppercase(),
+                text = "Screen ${screening.room.roomNumber}".uppercase(),
                 color = MaterialTheme.colorScheme.background,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
+
+
             Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val target = LocalDateTime.parse(screening.startDate, DateTimeFormatter.ISO_DATE_TIME).toString()
+                    val targetEnd = LocalDateTime.parse(screening.startDate, DateTimeFormatter.ISO_DATE_TIME).plusMinutes(100).toString()
+                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
+
+                    val localDateTimeStart = LocalDateTime.parse(target, formatter)
+                    val localDateTimeEnd = LocalDateTime.parse(targetEnd, formatter)
+
+                    val hourStart = localDateTimeStart.hour
+                    val minuteStart = localDateTimeStart.minute
+
+
+                    val hourEnd = localDateTimeEnd.hour
+                    val minuteEnd = localDateTimeEnd.minute
                     Text(
-                        text = "${DatetimeHelper.convertIsoToTime(screening.startDate)}",
+                        text = "${hourStart} : ${minuteStart} - ${hourEnd} : ${minuteEnd}",
                         color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.Bold
                     )
                 }
-                var count = seatIplace;
 
-                Text(text = "$count/${screening.room.seats.size}", color = MaterialTheme.colorScheme.background)
+                Text(text = "${count.value}/${screening.room.seats.size}", color = MaterialTheme.colorScheme.background)
 
             }
         }

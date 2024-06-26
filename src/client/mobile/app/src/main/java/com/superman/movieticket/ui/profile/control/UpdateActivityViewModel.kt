@@ -34,7 +34,6 @@ class UpdateActivityViewModel @Inject constructor(
 
     init {
         HandleGetUserDetail()
-
     }
 
     fun HandleGetUserDetail() {

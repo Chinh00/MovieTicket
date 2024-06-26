@@ -1,6 +1,7 @@
 
 
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using MovieTicket.Infrastructure.Auth;
 using MovieTicket.Infrastructure.Caching;
 using MovieTicket.Infrastructure.EfCore;
@@ -10,6 +11,7 @@ using MovieTicket.Infrastructure.Security;
 using MovieTicket.Infrastructure.Swagger;
 using MovieTicketClient.Api.Extensions;
 using MovieTicketClient.Application;
+using MovieTicketClient.Application.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);

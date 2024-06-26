@@ -28,7 +28,7 @@ class TmpActivity : ComponentActivity() {
         setContent {
             val updateActivityViewModel: UpdateActivityViewModel = hiltViewModel()
 
-            updateActivityViewModel.HandleGetUserDetail()
+
 
 
 

@@ -74,6 +74,8 @@ import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.theme.CustomBlue
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -95,9 +97,7 @@ class PhoneOtpActivity : ComponentActivity() {
                 Log.d("phone", intent.getStringExtra("phone").toString())
                 SendPhoneGetOtpComp(
                     phone = intent.getStringExtra("phone").toString(),
-                    onTimeout = {
-
-                        finish() })
+                    onTimeout = { })
             }, title = "", onNavigateUp = { finish() })
         }
     }
@@ -135,17 +135,13 @@ class PhoneOtpActivity : ComponentActivity() {
                     loginActivityViewModel.setOtpValue(otpValue)
                     keyboardController?.hide()
                     loginActivityViewModel.verifyOtp(otpValue) { verified ->
-                        val intent = Intent(context, TmpActivity::class.java)
-                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP )
-                        context.startActivity(intent)
-
-
                         onVerified(verified)
                         isVerify.value = verified
-                        if (verified ) {
-                            runOnUiThread {
-
-                            }
+                        CoroutineScope(Dispatchers.IO).launch {
+                            delay(1500L)
+                            val intent = Intent(context, TmpActivity::class.java)
+                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP )
+                            context.startActivity(intent)
                         }
 
                     }

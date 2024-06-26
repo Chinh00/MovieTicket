@@ -10,10 +10,10 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = file("C:\\Users\\dongt\\keystore.jks")
-            storePassword = "123456"
+            storeFile = file("C:\\Users\\Ching\\keystore.jks")
+            storePassword = "@P@ssw0rd02"
             keyAlias = "key0"
-            keyPassword = "123456"
+            keyPassword = "@P@ssw0rd02"
         }
 
     }

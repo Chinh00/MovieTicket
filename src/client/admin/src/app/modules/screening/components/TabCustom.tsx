@@ -57,7 +57,7 @@ const TabCustom = ({_date, ...props}: TabCustomProps) => {
                 return <div key={index}>
                     <TimelineItem>
                         <TimelineOppositeContent color="text.secondary">
-                            {dayjs(value?.startDate).format("L LT")}
+                            {value?.startDate.toString()}
                         </TimelineOppositeContent>
                         <TimelineSeparator>
                             <TimelineDot />
