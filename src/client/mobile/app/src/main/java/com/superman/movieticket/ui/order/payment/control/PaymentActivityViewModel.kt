@@ -38,7 +38,7 @@ class PaymentActivityViewModel @Inject constructor(
 
 
 
-    public fun HandleCreateTransactionAsync (total: Long) {
+    public fun HandleCreateTransactionAsync (total: Long, onSuccess: (String) -> Unit) {
         viewModelScope.launch {
             transactionService.HandleRegisterTransactionAsync(RegisterTransactionModel(
                 total
@@ -48,6 +48,7 @@ class PaymentActivityViewModel @Inject constructor(
                     response: Response<SuccessResponse<Transaction>>
                 ) {
                     _transactionStatus.value = response?.body()?.data?.id
+                    onSuccess(response?.body()?.data?.id!!)
                     Log.d("Chinh", response?.body()?.data?.id.toString())
 
                 }

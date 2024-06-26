@@ -127,23 +127,6 @@ fun HomeScreen(homeScreenViewModel: HomeScreenViewModel = hiltViewModel()) {
 
 }
 
-@Composable
-fun rememberLifecycleOwner(context: Context): LifecycleOwner {
-    return remember(context) {
-        context as LifecycleOwner
-    }
-}
-
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun HomeContent(movies: List<Movie>? = null) {
-
-
-}
-
-
-
 
 
 
@@ -166,9 +149,6 @@ fun NowingMovieComp(listViewMoviesNowing: List<Movie>) {
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.headlineSmall
             )
-//            TextButton(onClick = {}) {
-//                Text(text = "See all", color = Color.Red)
-//            }
         }
         val cp = LocalContext.current
         fun HandleTicket(id: String,avatar:String) {

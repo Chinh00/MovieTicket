@@ -5,8 +5,10 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -64,6 +66,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.gson.Gson
 import com.superman.movieticket.domain.entities.Screening
 import com.superman.movieticket.domain.entities.Seat
+import com.superman.movieticket.domain.services.SeatStateCreateModel
 import com.superman.movieticket.ui.components.BaseScreen
 import com.superman.movieticket.ui.components.CustomButton
 import com.superman.movieticket.ui.components.ScreenLoading
@@ -79,6 +82,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 @AndroidEntryPoint
 class TicketBookActivity : ComponentActivity() {
+    val bookTicketViewModel: BookTicketViewModel by viewModels()
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +93,12 @@ class TicketBookActivity : ComponentActivity() {
             ) }, title = "Chọn ghế ", onNavigateUp = {finish()})
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("Locking", "Mở lock cho các ghế đã chọn")
+    }
+
 }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -197,6 +207,9 @@ fun TicketActivityComp(
                     Column {
                         ScreenShape()
                     }
+                    val list_lock = remember {
+                        mutableListOf<Pair<String, String>>()
+                    }
                     seats.value.seats.sortedBy { it.rowNumber.toString() }.groupBy { it.rowNumber }.forEach { i ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             i.value.sortedBy { it.colNumber.toString() }.forEach { j ->
@@ -205,15 +218,44 @@ fun TicketActivityComp(
                                     isEnable = true,
                                     isSelected = selectedSeat.contains(j.id),
                                     onClick = {
+                                        bookTicketViewModel.HandleGetSeatState(roomId, reservationCreateModel.screeningId, j.id) {
+                                            when(it) {
+                                                true -> {
+                                                    Log.d("Locking", "Thực hiện đăng ký khoá ghế")
+
+                                                    bookTicketViewModel.HandleRegisterSeatPlace(roomId, reservationCreateModel.screeningId, j.id) {
+                                                        Log.d("Locking", "Đăng ký khoá ghế thành công")
+                                                        list_lock.add(Pair(j.id, it))
+                                                    }
+                                                }
+                                                false -> {
+                                                    Log.d("Locking", "Ghế đã bị người khác khoá trước. Vui lòng chọn lại")
+                                                    Toast.makeText(context, "Ghế đã bị người khác khoá trước. Vui lòng chọn lại", Toast.LENGTH_SHORT).show()
+                                                    selectedSeat.forEach {
+                                                        bookTicketViewModel.HandleUnLockSeatPlace(it) {
+                                                            Log.d("Locking", "Mở khoá lại ghế")
+
+                                                        }
+                                                    }
+                                                    list_lock.forEach { bookTicketViewModel.HandleUnLockSeatPlace(it.second) {} }
+                                                    selectedSeat.clear()
+
+                                                }
+                                            }
+                                        }
+
+
                                         if (selectedSeat.contains(j.id)) {
                                             selectedSeat.remove(j.id)
+                                            bookTicketViewModel.HandleUnLockSeatPlace(list_lock.first {it.first == j.id}.second) {}
+
                                         } else
                                             selectedSeat.add(j.id)
 
                                     }
                                 )
 
-                                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Spacer(modifier = Modifier.width(10.dp))
                             }
 
                         }
@@ -328,6 +370,7 @@ fun TicketActivityComp(
 
                 CustomButton(
                     onClick = {
+
                         reservationCreateModelState.value.seatReservations.addAll(selectedSeat.map { SeatReservationsCreateModel(it) })
                         NavigateOrderFood(
                             context = context,
@@ -336,6 +379,8 @@ fun TicketActivityComp(
                                 (totalPrice.value * selectedSeat.size).toLong()
                             )
                         )
+
+
 
                     }, text = "Tiếp theo", modifier = Modifier
                         .padding(bottom = 15.dp)

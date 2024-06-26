@@ -71,16 +71,7 @@ class UpdateActivityViewModel @Inject constructor(
         val _birthDate = RequestBody.create("text/plain".toMediaTypeOrNull(), birthdayFormat)
         val _userGender = RequestBody.create("text/plain".toMediaTypeOrNull(), "Male")
 
-        authService.UpdateUserInfo(fullName = _fullname, Avatar = null, userGender = null, birthday = _birthDate).enqueue(object: Callback<User> {
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                Log.d("Update user", response?.body().toString())
-            }
 
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                Log.d("Update user fail", t.toString())
-            }
-
-        })
     }
 
 }

@@ -41,7 +41,10 @@ fun SeatComp(
             RoundedCornerShape(8.dp)
         )
         .background(seatColor)
-        .clickable(enabled = !seat.isPlaced) { onClick(seat.id) }
+        .clickable(enabled = !seat.isPlaced) {
+            onClick(seat.id)
+
+        }
         .padding(5.dp),
         contentAlignment = Alignment.Center
 
