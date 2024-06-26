@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,15 +35,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.superman.movieticket.R
 import com.superman.movieticket.ui.history.MyOrderActivity
 import com.superman.movieticket.ui.main.MainActivity
 import com.superman.movieticket.ui.profile.control.ProfileScreenViewModel
+import com.superman.movieticket.ui.profile.control.UpdateActivityViewModel
 
 @Composable
 fun ProfileScreen() {
     val context = LocalContext.current
     val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()
+    val updateActivityViewModel: UpdateActivityViewModel = hiltViewModel()
+    val user = updateActivityViewModel.userinfo.collectAsState().value?:null
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -69,16 +74,22 @@ fun ProfileScreen() {
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.avatar), // Thay đổi ID ảnh tương ứng
+                    painter = rememberAsyncImagePainter(
+                        model = user?.avatar?:"",
+                        error = painterResource(id = R.drawable.avatar)
+                    ), // Thay đổi ID ảnh tương ứng
                     contentDescription = null,
                     modifier = Modifier
                         .size(100.dp)
-                        .clip(CircleShape),
+                        .clip(CircleShape)
+                        .clickable {
+                            context.startActivity(Intent(context, UpdateActivity::class.java))
+                        },
                     contentScale = ContentScale.Crop
                 )
             }
             Text(
-                text = "Dong Chinh Khanh",
+                text = user?.fullName ?: "Hãy cập nhật",
                 color = Color.Black,
                 fontSize = 30.sp,
                 textAlign = TextAlign.Center,
@@ -89,7 +100,7 @@ fun ProfileScreen() {
                     .padding(top = 20.dp)
             )
             Text(
-                text = "@123promax",
+                text = "@${user?.email ?: "Hãy cập nhật"}",
                 color = Color.Black,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
@@ -111,7 +122,7 @@ fun ProfileScreen() {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.clickable {
                     val intent = Intent(context, UpdateActivity::class.java)
-                        context.startActivity(intent)
+                    context.startActivity(intent)
                 }
             ) {
                 Icon(
@@ -172,7 +183,7 @@ fun ProfileScreen() {
             Spacer(modifier = Modifier.height(15.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier= Modifier.clickable {
+                modifier = Modifier.clickable {
                     val intent = Intent(context, MyOrderActivity::class.java)
                     context.startActivity(intent)
                 }
