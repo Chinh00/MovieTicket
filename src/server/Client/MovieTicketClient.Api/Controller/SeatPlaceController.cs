@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MovieTicket.Infrastructure.Controller;
 using MovieTicketClient.Application.Data;
 
 namespace MovieTicketClient.Api.Controller;
 
-public class SeatPlaceController : ControllerBase
+public class SeatPlaceController : BaseController
 {
     private readonly DbContextMemory _contextMemory;
 

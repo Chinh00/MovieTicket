@@ -234,7 +234,7 @@ fun ScreenItemComp(
                     val hourEnd = localDateTimeEnd.hour
                     val minuteEnd = localDateTimeEnd.minute
                     Text(
-                        text = "${hourStart} : ${minuteStart} - ${hourEnd} : ${minuteEnd}",
+                        text = "${hourStart + 7} : ${minuteStart} - ${hourEnd + 7} : ${minuteEnd}",
                         color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.Bold
                     )
