@@ -14,23 +14,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileScreenViewModel @Inject constructor(
-    private val dataStore: DataStore<Preferences>
-) : ViewModel(){
-    private val _user:MutableStateFlow<User>?=null
-
-    val user: MutableStateFlow<User>? get()=_user
-
-    fun HandleLogout () {
-        viewModelScope.launch {
-            dataStore.edit {
-                it.remove(PreferenceKey.IS_AUTHENTICATE)
-                it.remove(PreferenceKey.ACCESS_TOKEN)
-
-            }
+class ProfileScreenViewModel @Inject constructor( private val dataStore: DataStore<Preferences>
+): ViewModel() {
+    private val _user: MutableStateFlow<User>? = null
+    val user: MutableStateFlow<User>? get() = _user
+    fun HandleLogout()
+    {
+        viewModelScope.launch{
+            dataStore.edit{ it.remove(PreferenceKey.IS_AUTHENTICATE)
+            it.remove(PreferenceKey.ACCESS_TOKEN) }
         }
     }
-
-
-
 }
